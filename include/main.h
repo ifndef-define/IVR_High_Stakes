@@ -65,7 +65,6 @@
  * how often they will run relative to other tasks.
 */
 #define TASK_PRIORITY_LOW 6
-#define TASK_PRIORITY_DEFAULT pros::E_TASK_PRIORITY_DEFAULT //8
 #define TASK_PRIORITY_HIGH 11
 ///////////////////////////////////////
 
