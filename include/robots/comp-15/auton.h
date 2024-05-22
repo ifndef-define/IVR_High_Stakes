@@ -1,2 +1,2 @@
-#include "robots/comp-15/devices.h"
+#pragma once
 #include "robots/comp-15/includeList.h"

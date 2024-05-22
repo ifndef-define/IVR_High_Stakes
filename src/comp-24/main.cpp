@@ -1,4 +1,6 @@
 #include "main.h"
+#include "robots/comp-24/auton.h"
+#include "robots/comp-24/controls.h"
 
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
