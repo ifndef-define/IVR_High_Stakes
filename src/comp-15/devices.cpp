@@ -1,2 +1,2 @@
-#include "robots/comp-24/devices.h"
+#include "robots/comp-15/devices.h"
 #include "common/common_includeList.h"
