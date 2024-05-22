@@ -3,6 +3,7 @@
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
 	pros::lcd::initialize();
+	pros::lcd::print(0, "Comp 15 Bot");
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */

@@ -1,3 +1,4 @@
+include ./robotType.mk
 ARCHTUPLE=arm-none-eabi-
 DEVICE=VEX EDR V5
 
@@ -37,8 +38,8 @@ wlprefix=-Wl,$(subst $(SPACE),$(COMMA),$1)
 LNK_FLAGS=--gc-sections --start-group $(strip $(LIBRARIES)) -lgcc -lstdc++ --end-group -T$(FWDIR)/v5-common.ld
 
 ASMFLAGS=$(MFLAGS) $(WARNFLAGS)
-CFLAGS=$(MFLAGS) $(CPPFLAGS) $(WARNFLAGS) $(GCCFLAGS) --std=$(C_STANDARD)
-CXXFLAGS=$(MFLAGS) $(CPPFLAGS) $(WARNFLAGS) $(GCCFLAGS) --std=$(CXX_STANDARD)
+CFLAGS=$(MFLAGS) $(CPPFLAGS) $(WARNFLAGS) $(GCCFLAGS) $(ROBOTFLAGS) --std=$(C_STANDARD)			# Added RobotFlags for C 
+CXXFLAGS=$(MFLAGS) $(CPPFLAGS) $(WARNFLAGS) $(GCCFLAGS) $(ROBOTFLAGS) --std=$(CXX_STANDARD)		# Added RobotFlags for C++
 LDFLAGS=$(MFLAGS) $(WARNFLAGS) -nostdlib $(GCCFLAGS)
 SIZEFLAGS=-d --common
 NUMFMTFLAGS=--to=iec --format %.2f --suffix=B
@@ -149,12 +150,22 @@ endif
 
 INCLUDE=$(foreach dir,$(INCDIR) $(EXTRA_INCDIR),-iquote"$(dir)")
 
+####### BEGIN ROBOT SPECIFIC COMPLILATION #######
 ASMSRC=$(foreach asmext,$(ASMEXTS),$(call rwildcard, $(SRCDIR),*.$(asmext), $1))
 ASMOBJ=$(addprefix $(BINDIR)/,$(patsubst $(SRCDIR)/%,%.o,$(call ASMSRC,$1)))
-CSRC=$(foreach cext,$(CEXTS),$(call rwildcard, $(SRCDIR),*.$(cext), $1))
+
+# Remove all other robot directories
+$(info Removing all other robot bin directories)
+$(shell rm -rf $(EXCLUDED_BIN))
+
+# Add all files to compile list, then filter out excluded files
+CSRC := $(foreach cext,$(CEXTS),$(call rwildcard, $(SRCDIR),*.$(cext), $1))
+$(foreach dir,$(EXCLUDED_DIR),$(eval CSRC := $(filter-out $(wildcard $(dir)/*),$(CSRC)))) # Remove the excluded directories from the compile list
 COBJ=$(addprefix $(BINDIR)/,$(patsubst $(SRCDIR)/%,%.o,$(call CSRC, $1)))
-CXXSRC=$(foreach cxxext,$(CXXEXTS),$(call rwildcard, $(SRCDIR),*.$(cxxext), $1))
+CXXSRC := $(foreach cxxext,$(CXXEXTS),$(call rwildcard,$(SRCDIR),*.$(cxxext), $1))
+$(foreach dir,$(EXCLUDED_DIR),$(eval CXXSRC := $(filter-out $(wildcard $(dir)/*),$(CXXSRC)))) # Remove the excluded directories from the compile list
 CXXOBJ=$(addprefix $(BINDIR)/,$(patsubst $(SRCDIR)/%,%.o,$(call CXXSRC,$1)))
+####### END ROBOT SPECIFIC COMPLILATION #######
 
 GETALLOBJ=$(sort $(call ASMOBJ,$1) $(call COBJ,$1) $(call CXXOBJ,$1))
 
