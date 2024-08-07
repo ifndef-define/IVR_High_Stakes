@@ -22,6 +22,7 @@ A clear and concise description of what you expected to happen.
 Attach any relevant media or post them to the Prog Issue Form channel in discord
 
 **Robot**
+Note: Put 'X' in the bracket to select
 - [ ] Comp 15
 - [ ] Comp 24
 - [ ] Skills 15
