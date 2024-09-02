@@ -150,9 +150,9 @@ namespace convert {
 #ifdef ILLINI_SIMPLE_NAMES
 #define CONTROLLER_MASTER   pros::E_CONTROLLER_MASTER
 #define CONTROLLER_PARTNER  pros::E_CONTROLLER_PARTNER
-#define GEARSET_06          pros::E_MOTOR_GEARSET_06
-#define GEARSET_18          pros::E_MOTOR_GEARSET_18
-#define GEARSET_36          pros::E_MOTOR_GEARSET_36
+#define GEARSET_06          pros::v5::MotorGears::blue
+#define GEARSET_18          pros::v5::MotorGears::green
+#define GEARSET_36          pros::v5::MotorGears::red
 #define BRAKE_BRAKE         pros::E_MOTOR_BRAKE_BRAKE
 #define BRAKE_COAST         pros::E_MOTOR_BRAKE_COAST
 #define BRAKE_HOLD          pros::E_MOTOR_BRAKE_HOLD
