@@ -1,4 +1,4 @@
-include ./robotType.mk
+include ./robotSelector.mk
 ARCHTUPLE=arm-none-eabi-
 DEVICE=VEX EDR V5
 
@@ -154,7 +154,7 @@ INCLUDE=$(foreach dir,$(INCDIR) $(EXTRA_INCDIR),-iquote"$(dir)")
 ASMSRC=$(foreach asmext,$(ASMEXTS),$(call rwildcard, $(SRCDIR),*.$(asmext), $1))
 ASMOBJ=$(addprefix $(BINDIR)/,$(patsubst $(SRCDIR)/%,%.o,$(call ASMSRC,$1)))
 
-# Remove all other robot directories
+# Remove all other robot bin directories
 $(info Removing all other robot bin directories)
 $(shell rm -rf $(EXCLUDED_BIN))
 
