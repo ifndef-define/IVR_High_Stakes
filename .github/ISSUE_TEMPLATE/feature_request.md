@@ -14,14 +14,7 @@ A clear and concise description of what the problem is. Ex. I'm always frustrate
 A clear and concise description of what you want to happen.
 
 **Which robot would this apply to?**
-Note: Put 'X' in the bracket to select
-- [ ] Comp 15
-- [ ] Comp 24
-- [ ] Skills 15
-- [ ] Skills 24
-- [ ] Optimization
-- [ ] All Robots
-- [ ] Other
+Choose from Comp 15 / Comp 24 / Skills 15 / Skills 24 / Common Code / Otherr
 
 **Additional context**
 Add any other context or screenshots about the feature request here.
