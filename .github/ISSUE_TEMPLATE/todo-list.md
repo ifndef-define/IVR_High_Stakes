@@ -10,12 +10,5 @@ assignees: ''
 **What is being worked on?**
 Add a short description of what is being worked on. If you are working on a subsystem, provide a list of the major methods.
 
-**Which Robot**
-Note: Put 'X' in the bracket to select
-- [ ] Comp 15
-- [ ] Comp 24
-- [ ] Skills 15
-- [ ] Skills 24
-- [ ] Common Code
-- [ ] All Robots
-- [ ] Other
+**Robot**
+Choose from Comp 15 / Comp 24 / Skills 15 / Skills 24 / Common Code / Other
