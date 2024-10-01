@@ -1,6 +1,6 @@
 ---
 name: Todo List
-about: List an in-progress task to keep track of progress
+about: A task to complete, required by the almighty Jonah Elias
 title: "\U0001F5F9 To-Do List - Task Name"
 labels: ''
 assignees: ''
