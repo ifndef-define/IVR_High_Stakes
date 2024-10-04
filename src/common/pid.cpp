@@ -1,6 +1,6 @@
 #include "common/pid.h"
 #include "pros/rtos.hpp"
-#include "main.h"
+#include <cmath>
 
 void PID::setCoefficients(double p, double i, double d) {
     this->p = p;
@@ -14,10 +14,11 @@ double PID::update(double error) {
         double dt = pros::micros()/1e6 - lastTime;
         double de_dt = (error - lastError) / dt;
         accumulator += error * dt;
+        if (std::abs(accumulator) == infinity()) {
+            accumulator = 0;
+        }
 
-        value = p * error + d * de_dt;
-        pros::lcd::print(1, "p %f, i %f, d %f, a %f, %f de_dt", p, i, d, accumulator, de_dt);
-        pros::lcd::print(2, "a %f, %f de_dt, %f dt", accumulator, de_dt, dt);
+        value = p * error + i * accumulator + d * de_dt;
     }
     lastError = error;
     lastTime = pros::micros()/1e6;
