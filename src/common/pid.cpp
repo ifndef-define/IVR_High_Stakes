@@ -1,5 +1,4 @@
 #include "common/pid.h"
-#include "pros/rtos.hpp"
 #include <cmath>
 
 void PID::setCoefficients(double p, double i, double d) {
@@ -14,7 +13,7 @@ double PID::update(double error) {
         double dt = pros::micros()/1e6 - lastTime;
         double de_dt = (error - lastError) / dt;
         accumulator += error * dt;
-        if (std::abs(accumulator) == infinity()) {
+        if (std::fabs(accumulator) == infinity()) {
             accumulator = 0;
         }
 
