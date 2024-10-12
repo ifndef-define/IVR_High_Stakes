@@ -4,7 +4,7 @@
 class PID {
     private:
         // patch for hole
-        bool firstPIDrun = true;
+        bool ranFirstLoop = false;
         // All private variables like PID constants, sensor and/or motor pointers
         struct PID_consts_s{
             double kP = 0;
@@ -36,7 +36,7 @@ class PID {
         PID &operator=(PID & other);
 
 		// A simple runPID method that takes in the target and current value
-        double runPID(double target, double current);
+        double update(double target, double current);
         void setConstants(double kP, double kI, double kD, double outMax);
 
         // Getters and Setters for PID constants

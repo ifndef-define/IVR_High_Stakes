@@ -43,28 +43,25 @@ void PID::setConstants(double kP, double kI, double kD, double outMax) {
  *   - Determine if saturated
  * - Update the last error ✔️ 
  */
-double PID::runPID(double target, double current) {
-    
-    
+double PID::update(double target, double current) {
+      
     pid_state_.error = target - current;  //Error is the target value minus the current value
     pid_state_.derivative = pid_state_.error - pid_state_.lastError;  //Get derivative by subtacting current error and last error
-    pid_state_.integral = pid_state_.integral + pid_state_.error;  //Add current error to integral
-    
+    pid_state_.integral += pid_state_.error;  //Add current error to integral
 
-    double p = pid_state_.error * pid_consts_.kP;
-    double i = 0; //pid_state.integral * pid_consts_.kI; // delete "0; //" to enable integral term
-    double d = pid_state_.derivative * pid_consts_.kD;
-
-    if(firstPIDrun){    
-        d = 0;
-        firstPIDrun = false;
+    if(!ranFirstLoop){    
+        pid_state_.derivative = 0;
+        ranFirstLoop = true;
     }
-    if (std::fabs(pid_state_.rawOut) >  pid_consts_.outMax){
-        // checking for saturation
+
+    if (std::fabs(pid_state_.rawOut) >  pid_consts_.outMax){ // checking for saturation
         pid_state_.saturated = true;
+    } else {
+        pid_state_.saturated = false;
     }
+    
     pid_state_.lastError = pid_state_.error;  //Set last error to what the error currently is
-    return p + i + d;
+    return pid_state_.error * pid_consts_.kP + pid_state_.integral * pid_consts_.kI + pid_state_.derivative * pid_consts_.kD;
     
 }
 
