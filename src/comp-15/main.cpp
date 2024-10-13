@@ -1,5 +1,5 @@
 #include "main.h"
-#include "common/pid.h"
+#include "common/Pid.h"
 #include "pros/imu.hpp"
 #include "pros/rotation.hpp"
 #include "robots/comp-15/auton.h"

@@ -1,4 +1,4 @@
-#include "Spline.h"
+#include "common/Spline.h"
 #include "linalg.h"
 #include <array>
 
