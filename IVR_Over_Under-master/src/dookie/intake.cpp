@@ -42,7 +42,7 @@ void Intake::stop(){
 //Intake
 Intake::Intake(pros::Motor &motor) : SubsystemParent("Intake") {
     intake_motor_ = new pros::Motor(motor); //I assume this is why you stored it as a pointer?
-    intake_motor_->set_brake_mode(BRAKETYPE_COAST);
+    intake_motor_->set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 }
 
 // Sets power in rpm which will call set_power using a conversion to mV
