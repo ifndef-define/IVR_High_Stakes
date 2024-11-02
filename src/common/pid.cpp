@@ -7,9 +7,10 @@ PID::PID (double kP, double kI, double kD, double outMax) {
     pid_consts_.kD = kD; //derivative
     pid_consts_.outMax = outMax; //used to determine saturation
 }
-PID::PID (PID_consts_s inpConsts){
+PID::PID(PID_consts_s inpConsts, double outMax) {
     // setting constants the lazy way
     pid_consts_ = inpConsts;
+    pid_consts_.outMax = outMax; //used to determine saturation
 };
 PID::PID (PID &other){
     pid_consts_ = other.pid_consts_;
@@ -53,44 +54,19 @@ double PID::update(double target, double current) {
         pid_state_.derivative = 0;
         ranFirstLoop = true;
     }
+    
+    if((pid_state_.error > 0 && pid_state_.lastError < 0) || (pid_state_.error < 0 && pid_state_.lastError > 0)) //integral clamp
+        pid_state_.integral = 0;
+    
+    pid_state_.lastError = pid_state_.error;  //Set last error to what the error currently is
 
+    pid_state_.rawOut = pid_consts_.kP * pid_state_.error + pid_consts_.kI * pid_state_.integral + pid_consts_.kD * pid_state_.derivative;
     if (std::fabs(pid_state_.rawOut) >  pid_consts_.outMax){ // checking for saturation
         pid_state_.saturated = true;
+        pid_state_.rawOut = (pid_state_.rawOut > 0) ? pid_consts_.outMax : -pid_consts_.outMax;
     } else {
         pid_state_.saturated = false;
     }
-    
-    pid_state_.lastError = pid_state_.error;  //Set last error to what the error currently is
-    return pid_state_.error * pid_consts_.kP + pid_state_.integral * pid_consts_.kI + pid_state_.derivative * pid_consts_.kD;
-    
+
+    return pid_state_.rawOut;
 }
-
-
-
-// void skiPIDi::ohio(fanum tax) {
-//     rizzler.getLivvy = BABYgronk
-//     betaMale.getBeats = ksi;
-//     alphaMale.getLunch = lunchly;
-// }
-// void PID::setCoefficients(double p, double i, double d) {
-//     this->p = p;
-//     this->i = i;
-//     this->d = d;
-// }
-
-// double PID::update(double error) {
-//     double value = 0;
-//     if (lastTime >= 0) {
-//         double dt = pros::micros()/1e6 - lastTime;
-//         double de_dt = (error - lastError) / dt;
-//         accumulator += error * dt;
-//         if (std::abs(accumulator) == infinity()) {
-//             accumulator = 0;
-//         }
-
-//         value = p * error + i * accumulator + d * de_dt;
-//     }
-//     lastError = error;
-//     lastTime = pros::micros()/1e6;
-//     return value;
-// };

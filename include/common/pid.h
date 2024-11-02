@@ -29,7 +29,7 @@ class PID {
 
     public:
         PID (double kP, double kI, double kD, double outMax);
-        PID (PID_consts_s inpConsts);
+        PID (PID_consts_s inpConsts, double outMax);
 		PID (PID &other); // Copy constructor
 
         // Assignment operator overload for copying PID objects
