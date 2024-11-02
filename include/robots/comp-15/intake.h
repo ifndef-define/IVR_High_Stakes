@@ -3,11 +3,11 @@
 
 class Intake{
     private:
-    pros::MotorGroup intakeMotor();
+    pros::MotorGroup *intakeMotor;
 
     public:
-    Intake(std::int8_t port);
+    Intake(pros::MotorGroup &intake);
     void setVoltage(int volt);
     void setRpm(int rpm);
-    
+    void setRelative(double position, int rpm);
 };

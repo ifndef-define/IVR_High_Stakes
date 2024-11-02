@@ -1,10 +1,11 @@
 #pragma once
+#include "comp-15/devices.cpp"
 
 class Pnuematic
 {
 private:
     bool State;
-    pros::ADIDigitalOut solenoid;
+    pros::adi::Pnuematics *solenoid;
     // true = pnuematic is closed
     // false = pnuematic is open
 public:

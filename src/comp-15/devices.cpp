@@ -42,4 +42,4 @@ Rotation armRot{21};
 adi::Encoder xEnc('A', 'B');
 adi::Encoder YEnc('C', 'D'); //YEncR
 // adi::Pneumatics YEncL{E, F};
-adi::DigitalOut clamp('G', false);
+adi::Pneumatics clamp('G', false);
