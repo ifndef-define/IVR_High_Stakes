@@ -34,6 +34,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <initializer_list>
 ///////////////////////////////////////
 
 /**
@@ -55,7 +56,7 @@
 
 /**
  * Add other header files here;
- * NOTE: There shouldn't be a need to put anything here
+ * NOTE: This should be used for imported libraries
  */
 // #include "goated.h"
 ///////////////////////////////////////
