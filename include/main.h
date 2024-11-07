@@ -34,35 +34,43 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <initializer_list>
 ///////////////////////////////////////
 
 /**
  * Add global defines/constants here;
  */
-#ifndef M_PI
+#ifndef M_PI // PI
 #define M_PI 3.14159265358979323846
 #endif
-#ifndef M_PI_2
+#ifndef M_PI_2 // PI/2
 #define M_PI_2 1.57079632679489661923
 #endif
-#ifndef M_PI_4
+#ifndef M_PI_4 // PI/4
 #define M_PI_4 0.78539816339744830962
 #endif
-#ifndef M_E
+#ifndef M_E // e
 #define M_E 2.71828182845904523536
+#endif
+#ifndef M_G // Acceleration due to gravity
+#define G 9.81
 #endif
 ///////////////////////////////////////
 
 /**
  * Add other header files here;
- * NOTE: There shouldn't be a need to put anything here
+ * NOTE: Only add imported libraries' headers here
  */
-// #include "goated.h"
+
 ///////////////////////////////////////
 
 /**
  * When multitasking, these values indicate the priority levels of tasks, and
  * how often they will run relative to other tasks.
+ * 
+ * NOTE: Default priority level is 8 on scale of 0-16
+ *  0 means task will not run at all
+ *  16 means task will be the only task running
 */
 #define TASK_PRIORITY_LOW 6
 #define TASK_PRIORITY_HIGH 11
@@ -75,7 +83,14 @@
   } while (!(condition))
 ///////////////////////////////////////
 
+/**
+ * Custom namespace for converting between units. Please note that we want all our 
+ * units to be in imperial units (inches, feet, etc.). This is the easiest way to
+ * visualize locations and distances on the field. Angles will be in degrees, but 
+ * can be converted to radians when performing trigonometric calculations.
+ */
 #ifndef CONVERT_NAMESPACE
+
 #define CONVERT_NAMESPACE
 namespace convert {
   // Convert degrees to radians
@@ -89,11 +104,13 @@ namespace convert {
   }
 
   // Convert inches to meters
+  [[deprecated("Prefer to calculate in inches/feet only")]]
   static double inToM(double inches) {
     return inches * 0.0254;
   }
   
   // Convert meters to inches
+  [[deprecated("Prefer to calculate in inches/feet only")]]
   static double mToIn(double meters) {
     return meters * 39.3701;
   }
@@ -109,31 +126,37 @@ namespace convert {
   }
 
   // Convert feet to meters
+  [[deprecated("Prefer to calculate in inches/feet only")]]
   static double ftToM(double feet) {
     return feet * 0.3048;
   }
 
   // Convert meters to feet
+  [[deprecated("Prefer to calculate in inches/feet only")]]
   static double mToFt(double meters) {
     return meters * 3.28084;
   }
 
   // Convert tile coordinates to meters
+  [[deprecated("Prefer to calculate in inches/feet only")]]
   static double tileToM(double tiles) {
     return tiles * 0.61538;
   }
 
   // Convert meters to tile coordinates
+  [[deprecated("Prefer to calculate in inches/feet only")]]
   static double mToTile(double meters) {
     return meters * 1.625;
   }
 
   // Convert tile coordinates to inches
+  [[deprecated("Prefer to calculate in inches/feet only")]]
   static double tileToIn(double tiles) {
     return tiles * 24;
   }
 
   // Convert inches to tile coordinates
+  [[deprecated("Prefer to calculate in inches/feet only")]]
   static double inToTile(double inches) {
     return inches * 0.0416667;
   }
