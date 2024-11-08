@@ -10,7 +10,7 @@ extern Controller ctrl_master;
 extern MotorGroup rightDrive;
 extern MotorGroup leftDrive;
 extern MotorGroup intake;
-extern MotorGroup arm;
+extern Motor arm;
 
 extern Distance mogoDist;
 extern Distance intakeDist;
