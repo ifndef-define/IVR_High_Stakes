@@ -33,14 +33,7 @@ class drive {
         } drive_config_e;
 
     private:
-        drive(ctrler &ctrler_1, motor_g &motor_g_1, motor_g &motor_g_2, 
-            drive::drive_config_e drive_config, drive::drive_mode_e drive_mode, 
-            short int drive_deadzone, double straight_l_scale, double straight_r_scale, 
-            double drive_exponential_scale, double drive_sin_scale, int max_rpm);
-        drive(ctrler &ctrler_1, initializer_list<motor*> l_motors, 
-            initializer_list<motor*> r_motors, drive::drive_config_e drive_config, 
-            drive::drive_mode_e drive_mode, short int drive_deadzone, double straight_l_scale, 
-            double straight_r_scale, double drive_exponential_scale, double drive_sin_scale, int max_rpm);
+        drive() = default;
 
         // Device pointers
         ctrler *drive_ctrler_;
@@ -49,7 +42,6 @@ class drive {
         motor_g *right_side_;
 
         // Drive configuration
-        uint8_t checkSum;
         short int drive_motor_count_;
         short int drive_deadzone_;
         double straight_l_scale_;
@@ -94,5 +86,6 @@ class drive_builder {
 
         drive *build();
     private:
+        uint8_t checkSum[2];
         drive *drive_;
 };

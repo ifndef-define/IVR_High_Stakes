@@ -1,39 +1,5 @@
 #include "common/drive_parent.h"
 
-drive::drive(ctrler &ctrler_1, motor_g &motor_g_1, motor_g &motor_g_2, 
-    drive::drive_config_e drive_config, drive::drive_mode_e drive_mode, 
-    short int drive_deadzone, double straight_l_scale, double straight_r_scale, 
-    double drive_exponential_scale, double drive_sin_scale, int max_rpm) : 
-    drive_ctrler_(&ctrler_1), left_side_(&left_side_), right_side_(&right_side_),
-    drive_config_(drive_config), drive_mode_(drive_mode), drive_deadzone_(drive_deadzone),
-    straight_l_scale_(straight_l_scale), straight_r_scale_(straight_r_scale), 
-    drive_exponential_scale_(drive_exponential_scale), drive_sin_scale_(drive_sin_scale), 
-    max_rpm_(max_rpm) {
-        left_side_ = &motor_g_1;
-        right_side_ = &motor_g_2;
-        vector<int8_t> ports_temp = left_side_->get_port_all();
-        drive_motor_count_ = ports_temp.size();
-    }
-drive::drive(ctrler &ctrler_1, initializer_list<motor*> l_motors, 
-    initializer_list<motor*> r_motors, drive::drive_config_e drive_config, 
-    drive::drive_mode_e drive_mode, short int drive_deadzone, double straight_l_scale, 
-    double straight_r_scale, double drive_exponential_scale, double drive_sin_scale, int max_rpm) : 
-    drive_ctrler_(&ctrler_1), drive_config_(drive_config), drive_mode_(drive_mode),
-    drive_deadzone_(drive_deadzone), straight_l_scale_(straight_l_scale), 
-    straight_r_scale_(straight_r_scale), drive_exponential_scale_(drive_exponential_scale), 
-    drive_sin_scale_(drive_sin_scale), max_rpm_(max_rpm) {
-        if (l_motors.size() != r_motors.size()) {
-            throw invalid_argument("Left and right motor arrays must be the same size");
-        }
-        drive_motor_count_ = l_motors.size();
-        auto l_it = l_motors.begin();
-        auto r_it = r_motors.begin();
-        for (int i = 0; i < l_motors.size(); i++, l_it++, r_it++) {
-            driveMotors[i] = *l_it;
-            driveMotors[i + l_motors.size()] = *r_it;
-        }
-    }
-
 void drive::loop(bool thread=false) {
 
 }
@@ -54,77 +20,92 @@ void drive::stop() {
 
 }
 
+void drive::updateAxis() {
 
-        typedef enum {
-            TANK = 1,
-            SINGLE_STICK_ARCADE_R,
-            SINGLE_STICK_ARCADE_L,
-            SPLIT_ARCADE_PR,
-            SPLIT_ARCADE_PL,
-            HOLONOMIC_SR,
-            HOLONOMIC_SL,
-            FIELD_CENTRIC_SR,
-            FIELD_CENTRIC_SL,
-            CUSTOM
-        } drive_mode_e;
+}
 
-        typedef enum {
-            TANK = 1,
-            HOLONOMIC,
-            CUSTOM
-        } drive_config_e;
+double drive::normalizeAxis(double axis) {
+    return axis/127.0;
+}
 
-    private:
-        // Device pointers
-        ctrler *drive_ctrler_;
-        motor *driveMotors[8];
-        motor_g *left_side_;
-        motor_g *right_side_;
+double drive::exponentialScale(double axis) {
+    
+}
 
-        // Drive configuration
-        uint8_t checkSum;
-        short int drive_motor_count_;
-        short int drive_deadzone_;
-        double straight_l_scale_;
-        double straight_r_scale_;
-        double drive_exponential_scale_;
-        double drive_sin_scale_;
-        drive_mode_e drive_mode_;
-        drive_config_e drive_config_;
+double drive::sinScale(double axis) {
 
-        // Drive control variables
-        struct ctrler_axis_s {
-            int l_x, l_y, r_x, r_y;
-        };
-        ctrler_axis_s raw_axis;
-        ctrler_axis_s calc_axis;
-        int right, left, strafe, turn, fwd;
+}
 
-        // Private functions
-        void updateAxis();
-        double normalizeAxis(double axis);
-        double exponentialScale(double axis);
-        double sinScale(double axis);
+drive_builder::drive_builder(ctrler &ctrler_1) {
+    checkSum[0] = 0b00000001; // Used for required parameters 
+    checkSum[1] = 0b00000001; // Used for selected drive scale parameters
 
-    friend class drive_builder;
-};
+    drive_->drive_ctrler_ = &ctrler_1;    
+}
+drive_builder &drive_builder::with_drive_config(drive::drive_config_e drive_config) {
+    drive_->drive_config_ = drive_config;
+    checkSum[0]<<=1; // Shift left by 1    
+}
+drive_builder &drive_builder::with_drive_motors(initializer_list<motor&> l_motors, initializer_list<motor&> r_motors) {
+    if (l_motors.size() != r_motors.size()) {
+        throw invalid_argument("Left and right motor arrays must be the same size");
+    }
+    drive_->drive_motor_count_ = l_motors.size();
+    auto l_it = l_motors.begin(); 
+    auto r_it = r_motors.begin();
+    for (int i = 0; i < l_motors.size(); i++, l_it++, r_it++) {
+        drive_->driveMotors[i] = *l_it;
+        drive_->driveMotors[i + l_motors.size()] = *r_it;
+    }
+    checkSum[0]<<=1; // Shift left by 1
+}
+drive_builder &drive_builder::with_drive_motors(motor_g &motor_g_1, motor_g &motor_g_2) {
+    drive_->left_side_ = &motor_g_1;
+    drive_->right_side_ = &motor_g_2;
+    vector<int8_t> l_motors = motor_g_1.get_port_all();
+    vector<int8_t> r_motors = motor_g_2.get_port_all();
+    if (l_motors.size() != r_motors.size()) {
+        throw invalid_argument("Left and right motor arrays must be the same size");
+    }
+    drive_->drive_motor_count_ = l_motors.size();
+    for (int i = 0; i < l_motors.size(); i++) {
+        drive_->driveMotors[i] = new motor(l_motors[i]);
+        drive_->driveMotors[i + l_motors.size()] = new motor(r_motors[i]);
+    }
+    checkSum[0]<<=1; // Shift left by 1   
+}
+drive_builder &drive_builder::with_drive_mode(drive::drive_mode_e drive_mode) {
+    drive_->drive_mode_ = drive_mode;
+    checkSum[0]<<=1; // Shift left by 1
+}
 
-class drive_builder {
-    public:
-        drive_builder(ctrler &ctrler_1);
-        drive_builder &with_drive_config(drive::drive_config_e drive_config);
-        drive_builder &with_drive_motors(initializer_list<motor&> l_motors, initializer_list<motor&> r_motors);
-        drive_builder &with_drive_motors(motor_g &motor_g_1, motor_g &motor_g_2);
-        drive_builder &with_drive_mode(drive::drive_mode_e drive_mode);
+drive_builder &drive_builder::add_max_rpm(int rpm) {
+    drive_->max_rpm_ = rpm;
+}
+drive_builder &drive_builder::add_ctrler_deadzone(short int deadzone) {
+    drive_->drive_deadzone_ = deadzone;
+}
+drive_builder &drive_builder::add_straight_drive_scale(double l_scale, double r_scale) {
+    drive_->straight_l_scale_ = l_scale;
+    drive_->straight_r_scale_ = r_scale;
+}
+drive_builder &drive_builder::add_exponetial_drive_scale(double scale) {
+    drive_->drive_exponential_scale_ = scale;
+    checkSum[1]<<=1; // Shift left by 1
+}
+drive_builder &drive_builder::add_sin_drive_scale(double scale) {
+    drive_->drive_sin_scale_ = scale;
+    checkSum[1]<<=1; // Shift left by 1
+}
+drive_builder &drive_builder::add_odom_config(/** @todo Need Odom class */) {
+    // Awaiting Odom class
+}
 
-        drive_builder &add_max_rpm(int rpm);
-        drive_builder &add_ctrler_deadzone(short int deadzone);
-        drive_builder &add_straight_drive_scale(double l_scale, double r_scale);
-        drive_builder &add_exponetial_drive_scale(double scale);
-        drive_builder &add_sin_drive_scale(double scale);
-        drive_builder &add_odom_config(/** @todo Need Odom class */);
-
-        drive *build();
-    private:
-        drive *drive_;
-};
+drive *drive_builder::build() {
+    if (checkSum[0] != 0b00001000) {
+        throw invalid_argument("Missing required parameters");
+    }
+    if (checkSum[1] != 0b00000001 || checkSum[1] != 0b00000010) {
+        throw invalid_argument("Multiple drive scale parameters set, only select one");
+    }
+}
