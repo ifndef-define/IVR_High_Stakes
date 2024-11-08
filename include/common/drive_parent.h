@@ -84,8 +84,8 @@ class drive_builder {
         drive_builder &add_sin_drive_scale(double scale);
         drive_builder &add_odom_config(/** @todo Need Odom class */);
 
-        drive *build();
+        drive &build();
     private:
         uint8_t checkSum[2];
-        drive *drive_;
+        drive drive_;
 };

@@ -23,14 +23,14 @@ Controller master(E_CONTROLLER_MASTER);
 MotorGroup rightDrive({3, 4, -1, 5}, MotorGears::blue);
 MotorGroup leftDrive({-10, -9, 7, -8}, MotorGears::blue);
 void opcontrol() {
-	drive *maindrive = drive_builder(master)
+	drive &maindrive = drive_builder(master)
 		.with_drive_config(drive::drive_config_e::TANK_c)
 		.with_drive_motors(leftDrive, rightDrive)
 		.with_drive_mode(drive::drive_mode_e::TANK_m)
 		.build();
 
 	while (true) {
-		maindrive->loop();
+		maindrive.loop();
 		delay(20);
 	}
 }
