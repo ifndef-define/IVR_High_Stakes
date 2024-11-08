@@ -14,7 +14,7 @@ class drive {
         void stop();
 
         typedef enum {
-            TANK = 1,
+            TANK_m = 1,
             SINGLE_STICK_ARCADE_R,
             SINGLE_STICK_ARCADE_L,
             SPLIT_ARCADE_PR,
@@ -23,13 +23,13 @@ class drive {
             HOLONOMIC_SL,
             FIELD_CENTRIC_SR,
             FIELD_CENTRIC_SL,
-            CUSTOM
+            CUSTOM_m
         } drive_mode_e;
 
         typedef enum {
-            TANK = 1,
+            TANK_c = 1,
             HOLONOMIC,
-            CUSTOM
+            CUSTOM_c
         } drive_config_e;
 
     private:
@@ -73,7 +73,7 @@ class drive_builder {
     public:
         drive_builder(ctrler &ctrler_1);
         drive_builder &with_drive_config(drive::drive_config_e drive_config);
-        drive_builder &with_drive_motors(initializer_list<motor&> l_motors, initializer_list<motor&> r_motors);
+        drive_builder &with_drive_motors(initializer_list<motor*> l_motors, initializer_list<motor*> r_motors);
         drive_builder &with_drive_motors(motor_g &motor_g_1, motor_g &motor_g_2);
         drive_builder &with_drive_mode(drive::drive_mode_e drive_mode);
 
