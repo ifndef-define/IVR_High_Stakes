@@ -28,6 +28,7 @@ class PID {
         PID_state_s pid_state_;
 
     public:
+        PID () = default;
         PID (double kP, double kI, double kD, double outMax);
         PID (PID_consts_s inpConsts, double outMax);
 		PID (PID &other); // Copy constructor

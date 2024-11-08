@@ -1,7 +1,5 @@
 #include "main.h"
 #include "comp-15/pnuematics.h"
-#include "pros/adi.hpp"
-
 
 // Constructor to initialize the solenoid
 Pnuematic::Pnuematic(std::uint8_t port, bool enabled): solenoid(port, enabled){
