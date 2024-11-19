@@ -1,10 +1,6 @@
 #include "main.h"
 #include "common/pid.h"
-#include "pros/imu.hpp"
-#include "pros/rotation.hpp"
-#include "robots/comp-15/auton.h"
-#include "robots/comp-15/controls.h"
-#include "common/pid.h"
+#include "comp-15/chassis.h"
 
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
@@ -24,11 +20,8 @@ void autonomous() {}
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
 	//Create Necessary Objects
-	PID latPID(0, 0.0, 0.0, 127); //Forward/back PID
-	PID turnPID(0, 0.0, 0.0, 127); //Turn PID
 
 	while (true) {
-		latPID.update(0, 0);
-		turnPID.update(0, 0);
+		
 	}
 }

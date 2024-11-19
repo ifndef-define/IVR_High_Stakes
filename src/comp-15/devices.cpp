@@ -1,5 +1,6 @@
 #include "robots/comp-15/devices.h"
 #include "robots/comp-15/includeList.h"
+#include "comp-15/chassis.h"
 
 /*
 Motor Ports
@@ -51,3 +52,5 @@ adi::Pneumatics doinker('H', false);
 pros::adi::Encoder L_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'A', 'B'});
 pros::adi::Encoder X_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'C', 'D'});
 pros::adi::Encoder R_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'E', 'F'});
+
+Chassis joner(leftDrive, rightDrive);
