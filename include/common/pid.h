@@ -39,10 +39,14 @@ class PID {
 		// A simple runPID method that takes in the target and current value
         double update(double target, double current);
         void setConstants(double kP, double kI, double kD, double outMax);
+        void reset();
 
         // Getters and Setters for PID constants
         PID_consts_s getConstants();
         PID_state_s getState();
+
+        // Destructor
+        ~PID() = default;
 };
 
 // class PID {

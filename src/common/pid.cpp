@@ -70,3 +70,13 @@ double PID::update(double target, double current) {
 
     return pid_state_.rawOut;
 }
+
+void PID::reset() {
+    pid_state_.error = 0;
+    pid_state_.integral = 0;
+    pid_state_.lastError = 0;
+    pid_state_.saturated = false;
+    pid_state_.derivative = 0;
+    pid_state_.rawOut = 0;
+    ranFirstLoop = false;
+}

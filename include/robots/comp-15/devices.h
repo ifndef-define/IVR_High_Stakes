@@ -12,16 +12,24 @@ extern MotorGroup leftDrive;
 extern MotorGroup intake;
 extern Motor arm;
 
-extern Distance mogoDist;
+// Sensors //
 extern Distance intakeDist;
 extern Optical intakeColor;
 extern IMU imuLeft;
 extern IMU imuRight;
 extern Rotation armRot;
 
-extern adi::Encoder xEnc;
-extern adi::Encoder YEnc; //YEncR
-// ADIPneumatics YEncL;
-extern adi::Pneumatics clamp;
+// Odometry
+extern pros::adi::Encoder L_ENC;
+extern pros::adi::Encoder X_ENC;
+extern pros::adi::Encoder R_ENC;
+
+// Pneumatics //
+extern adi::Pneumatics mogoRush('F', false);
+extern adi::Pneumatics clamp('G', false);
+extern adi::Pneumatics doinker('H', false);
+
+// Chassis //
+extern Chassis joner;
 
 #endif // COMP_15_DEVICES_H

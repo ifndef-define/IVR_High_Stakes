@@ -1,6 +1,6 @@
 #include "main.h"
 #include "common/pid.h"
-#include "comp-15/chassis.h"
+#include "comp-15/devices.h"
 
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
@@ -19,9 +19,9 @@ void autonomous() {}
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
-	//Create Necessary Objects
+	joner.move(0);
 
 	while (true) {
-		
+		joner.move(0);
 	}
 }
