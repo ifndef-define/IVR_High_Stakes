@@ -27,7 +27,7 @@ void Chassis::setConstants(double lkP, double lkI, double lkD, double outMax, do
 }
 
 double Chassis::getPosition(){
-    return (rEnc->get_value() + lEnc->get_value()) / 2;
+    return ((rEnc->get_value() + lEnc->get_value()) / 2)*(M_PI * 1.36) / 8192;
 }
 
 void Chassis::move(int pwr){
@@ -46,12 +46,12 @@ void Chassis::tank(int fwd, int turn){
 }
 
 void Chassis::movePID(int lat){
-    lPID.reset();
-    while(abs(lPID.getState().derivative) <= .1){
-        move(lPID.update(lat, 0));
-        pros::delay(15);
-    }
-    move(0);
+    // lPID.reset();
+    // while(fabs(lPID.getState().derivative) <= .1){
+        move(lPID.update(lat, getPosition()));
+        // pros::delay(15);
+    // }
+    // move(0);
 }
 
 void Chassis::turnPID(int angle){

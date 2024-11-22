@@ -1,6 +1,7 @@
 #include "main.h"
 #include "robots/comp-15/devices.h"
 #include "robots/comp-15/controls.h"
+#include "common/pid.h"
 
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
@@ -19,9 +20,15 @@ void disabled() {}
 void competition_initialize() {}
 
 /* Autonmous Method */
-void autonomous() {}
+void autonomous() {
+
+}
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
-	teleOp();
+	// teleOp();
+	while(1){
+		joner.movePID(24);
+		delay(15);
+	}
 }

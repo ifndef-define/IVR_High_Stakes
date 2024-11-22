@@ -4,7 +4,7 @@ Arm::Arm(pros::Motor *armM, pros::Rotation *armR, double kP, double kI, double k
 {
     armMotor = armM;
     armRot = armR;
-    armState = 0;
+    armState = 1;
     intakePullBackFlag = false;
 }
 

@@ -31,14 +31,14 @@ Controller ctrl_master(E_CONTROLLER_MASTER);
 MotorGroup rightDrive({3, 4, -1, 5}, pros::MotorGears::blue);
 MotorGroup leftDrive({-10, -9, 7, -8}, pros::MotorGears::blue);
 MotorGroup intakeMotor({-13, 17}, pros::MotorGears::green);
-Motor armMotor(-14);
+Motor armMotor(-14, pros::MotorGears::red);
 
 //Sensors
 Distance intakeDist(18);
 Optical intakeColor(15);
 IMU imuLeft(20);
 IMU imuRight(11);
-Rotation armRot{21};
+Rotation armRot(-21);
 
 //Pneumatics
 adi::Pneumatics mogoRush('F', false);
@@ -52,7 +52,7 @@ pros::adi::Encoder X_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'C', 'D'});
 pros::adi::Encoder R_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'E', 'F'});
 
 //Chassis
-Chassis joner(&leftDrive, &rightDrive, &imuLeft, &R_ENC, &L_ENC,.01,.0,.0,
+Chassis joner(&leftDrive, &rightDrive, &imuLeft, &R_ENC, &L_ENC,7,.0,.0,
                                                                 .0,.0,.0);
 Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11);
 Intake intake(&intakeMotor);

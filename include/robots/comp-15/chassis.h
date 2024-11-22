@@ -1,5 +1,6 @@
 #pragma once
 #include "robots/comp-15/devices.h"
+#include "common/pid.h"
 
 class Chassis {
     private:
