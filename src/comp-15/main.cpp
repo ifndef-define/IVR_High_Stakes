@@ -10,6 +10,10 @@ void initialize() {
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	imuLeft.reset();
 	imuRight.reset();
+	R_ENC.reset();
+	L_ENC.reset();
+
+	armRot.reset();
 	pros::lcd::print(0, "Comp 15 Bot");
 }
 

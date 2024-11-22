@@ -52,7 +52,7 @@ pros::adi::Encoder X_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'C', 'D'});
 pros::adi::Encoder R_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'E', 'F'});
 
 //Chassis
-Chassis joner(&leftDrive, &rightDrive, &imuLeft, &R_ENC, &L_ENC,7,.0,.0,
+Chassis joner(&leftDrive, &rightDrive, &imuLeft, &R_ENC, &L_ENC,7,.0,2,
                                                                 .0,.0,.0);
 Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11);
 Intake intake(&intakeMotor);
