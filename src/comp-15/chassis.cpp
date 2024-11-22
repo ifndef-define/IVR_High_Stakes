@@ -1,4 +1,4 @@
-#include "comp-15/chassis.h"
+#include "robots/comp-15/chassis.h"
 
 Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros::IMU *imu, pros::ADIEncoder *R_ENC, pros::ADIEncoder *L_ENC, double lkP, double lkI, double lkD, double tkP, double tkI, double tkD){
     leftDrv = leftDrive;
@@ -42,7 +42,7 @@ void Chassis::tank(int fwd, int turn){
 
 void Chassis::movePID(int lat){
     lPID.reset();
-    while(abs(lPID.getState().derivative) <= .01){
+    while(abs(lPID.getState().derivative) <= .1){
         move(lPID.update(lat, 0));
         pros::delay(15);
     }
@@ -51,7 +51,7 @@ void Chassis::movePID(int lat){
 
 void Chassis::turnPID(int angle){
     tPID.reset();
-    while(abs(tPID.getState().derivative) <= .01){
+    while(abs(tPID.getState().derivative) <= .1){
         turn(tPID.update(angle, imuI->get_roll()));
         pros::delay(15);
     }
@@ -61,7 +61,7 @@ void Chassis::turnPID(int angle){
 void Chassis::moveToPID(int lat, int turn){
     lPID.reset();
     tPID.reset();
-    while(abs(tPID.getState().derivative) <= .01 && abs(lPID.getState().derivative) <= .01){
+    while(abs(tPID.getState().derivative) <= .1 && abs(lPID.getState().derivative) <= .1){
         tank(lPID.update(lat, getPosition()), tPID.update(turn, imuI->get_roll()));
         pros::delay(15);
     }

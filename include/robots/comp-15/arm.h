@@ -6,8 +6,8 @@ class Arm : public PID
 private:
     pros::Motor *armMotor;
     pros::Rotation *armRot;
-    PID armPID;
     int armState;
+    int targetPosition[4] = {0, 1600, 11000, 14000};
     bool intakePullBackFlag;
 
 public:
@@ -15,6 +15,7 @@ public:
     void setPosition(int pos);
     int getState();
     void setState(int state);
+    void updatePosition();
     void incrementArmState();
     void decrementArmState();
     void setIntakePullBackFlag(bool state);

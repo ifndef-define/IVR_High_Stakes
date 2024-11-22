@@ -1,15 +1,11 @@
-#include "comp-15/arm.h"
+#include "robots/comp-15/arm.h"
 
-Arm::Arm(pros::Motor *armM, pros::Rotation *armR, double kP, double kI, double kD)
+Arm::Arm(pros::Motor *armM, pros::Rotation *armR, double kP, double kI, double kD) : PID(kP, kI, kD, 127)
 {
     armMotor = armM;
     armRot = armR;
     armState = 0;
     intakePullBackFlag = false;
-}
-
-void Arm::setPosition(int pos)
-{
 }
 
 int Arm::getState()
@@ -48,6 +44,28 @@ void Arm::decrementArmState()
     }
 }
 
+void Arm::updatePosition(){ 
+    if(armState != 4){
+        armMotor->move(update(targetPosition[armState-1], armRot->get_position()));
+    } else if(armState == 4){
+        if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
+            if(armRot->get_position() >= 20000){
+                armMotor->move(-20);
+            } else {
+                armMotor->move(127);
+            }
+        } else if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
+            if(armRot->get_position() <= 0){
+                armMotor->move(0);
+            } else {
+                armMotor->move(-127);
+            }
+        } else {
+            armMotor->move(0);
+        }
+    }
+}
+
 void Arm::setIntakePullBackFlag(bool state)
 {
     intakePullBackFlag = state;
@@ -76,5 +94,5 @@ void Arm::manualControl()
         }
     }
 
-    setArmState();
+    updatePosition();
 }

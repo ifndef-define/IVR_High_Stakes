@@ -1,10 +1,14 @@
 #include "main.h"
-#include "common/pid.h"
-#include "comp-15/devices.h"
+#include "robots/comp-15/devices.h"
+#include "robots/comp-15/controls.h"
 
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
 	pros::lcd::initialize();
+	intakeColor.set_led_pwm(100);
+	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	imuLeft.reset();
+	imuRight.reset();
 	pros::lcd::print(0, "Comp 15 Bot");
 }
 
@@ -19,9 +23,5 @@ void autonomous() {}
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
-	joner.move(0);
-
-	while (true) {
-		joner.move(0);
-	}
+	teleOp();
 }

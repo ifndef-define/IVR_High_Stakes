@@ -25,13 +25,13 @@ extern pros::adi::Encoder X_ENC;
 extern pros::adi::Encoder R_ENC;
 
 // Pneumatics //
-extern adi::Pneumatics mogoRush('F', false);
-extern adi::Pneumatics clamp('G', false);
-extern adi::Pneumatics doinker('H', false);
+extern adi::Pneumatics mogoRush;
+extern adi::Pneumatics clampPiston;
+extern adi::Pneumatics doinker;
 
 // Subssystems //
 extern Chassis joner;
 extern Arm arm;
-extern Intake intakeMotor;
+extern Intake intake;
 
 #endif // COMP_15_DEVICES_H

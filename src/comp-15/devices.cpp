@@ -44,7 +44,7 @@ Rotation armRot{21};
 
 //Pneumatics
 adi::Pneumatics mogoRush('F', false);
-adi::Pneumatics clamp('G', false);
+adi::Pneumatics clampPiston('G', false);
 adi::Pneumatics doinker('H', false);
 
 //Odometry
@@ -53,6 +53,8 @@ pros::adi::Encoder L_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'A', 'B'});
 pros::adi::Encoder X_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'C', 'D'});
 pros::adi::Encoder R_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'E', 'F'});
 
-Chassis joner(&leftDrive, &rightDrive, &imuLeft, &R_ENC, &L_ENC,.02,0.0,0.0,0.02,0.0,0.0);
+//Chassis
+Chassis joner(&leftDrive, &rightDrive, &imuLeft, &R_ENC, &L_ENC,.01,.0,.0,
+                                                                .0,.0,.0);
 Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11);
-Intake intake(&intkaeMotor);
+Intake intake(&intakeMotor);
