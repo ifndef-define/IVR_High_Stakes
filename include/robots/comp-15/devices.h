@@ -9,8 +9,8 @@ extern Controller ctrl_master;
 // Motors //
 extern MotorGroup rightDrive;
 extern MotorGroup leftDrive;
-extern MotorGroup intake;
-extern Motor arm;
+extern MotorGroup intakeMotor;
+extern Motor armMotor;
 
 // Sensors //
 extern Distance intakeDist;
@@ -29,7 +29,9 @@ extern adi::Pneumatics mogoRush('F', false);
 extern adi::Pneumatics clamp('G', false);
 extern adi::Pneumatics doinker('H', false);
 
-// Chassis //
+// Subssystems //
 extern Chassis joner;
+extern Arm arm;
+extern Intake intakeMotor;
 
 #endif // COMP_15_DEVICES_H

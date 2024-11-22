@@ -1,6 +1,6 @@
 #include "robots/comp-15/devices.h"
 #include "robots/comp-15/includeList.h"
-#include "comp-15/chassis.h"
+
 
 /*
 Motor Ports
@@ -30,10 +30,10 @@ Mogo Mech: G
 Controller ctrl_master(E_CONTROLLER_MASTER);
 
 //Motors
-MotorGroup rightDrive{3, 4, -1, 5};
-MotorGroup leftDrive{-10, -9, 7, -8};
-MotorGroup intake{-13, 17};
-MotorGroup arm{-14};
+MotorGroup rightDrive({3, 4, -1, 5}, pros::MotorGears::blue);
+MotorGroup leftDrive({-10, -9, 7, -8}, pros::MotorGears::blue);
+MotorGroup intakeMotor({-13, 17}, pros::MotorGears::green);
+Motor armMotor(-14);
 
 //Sensors
 Distance intakeDist(18);
@@ -54,3 +54,5 @@ pros::adi::Encoder X_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'C', 'D'});
 pros::adi::Encoder R_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'E', 'F'});
 
 Chassis joner(&leftDrive, &rightDrive, &imuLeft, &R_ENC, &L_ENC,.02,0.0,0.0,0.02,0.0,0.0);
+Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11);
+Intake intake(&intkaeMotor);
