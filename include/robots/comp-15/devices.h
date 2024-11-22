@@ -3,6 +3,12 @@
 #define COMP_15_DEVICES_H
 
 #include "common/includeList.h"
+#include "robots/comp-15/includeList.h"
+#include "robots/comp-15/arm.h"
+
+class Arm;  // Forward declaration of Arm
+class Chassis;
+class Intake;
 
 extern Controller ctrl_master;
 

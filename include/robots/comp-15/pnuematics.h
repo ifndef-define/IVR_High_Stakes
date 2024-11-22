@@ -1,15 +1,15 @@
 #pragma once
-#include "comp-15/devices.cpp"
+#include "robots/comp-15/devices.h"
 
 class Pnuematic
 {
 private:
     bool State;
-    pros::adi::Pnuematics *solenoid;
+    pros::adi::Pneumatics *solenoid;
     // true = pnuematic is closed
     // false = pnuematic is open
 public:
-    Pnuematic(std::uint8_t port, bool enabled);
+    Pnuematic(pros::adi::Pneumatics *piston);
     void open();
     void close();
     void toggle();

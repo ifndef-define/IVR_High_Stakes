@@ -1,6 +1,8 @@
 #include "robots/comp-15/chassis.h"
 
-Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros::IMU *imu, pros::ADIEncoder *R_ENC, pros::ADIEncoder *L_ENC, double lkP, double lkI, double lkD, double tkP, double tkI, double tkD){
+// Constructor without PID constants
+Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros::IMU *imu, pros::adi::Encoder *R_ENC, pros::adi::Encoder *L_ENC)
+    : lPID(0, 0, 0, 127), tPID(0, 0, 0, 127) {
     leftDrv = leftDrive;
     rightDrv = rightDrive;
     imuI = imu;
@@ -8,7 +10,10 @@ Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros
     lEnc = L_ENC;
 }
 
-Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros::IMU *imu, pros::ADIEncoder *R_ENC, pros::ADIEncoder *L_ENC, double lkP, double lkI, double lkD, double tkP, double tkI, double tkD) : lPID(lkP, lkI, lkD, 127), tPID(tkP, tkI, tkD, 127) {
+// Constructor with PID constants
+Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros::IMU *imu, pros::adi::Encoder *R_ENC, pros::adi::Encoder *L_ENC,
+                 double lkP, double lkI, double lkD, double tkP, double tkI, double tkD)
+    : lPID(lkP, lkI, lkD, 127), tPID(tkP, tkI, tkD, 127) {
     leftDrv = leftDrive;
     rightDrv = rightDrive;
     imuI = imu;

@@ -1,4 +1,5 @@
-#include "comp-15/intake.h"
+#include "robots/comp-15/intake.h"
+#include "robots/comp-15/arm.h"
 
 Intake::Intake(pros::MotorGroup *intakeMotor)
 {

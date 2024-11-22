@@ -1,4 +1,5 @@
 #include "robots/comp-15/controls.h"
+#include "robots/comp-15/arm.h"
 
 void teleOp(){
     int z, y, L1, L2, R1, R2, buttonA, buttonB, buttonX, buttonY;
