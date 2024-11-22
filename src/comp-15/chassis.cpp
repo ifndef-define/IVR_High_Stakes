@@ -46,6 +46,7 @@ void Chassis::movePID(int lat){
         move(lPID.update(lat, 0));
         pros::delay(15);
     }
+    move(0);
 }
 
 void Chassis::turnPID(int angle){
@@ -54,6 +55,7 @@ void Chassis::turnPID(int angle){
         turn(tPID.update(angle, imuI->get_roll()));
         pros::delay(15);
     }
+    move(0);
 }
 
 void Chassis::moveToPID(int lat, int turn){
@@ -63,4 +65,5 @@ void Chassis::moveToPID(int lat, int turn){
         tank(lPID.update(lat, getPosition()), tPID.update(turn, imuI->get_roll()));
         pros::delay(15);
     }
+    move(0);
 }
