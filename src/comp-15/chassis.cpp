@@ -1,24 +1,24 @@
 #include "comp-15/chassis.h"
 
-Chassis::Chassis(pros::MotorGroup &leftDrive, pros::MotorGroup &rightDrive, pros::IMU &imu, pros::ADIEncoder &R_ENC, pros::ADIEncoder &L_ENC){
-    leftDrv = &leftDrive;
-    rightDrv = &rightDrive;
-    imuI = &imu;
-    rEnc = &R_ENC;
-    lEnc = &L_ENC;
+Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros::IMU *imu, pros::ADIEncoder *R_ENC, pros::ADIEncoder *L_ENC, double lkP, double lkI, double lkD, double tkP, double tkI, double tkD){
+    leftDrv = leftDrive;
+    rightDrv = rightDrive;
+    imuI = imu;
+    rEnc = R_ENC;
+    lEnc = L_ENC;
 }
 
-Chassis::Chassis(pros::MotorGroup &leftDrive, pros::MotorGroup &rightDrive, pros::IMU &imu, pros::ADIEncoder &R_ENC, pros::ADIEncoder &L_ENC, double lkP, double lkI, double lkD, double tkP, double tkI, double tkD) : lPID(lkP, lkI, lkD, 127), tPID(tkP, tkI, tkD, 127) {
-    leftDrv = &leftDrive;
-    rightDrv = &rightDrive;
-    imuI = &imu;
-    rEnc = &R_ENC;
-    lEnc = &L_ENC;
+Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros::IMU *imu, pros::ADIEncoder *R_ENC, pros::ADIEncoder *L_ENC, double lkP, double lkI, double lkD, double tkP, double tkI, double tkD) : lPID(lkP, lkI, lkD, 127), tPID(tkP, tkI, tkD, 127) {
+    leftDrv = leftDrive;
+    rightDrv = rightDrive;
+    imuI = imu;
+    rEnc = R_ENC;
+    lEnc = L_ENC;
 }
 
-void Chassis::setConstants(double kP, double kI, double kD, double outMax, double kP2, double kI2, double kD2, double outMax2){
-    lPID.setConstants(kP, kI, kD, outMax);
-    tPID.setConstants(kP2, kI2, kD2, outMax2);
+void Chassis::setConstants(double lkP, double lkI, double lkD, double outMax, double tkP, double tkI, double tkD, double outMax2){
+    lPID.setConstants(lkP, lkI, lkD, outMax);
+    tPID.setConstants(tkP, tkI, tkD, outMax2);
 }
 
 double Chassis::getPosition(){
