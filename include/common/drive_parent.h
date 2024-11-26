@@ -1,19 +1,38 @@
 #pragma once
 #include "main.h"
 
+// Aliases
 using motor = pros::Motor;
 using ctrler = pros::Controller;
 using motor_g = pros::MotorGroup;
 
 class drive {
     public:
+        /**
+         * @brief Used by driver control to move the robot
+         * 
+         * @param thread If true, will run in a separate thread
+         *  @todo Need to add a way to stop the thread
+         */
         void loop(bool thread=false);
+
+        /**
+         * @brief Pauses the drive loop
+         *  @todo May not be needed
+         */
         void pauseLoop();
+
+
         void moveAtRpm(int rpm);
         void turnAtRpm(int rpm);
-        void stop();
 
-        typedef enum {
+        /**
+         * @brief Stops the drive motors and kills the thread if running
+         */
+        void stop();
+        
+
+        enum drive_mode_e {
             TANK_m = 1,             // Tank Drive
             SINGLE_STICK_ARCADE_R,  // Single Stick Arcade on Right Stick
             SINGLE_STICK_ARCADE_L,  // Single Stick Arcade on Left Stick
@@ -24,13 +43,13 @@ class drive {
             FIELD_CENTRIC_SR,       // Field Centric Drive with Strafe on Right Stick
             FIELD_CENTRIC_SL,       // Field Centric Drive with Strafe on Left Stick
             CUSTOM_m
-        } drive_mode_e;
+        };
 
-        typedef enum {
+        enum drive_config_e {
             TANK_c = 1,
             HOLONOMIC,
             CUSTOM_c
-        } drive_config_e;
+        };
 
     private:
         drive() = default;
@@ -44,8 +63,8 @@ class drive {
         // Drive configuration
         short int drive_motor_count_ = 0;
         short int drive_deadzone_ = 0;
-        double straight_l_scale_ = 0;
-        double straight_r_scale_ = 0;
+        double straight_l_scale_ = 1;
+        double straight_r_scale_ = 1;
         double drive_exponential_scale_ = 0;
         double drive_sin_scale_ = 0;
         int max_rpm_ = 0;
@@ -58,7 +77,7 @@ class drive {
         };
         ctrler_axis_s raw_axis;
         ctrler_axis_s calc_axis;
-        int right, left, strafe, turn, fwd;
+        int right=0, left=0, strafe=0, turn=0, fwd=0;
 
         // Private functions
         /**
@@ -85,7 +104,7 @@ class drive {
          * @param axis Axis value to scale
          * NOTE: Normalization will happen in the function
          */
-        double exponentialScale(double axis);
+        int exponentialScale(int axis);
 
         /**
          * @brief Returns a sin scaled axis value
@@ -93,7 +112,7 @@ class drive {
          * @param axis Axis value to scale
          * NOTE: Normalization will happen in the function
          */
-        double sinScale(double axis);
+        int sinScale(int axis);
 
     friend class drive_builder;
 };
@@ -183,19 +202,33 @@ class drive_builder {
         drive_builder &add_sin_drive_scale(double scale);
 
         /**
+         * @brief Add acceleration limiting
+         * 
+         * @param limitFactor Factor to limit acceleration by
+         * @param ignoredDomain Range to ignore acceleration limiting
+         *  The domain will be [-ignoredDomain, ignoredDomain]
+         */
+        drive_builder &add_acceleration_limiting(double limitFactor, double ignoredDomain);
+
+        /**
          * @brief Set the odom config
          * @todo Need Odom class
          */
         drive_builder &add_odom_config(/** @todo Need Odom class */);
 
         /**
+         * @brief Add uniform holonomic limiting
+         */
+        drive_builder &add_uniform_holomoic_limiting();
+
+        /**
          * @brief Build the drive object
          * 
          * @return Built drive object
          */
-        drive &build();
+        drive *build();
 
     private:
         uint8_t checkSum[2];
-        drive drive_;
+        drive *drive_;
 };
