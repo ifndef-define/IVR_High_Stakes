@@ -6,6 +6,11 @@ using motor = pros::Motor;
 using ctrler = pros::Controller;
 using motor_g = pros::MotorGroup;
 
+/**
+ * Use this macro to enable multithreaded drive looping
+ */
+// #define MULTITHREAD_DRIVE_LOOP
+
 class drive {
     public:
         /**
@@ -14,22 +19,32 @@ class drive {
          * @param thread If true, will run in a separate thread
          *  @todo Need to add a way to stop the thread
          */
-        void loop(bool thread=false);
+        static void loop(bool thread=false);
 
         /**
-         * @brief Pauses the drive loop
-         *  @todo May not be needed
+         * @brief Stops the drive loop if its in thread mode
+         *  To restart, call loop() again
          */
-        void pauseLoop();
+        static void stopLoop();
 
+        /**
+         * @brief Moves the robot at a set RPM. The RPM will be scaled
+         *  to a voltage value and applied to the motors
+         * NOTE: The maxRPM must be set for this to work 
+         */
+        static void moveAtRPM(int rpm);
 
-        void moveAtRpm(int rpm);
-        void turnAtRpm(int rpm);
+        /**
+         * @brief Turns the robot at a set RPM. The RPM will be scaled
+         *  to a voltage value and applied to the motors
+         * NOTE: The maxRPM must be set for this to work 
+         */
+        static void turnAtRPM(int rpm);
 
         /**
          * @brief Stops the drive motors and kills the thread if running
          */
-        void stop();
+        static void stop();
         
 
         enum drive_mode_e {
@@ -54,48 +69,54 @@ class drive {
     private:
         drive() = default;
 
+        static drive *instance_;
+
         // Device pointers
-        ctrler *drive_ctrler_;
-        motor *driveMotors[8];
-        motor_g *left_side_;
-        motor_g *right_side_;
+        static ctrler *drive_ctrler_;
+        static motor *driveMotors[8];
+        static motor_g *left_side_;
+        static motor_g *right_side_;
 
         // Drive configuration
-        short int drive_motor_count_ = 0;
-        short int drive_deadzone_ = 0;
-        double straight_l_scale_ = 1;
-        double straight_r_scale_ = 1;
-        double drive_exponential_scale_ = 0;
-        double drive_sin_scale_ = 0;
-        int max_rpm_ = 0;
-        drive_mode_e drive_mode_;
-        drive_config_e drive_config_;
+        inline static short int drive_motor_count_ = 0;
+        inline static short int drive_deadzone_ = 0;
+        inline static double straight_l_scale_ = 1;
+        inline static double straight_r_scale_ = 1;
+        inline static double drive_exponential_scale_ = 0;
+        inline static double drive_sin_scale_ = 0;
+        inline static int max_rpm_ = 0;
+        static drive_mode_e drive_mode_;
+        static drive_config_e drive_config_;
 
         // Drive control variables
         struct ctrler_axis_s {
             int l_x, l_y, r_x, r_y;
         };
-        ctrler_axis_s raw_axis;
-        ctrler_axis_s calc_axis;
-        int right=0, left=0, strafe=0, turn=0, fwd=0;
+        static ctrler_axis_s raw_axis;
+        static ctrler_axis_s calc_axis;
+        inline static int right=0, left=0, strafe=0, turn=0, fwd=0;
+
+        static pros::Task *drive_task;
+        inline static bool isThread = false;
 
         // Private functions
         /**
          * @brief Drive loop for control for all drive modes.
          * Built to run with or without a thread
          */
-        void driveLoop();
+        static void driveLoop();
 
         /**
          * @brief Updates the controller inputs to match the drive mode
          * and scaling configuration
          */
-        void updateAxis();
+        static void updateAxis();
 
         /**
-         * @brief Returns a normalized axis value [-1, 1] to ease drive scaling
+         * @brief A helper function that returns a normalized axis 
+         *  value [-1, 1] to ease drive scaling calculations
          */
-        double normalizeAxis(double axis);
+        static double normalizeAxis(double axis);
 
         // For Scaling see https://www.desmos.com/calculator/82gzfspsei 
         /**
@@ -104,7 +125,7 @@ class drive {
          * @param axis Axis value to scale
          * NOTE: Normalization will happen in the function
          */
-        int exponentialScale(int axis);
+        static int exponentialScale(int axis);
 
         /**
          * @brief Returns a sin scaled axis value
@@ -112,8 +133,9 @@ class drive {
          * @param axis Axis value to scale
          * NOTE: Normalization will happen in the function
          */
-        int sinScale(int axis);
+        static int sinScale(int axis);
 
+    // Allow drive_builder to access private members
     friend class drive_builder;
 };
 
@@ -201,14 +223,14 @@ class drive_builder {
          */
         drive_builder &add_sin_drive_scale(double scale);
 
-        /**
-         * @brief Add acceleration limiting
-         * 
-         * @param limitFactor Factor to limit acceleration by
-         * @param ignoredDomain Range to ignore acceleration limiting
-         *  The domain will be [-ignoredDomain, ignoredDomain]
-         */
-        drive_builder &add_acceleration_limiting(double limitFactor, double ignoredDomain);
+        // /**
+        //  * @brief Add acceleration limiting
+        //  * 
+        //  * @param limitFactor Factor to limit acceleration by
+        //  * @param ignoredDomain Range to ignore acceleration limiting
+        //  *  The domain will be [-ignoredDomain, ignoredDomain]
+        //  */
+        // drive_builder &add_acceleration_limiting(double limitFactor, double ignoredDomain);
 
         /**
          * @brief Set the odom config
@@ -216,10 +238,10 @@ class drive_builder {
          */
         drive_builder &add_odom_config(/** @todo Need Odom class */);
 
-        /**
-         * @brief Add uniform holonomic limiting
-         */
-        drive_builder &add_uniform_holomoic_limiting();
+        // /**
+        //  * @brief Add uniform holonomic limiting
+        //  */
+        // drive_builder &add_uniform_holomoic_limiting();
 
         /**
          * @brief Build the drive object

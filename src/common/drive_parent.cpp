@@ -1,46 +1,66 @@
 #include "common/drive_parent.h"
 
-void drive::driveLoop() {
-    updateAxis();
+// Static variables //
+drive *drive::instance_;
+motor_g *drive::left_side_;
+motor_g *drive::right_side_;
+drive::drive_mode_e drive::drive_mode_;
+drive::drive_config_e drive::drive_config_;
+drive::ctrler_axis_s drive::raw_axis;
+drive::ctrler_axis_s drive::calc_axis;
+ctrler *drive::drive_ctrler_;
+motor *drive::driveMotors[8];
+pros::Task *drive::drive_task;
 
-    switch (drive_config_) {
-        case drive_config_e::TANK_c:
-            right_side_->move_voltage((int)((right/127.0) * 12000.0));
-            left_side_->move_voltage((int)((left/127.0) * 12000.0));
-            break;
-        case drive_config_e::HOLONOMIC:
-            // Add holonomic drive control
-            /** @todo Will add Post-River Bots */
-            break;
-        case drive_config_e::CUSTOM_c:
-            // Add custom drive control
-            break;
-        default:
-            throw invalid_argument("Error applying drive configuration");
-            break;
-    }
+void drive::driveLoop() {
+    do {
+        updateAxis();
+
+        switch (drive_config_) {
+            case drive_config_e::TANK_c:
+                right_side_->move_voltage((int)((right/127.0) * 12000.0));
+                left_side_->move_voltage((int)((left/127.0) * 12000.0));
+                break;
+            case drive_config_e::HOLONOMIC:
+                // Add holonomic drive control
+                /** @todo Will add Post-River Bots */
+                break;
+            case drive_config_e::CUSTOM_c:
+                // Add custom drive control
+                break;
+            default:
+                throw invalid_argument("Error applying drive configuration");
+                break;
+        }
+    } while (isThread);
 }
 
 void drive::loop(bool thread) {
-    if (thread) {
-        pros::Task inlineDrive{[&] {
-            driveLoop();
-            pros::delay(15);  
-        }};
+    isThread = thread;
+    if (isThread) {
+        if (drive::drive_task == nullptr)
+            drive_task = new pros::Task(driveLoop);
     } else {
-        driveLoop();
+        if (drive::drive_task == nullptr)
+            driveLoop();
     }
 }
 
-void drive::pauseLoop() {
+void drive::stopLoop() {
+    stop();
+
+    if (drive::drive_task != nullptr) {
+        drive::drive_task->remove();
+        drive::drive_task = nullptr;
+        isThread = false;
+    }
+}
+
+void drive::moveAtRPM(int rpm) {
     /** @todo Will add Post-River Bots */
 }
 
-void drive::moveAtRpm(int rpm) {
-    /** @todo Will add Post-River Bots */
-}
-
-void drive::turnAtRpm(int rpm) {
+void drive::turnAtRPM(int rpm) {
     /** @todo Will add Post-River Bots */
 }
 
@@ -98,8 +118,8 @@ void drive::updateAxis() {
                     turn = calc_axis.r_x;
                 }
 
-                right = fwd - turn;
-                left = fwd + turn;
+                right = (straight_r_scale_ * fwd) - turn;
+                left = (straight_l_scale_ * fwd) + turn;
                 break;
             case drive_mode_e::SINGLE_STICK_ARCADE_L:
                 if (drive_exponential_scale_ != 0 && drive_sin_scale_ == 0) {
@@ -113,8 +133,8 @@ void drive::updateAxis() {
                     turn = calc_axis.l_x;
                 }
 
-                right = fwd - turn;
-                left = fwd + turn;
+                right = (straight_r_scale_ * fwd) - turn;
+                left = (straight_l_scale_ * fwd) + turn;
                 break;
             case drive_mode_e::SPLIT_ARCADE_PR:
                 if (drive_exponential_scale_ != 0 && drive_sin_scale_ == 0) {
@@ -128,8 +148,8 @@ void drive::updateAxis() {
                     turn = calc_axis.l_x;
                 }
 
-                right = fwd - turn;
-                left = fwd + turn;
+                right = (straight_r_scale_ * fwd) - turn;
+                left = (straight_l_scale_ * fwd) + turn;
                 break;
             case drive_mode_e::SPLIT_ARCADE_PL:
                 if (drive_exponential_scale_ != 0 && drive_sin_scale_ == 0) {
@@ -143,45 +163,40 @@ void drive::updateAxis() {
                     turn = calc_axis.r_x;
                 }
 
-                right = fwd - turn;
-                left = fwd + turn;
+                right = (straight_r_scale_ * fwd) - turn;
+                left = (straight_l_scale_ * fwd) + turn;
                 break;
             case drive_mode_e::CUSTOM_m:
-                // Add custom drive configuration here
+                // Add custom drive mode for tank drive here
                 break;
             default:
                 throw invalid_argument("Invalid drive mode for tank drive config");
                 break;
         }
-
-        // // Apply straight drive scale
-        // right = right * straight_r_scale_;
-        // left = left * straight_l_scale_; 
+    } else if (drive_config_ == drive_config_e::HOLONOMIC) {
+        switch (drive_mode_) {
+            case drive_mode_e::HOLONOMIC_SR:
+                // Add holonomic drive configuration
+                break;
+            case drive_mode_e::HOLONOMIC_SL:
+                // Add holonomic drive configuration
+                break;
+            case drive_mode_e::FIELD_CENTRIC_SR:
+                // Add field centric drive configuration
+                break;
+            case drive_mode_e::FIELD_CENTRIC_SL:
+                // Add field centric drive configuration
+                break;
+            case drive_mode_e::CUSTOM_m:
+                // Add custom drive configuration here
+                break;
+            default:
+                throw invalid_argument("Invalid drive mode for holonomic drive config");
+                break;
         }
-    // } else if (drive_config_ == drive_config_e::HOLONOMIC) {
-    //     switch (drive_mode_) {
-    //         case drive_mode_e::HOLONOMIC_SR:
-    //             // Add holonomic drive configuration
-    //             break;
-    //         case drive_mode_e::HOLONOMIC_SL:
-    //             // Add holonomic drive configuration
-    //             break;
-    //         case drive_mode_e::FIELD_CENTRIC_SR:
-    //             // Add field centric drive configuration
-    //             break;
-    //         case drive_mode_e::FIELD_CENTRIC_SL:
-    //             // Add field centric drive configuration
-    //             break;
-    //         case drive_mode_e::CUSTOM_m:
-    //             // Add custom drive configuration here
-    //             break;
-    //         default:
-    //             throw invalid_argument("Invalid drive mode for holonomic drive config");
-    //             break;
-    //     }
-    // } else if (drive_config_ == drive_config_e::CUSTOM_c) {
-    //     // Add custom drive configuration
-    // }
+    } else if (drive_config_ == drive_config_e::CUSTOM_c) {
+        // Add custom drive configuration
+    }
 
     lcd::print(0, "Raw Axis: %d %d %d %d", raw_axis.l_x, raw_axis.l_y, raw_axis.r_x, raw_axis.r_y);
     lcd::print(1, "Calc Axis: %d %d %d %d", calc_axis.l_x, calc_axis.l_y, calc_axis.r_x, calc_axis.r_y);
@@ -303,28 +318,33 @@ drive_builder &drive_builder::add_odom_config(/** @todo Need Odom class */) {
 }
 
 drive *drive_builder::build() {
-    // if (checkSum[0] != 0b00001000) {
-    //     throw invalid_argument("Missing required parameters");
-    // }
-    // if (checkSum[1] != 0b00000001 || checkSum[1] != 0b00000010) {
-    //     throw invalid_argument("Multiple drive scale parameters set, only select one");
-    // }
+    if (checkSum[0] != 0b00001000) {
+        throw invalid_argument("Missing required parameters");
+    }
+    if (checkSum[1] != 0b00000001 || checkSum[1] != 0b00000010) {
+        throw invalid_argument("Multiple drive scale parameters set, only select one");
+    }
     
-    // if (drive_.drive_exponential_scale_ != 0) {
-    //     drive_.drive_sin_scale_ = 0;
-    // } else if (drive_.drive_sin_scale_ != 0) {
-    //     drive_.drive_exponential_scale_ = 0;
-    // }
+    if (drive_->drive_exponential_scale_ != 0) {
+        drive_->drive_sin_scale_ = 0;
+    } else if (drive_->drive_sin_scale_ != 0) {
+        drive_->drive_exponential_scale_ = 0;
+    }
 
-    
-
+    /** @todo Need to allow for varying number of drive motors to be correctly assigned to the group */
     // If in tank config, create motor_g objects to ease control of left and right side
-    // if (drive_.drive_config_ == drive::drive_config_e::TANK_c) {
-    //     drive_.left_side_ = new motor_g({drive_.driveMotors[0]->get_port(), drive_.driveMotors[1]->get_port(), 
-    //         drive_.driveMotors[2]->get_port(), drive_.driveMotors[3]->get_port()}, drive_.driveMotors[0]->get_gearing());
-    //     drive_.right_side_ = new motor_g({drive_.driveMotors[4]->get_port(), drive_.driveMotors[5]->get_port(),
-    //         drive_.driveMotors[6]->get_port(), drive_.driveMotors[7]->get_port()}, drive_.driveMotors[4]->get_gearing());
+    // if (drive_->drive_config_ == drive::drive_config_e::TANK_c) {
+    //     drive_->left_side_ = new motor_g({drive_->driveMotors[0]->get_port(), drive_->driveMotors[1]->get_port(), 
+    //         drive_->driveMotors[2]->get_port(), drive_->driveMotors[3]->get_port()}, drive_->driveMotors[0]->get_gearing());
+    //     drive_->right_side_ = new motor_g({drive_->driveMotors[4]->get_port(), drive_->driveMotors[5]->get_port(),
+    //         drive_->driveMotors[6]->get_port(), drive_->driveMotors[7]->get_port()}, drive_->driveMotors[4]->get_gearing());
     // }
+
+    if(drive_->instance_ != nullptr) {
+        throw invalid_argument("Drive object already exists");
+    }
+
+    drive_->instance_ = drive_;
 
     return drive_;
 }

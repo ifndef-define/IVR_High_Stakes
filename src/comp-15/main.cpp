@@ -5,7 +5,7 @@
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
 	pros::lcd::initialize();
-	// pros::lcd::print(0, "Comp 15 Bot");
+	pros::lcd::print(0, "Comp 15 Bot");
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -41,20 +41,24 @@ MotorGroup rightDrive({3, 4, -2, 5}, MotorGears::blue);
 MotorGroup leftDrive({-8, -6, 7, -9}, MotorGears::blue);
 
 
-auto maindrive = drive_builder(master)
+drive *maindrive = drive_builder(master)
 	.with_drive_config(drive::drive_config_e::TANK_c)
 	.with_drive_motors(leftDrive, rightDrive)
 	.with_drive_mode(drive::drive_mode_e::SPLIT_ARCADE_PL)
 	.add_exponetial_drive_scale(1.5)
-	// .add_sin_drive_scale(2)
+	.add_sin_drive_scale(2)
+	.add_straight_drive_scale(0.80,1)
 	.add_ctrler_deadzone(5)
 	.build();
 
 void opcontrol() {
+	// Unknown latency issue, neccessary to delay to prevent crash 
 	delay(100);
-	while (true) {
+	
+	maindrive->loop(true);
 
-		maindrive->loop();
-		delay(15);
+	while (true) {
+		
+		delay(10);
 	}
 }
