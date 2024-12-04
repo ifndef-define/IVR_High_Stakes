@@ -35,7 +35,7 @@ void lemlib::TrackingWheel::reset() {
 
 float lemlib::TrackingWheel::getDistanceTraveled() {
     if (this->encoder != nullptr) {
-        return (float(this->encoder->get_value()) * this->diameter * M_PI / 360) / this->gearRatio;
+        return (float(this->encoder->get_value()) * (360/TICKS_PER_REV) * this->diameter * M_PI / 360) / this->gearRatio;
     } else if (this->rotation != nullptr) {
         return (float(this->rotation->get_position()) * this->diameter * M_PI / 36000) / this->gearRatio;
     } else if (this->motors != nullptr) {

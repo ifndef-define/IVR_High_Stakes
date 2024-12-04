@@ -6,6 +6,7 @@
 #include "pros/rotation.hpp"
 
 namespace lemlib {
+constexpr float TICKS_PER_REV = 8192;
 
 /**
  * @brief A namespace representing the size of omniwheels.
