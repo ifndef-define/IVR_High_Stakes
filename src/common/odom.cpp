@@ -106,8 +106,14 @@ void odom::update() {
     // deltaDisp.theta = deltaEnc.theta;
 
 
-    deltaDisp.x = (DISPLACEMENT_CONSTANT * (deltaEnc.l_x + deltaEnc.r_x) - (RX_ENC_OFFSET - LX_ENC_OFFSET) * deltaEnc.theta) / 2.0;
-    deltaDisp.y = (DISPLACEMENT_CONSTANT * deltaEnc.y - Y_ENC_OFFSET * deltaEnc.theta);
+    // deltaDisp.x = (DISPLACEMENT_CONSTANT * (deltaEnc.l_x + deltaEnc.r_x) - (RX_ENC_OFFSET - LX_ENC_OFFSET) * deltaEnc.theta) / 2.0;
+    // deltaDisp.y = (DISPLACEMENT_CONSTANT * deltaEnc.y - Y_ENC_OFFSET * deltaEnc.theta);
+
+    // double delta_x = E_c * delta_n1 + L1 * delta_theta;
+    // double delta_y = E_c * delta_n3 - L3 * delta_theta;
+
+    deltaDisp.x = (DISPLACEMENT_CONSTANT * deltaEnc.l_x) + (LX_ENC_OFFSET * deltaEnc.theta);
+    deltaDisp.y = (DISPLACEMENT_CONSTANT * deltaEnc.y) - (Y_ENC_OFFSET * deltaEnc.theta);
     deltaDisp.theta = deltaEnc.theta;
     
     // Update the global position of the robot

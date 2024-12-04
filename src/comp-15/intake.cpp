@@ -100,7 +100,7 @@ void Intake::manualControl(){
             isEjecting = false;
         }
     }
-    pullBack(); // arm goes past stage 2 -> pull back intake 
+    // pullBack();
 }
 
 bool Intake::getIsEjecting(){
