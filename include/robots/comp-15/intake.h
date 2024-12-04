@@ -4,18 +4,20 @@
 class Intake
 {
 private:
-    pros::MotorGroup *intake;
-    bool isEjecting;
-    int pauseCounter1;
-    int pauseCounter2;
+    static pros::MotorGroup *intake;
+    static bool isEjecting;
+    inline static bool colorToKeep = 0; //0 for red, 1 for blue
+    static int pauseCounter1;
+    static int pauseCounter2;
 
 public:
     Intake(pros::MotorGroup *intake);
-    void setVoltage(int volt);
-    void setRpm(int rpm);
-    void setRelative(double position, int rpm);
-    void brake();
-    void pullBack();
-    void manualControl();
-    bool getIsEjecting();
+    static void setVoltage(int volt);
+    static void setRpm(int rpm);
+    static void setRelative(double position, int rpm);
+    static void brake();
+    static void pullBack();
+    static void manualControl();
+    static bool getIsEjecting();
+    static void ringTask();
 };

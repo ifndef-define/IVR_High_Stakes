@@ -26,9 +26,13 @@ extern IMU imuRight;
 extern Rotation armRot;
 
 // Odometry
-extern pros::adi::Encoder L_ENC;
-extern pros::adi::Encoder X_ENC;
-extern pros::adi::Encoder R_ENC;
+// extern pros::adi::Encoder L_ENC;
+// extern pros::adi::Encoder X_ENC;
+// extern pros::adi::Encoder R_ENC;
+
+extern pros::adi::Encoder yEnc;
+extern pros::adi::Encoder rxEnc;
+extern pros::adi::Encoder lxEnc;
 
 // Pneumatics //
 extern adi::Pneumatics mogoRush;

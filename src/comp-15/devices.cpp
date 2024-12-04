@@ -42,17 +42,21 @@ Rotation armRot(-21);
 
 //Pneumatics
 adi::Pneumatics mogoRush('F', false);
-adi::Pneumatics clampPiston('G', false);
-adi::Pneumatics doinker('H', false);
+adi::Pneumatics clampPiston('H', false);
+adi::Pneumatics doinker('G', false);
 
 //Odometry
-#define SMART_PORT 16
-pros::adi::Encoder L_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'A', 'B'});
-pros::adi::Encoder X_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'C', 'D'});
-pros::adi::Encoder R_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'E', 'F'});
+// #define SMART_PORT 16
+// pros::adi::Encoder L_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'A', 'B'});
+// pros::adi::Encoder X_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'C', 'D'});
+// pros::adi::Encoder R_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'E', 'F'});
+
+adi::Encoder yEnc(adi::ext_adi_port_tuple_t(16, 3, 4), true);
+adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(16, 5, 6)); // 3 4
+adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(16, 1, 2)); // 5 6
 
 //Chassis
-Chassis joner(&leftDrive, &rightDrive, &imuLeft, &R_ENC, &L_ENC,7,.0,2,
+Chassis joner(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2,
                                                                 .0,.0,.0);
 Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11);
 Intake intake(&intakeMotor);

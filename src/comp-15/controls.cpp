@@ -22,10 +22,10 @@ void teleOp(){
         if(buttonB){
             mogoRush.toggle();
         }
-        if(buttonX){
+        if(buttonY){
             clampPiston.toggle();
         }
-        if(buttonY){
+        if(buttonX){
             doinker.toggle();
         }
 

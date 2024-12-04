@@ -34,6 +34,9 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <queue>
+#include <deque>
+#include <stack>
 ///////////////////////////////////////
 
 /**
