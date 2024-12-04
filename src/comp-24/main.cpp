@@ -1,7 +1,7 @@
 #include "main.h"
 #include "robots/comp-24/devices.h"
 #include "robots/comp-24/controls.h"
-#include "common/pid.h"
+#include "lemlib/api.hpp" // IWYU pragma: keep
 
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
