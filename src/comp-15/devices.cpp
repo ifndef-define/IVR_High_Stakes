@@ -28,22 +28,22 @@ Mogo Mech: G
 Controller ctrl_master(E_CONTROLLER_MASTER);
 
 //Motors
-MotorGroup rightDrive({3, 4, -1, 5}, pros::MotorGears::blue);
-MotorGroup leftDrive({-10, -9, 7, -8}, pros::MotorGears::blue);
-MotorGroup intakeMotor({-13, 17}, pros::MotorGears::green);
-Motor armMotor(-14, pros::MotorGears::red);
+MotorGroup rightDrive({3, 4, -1, 2}, MotorGears::blue);
+MotorGroup leftDrive({-9, -8, 10, -7}, MotorGears::blue);
+MotorGroup intakeMotor({-14, 20}, pros::MotorGears::green);
+Motor armMotor(-11, pros::MotorGears::red);
 
 //Sensors
-Distance intakeDist(18);
-Optical intakeColor(15);
+Distance intakeDist(6);
+Optical intakeColor(5);
 IMU imuLeft(20);
 IMU imuRight(11);
-Rotation armRot(-21);
+Rotation armRot(-17);
 
 //Pneumatics
 adi::Pneumatics mogoRush('F', false);
-adi::Pneumatics clampPiston('H', false);
-adi::Pneumatics doinker('G', false);
+adi::Pneumatics clampPiston('G', false);
+adi::Pneumatics doinker('H', false);
 
 //Odometry
 // #define SMART_PORT 16
@@ -56,7 +56,7 @@ adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(16, 5, 6)); // 3 4
 adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(16, 1, 2)); // 5 6
 
 //Chassis
-Chassis joner(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2,
+Chassis blackBot(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2,
                                                                 .0,.0,.0);
 Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11);
 Intake intake(&intakeMotor);

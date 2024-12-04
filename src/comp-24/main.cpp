@@ -41,15 +41,15 @@ void opcontrol() {
 	// if (odomTask != nullptr)
 	// 	odomTask->suspend();
 
-	odom::init(&rxEnc, &lxEnc, &yEnc, &imuLeft, {0, 0, 0});
+	// odom::init(&rxEnc, &lxEnc, &yEnc, &imuLeft, {0, 0, 0});
 
-	pros::Task odom(odom::start);
-
+	// pros::Task odom(odom::start);
+	pros::Task ringThread(Intake::ringTask);
 
 	teleOp();
 
-	while(1){
+	// while(1){
 		// joner.movePID(24);
-		delay(15);
-	}
+		// delay(15);
+	// }
 }

@@ -33,17 +33,12 @@ void Intake::brake(){
     intake->brake();
 }
 
-void Intake::pullBack()
-{
-    if (arm.getIntakePullBackFlag())
-    {
+void Intake::pullBack(){
+    if (arm.getIntakePullBackFlag()){
         intake->move(-127);
-        if (pauseCounter1 < 7)
-        { // 7*15 = 105ms
+        if (pauseCounter1 < 7){ // 7*15 = 105ms
             pauseCounter1++;
-        }
-        else
-        {
+        } else {
             pauseCounter1 = 0;
             intake->brake();
             arm.setIntakePullBackFlag(false);
@@ -52,55 +47,36 @@ void Intake::pullBack()
 }
 
 void Intake::manualControl(){
+    pullBack(); // arm goes past stage 2 -> pull back intake 
     if (!isEjecting){
-        if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
-        {
-            // sift(1, intakeToggle);
-            if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
-            {
+        if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
+            if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){
                 intake->move(127 / 2);
-            }
-            else
-            {
+            } else {
                 intake->move(127);
             }
-        }
-        else if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
-        {
-            // intakeToggle = false;
-            if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
-            {
+        } else if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
+            if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){
                 intake->move(-127 / 3);
-            }
-            else
-            {
+            } else {
                 intake->move(-127);
             }
-        }
-        else
-        {
+        } else {
             intake->brake();
         }
-    }
-    else
-    {
-        if (arm.getState() <= 1)
-        {
+    } else {
+        if (arm.getState() <= 1){
             arm.setState(0);
         }
         intake->move(-127);
-        if (pauseCounter2 < 10)
-        { // 10*15 = 150ms
+        if (pauseCounter2 < 10){ // 10*15 = 150ms
             pauseCounter2++;
-        }
-        else
-        {
+        } else {
             pauseCounter2 = 0;
             intake->brake();
             isEjecting = false;
         }
     }
-    // pullBack();
 }
 
 bool Intake::getIsEjecting(){

@@ -37,19 +37,19 @@ void autonomous() {
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
+	pros::Task ringThread(Intake::ringTask);
 	// odomTask = new pros::Task(odom::start);
 	// if (odomTask != nullptr)
 	// 	odomTask->suspend();
 
-	odom::init(&rxEnc, &lxEnc, &yEnc, &imuLeft, {0, 0, 0});
+	// odom::init(&rxEnc, &lxEnc, &yEnc, &imuLeft, {0, 0, 0});
 
-	pros::Task odom(odom::start);
-
+	// pros::Task odom(odom::start);
 
 	teleOp();
 
-	while(1){
+	// while(1){
 		// joner.movePID(24);
-		delay(15);
-	}
+		// delay(15);
+	// }
 }

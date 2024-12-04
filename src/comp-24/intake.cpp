@@ -33,17 +33,12 @@ void Intake::brake(){
     intake->brake();
 }
 
-void Intake::pullBack()
-{
-    if (arm.getIntakePullBackFlag())
-    {
+void Intake::pullBack() {
+    if (arm.getIntakePullBackFlag()){
         intake->move(-127);
-        if (pauseCounter1 < 7)
-        { // 7*15 = 105ms
+        if (pauseCounter1 < 7){ // 7*15 = 105ms
             pauseCounter1++;
-        }
-        else
-        {
+        } else {
             pauseCounter1 = 0;
             intake->brake();
             arm.setIntakePullBackFlag(false);
@@ -100,7 +95,7 @@ void Intake::manualControl(){
             isEjecting = false;
         }
     }
-    pullBack(); // arm goes past stage 2 -> pull back intake 
+    pullBack();
 }
 
 bool Intake::getIsEjecting(){

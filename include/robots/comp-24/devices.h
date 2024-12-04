@@ -1,6 +1,6 @@
 #pragma once
-#ifndef COMP_15_DEVICES_H
-#define COMP_15_DEVICES_H
+#ifndef COMP_24_DEVICES_H
+#define COMP_24_DEVICES_H
 
 #include "common/includeList.h"
 #include "robots/comp-24/includeList.h"
