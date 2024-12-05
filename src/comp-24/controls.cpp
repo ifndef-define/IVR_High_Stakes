@@ -20,7 +20,7 @@ void teleOp(){
 		rightDrive.move(y - z);
 
         if(buttonB){
-            mogoRush.toggle();
+            intake.toggleColorSort();
         }
         if(buttonY){
             clampPiston.toggle();
@@ -31,6 +31,11 @@ void teleOp(){
 
         intake.manualControl();
         arm.manualControl();
+
+        // TELEMETRY //
+        lcd::print(2, "X: %f", chassis.getPose().x);
+        lcd::print(3, "Y: %f", chassis.getPose().y);
+        lcd::print(4, "Theta: %f", chassis.getPose().theta);
 
         pros::delay(15);
     }

@@ -4,17 +4,20 @@
 #include "robots/comp-24/auton.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 
+static bool isBlue = 0; // 0 for red, 1 for blue
+
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
 	pros::lcd::initialize();
 	intakeColor.set_led_pwm(100);
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	imuLeft.reset(true);
+	intake.setColorToKeep(isBlue);
 
 	armRot.reset();
-	chassis.calibrate();
+	chassis.calibrate(true);
+	chassis.setPose(0, 0, 0);
 	delay(100);
-	// pros::lcd::print(0, "Comp 15 Bot");
+	// pros::lcd::print(0, "Comp 24 Bot");
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -29,13 +32,11 @@ void competition_initialize() {}
 void autonomous() {
 	// pros::Task odomTask(odom::start);
 	// pros::Task ringThread(Intake::ringTask);
-
+	auton1();
 }
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
-	// pros::Task ringThread(Intake::ringTask);
-
-	// teleOp();
-	auton1(1);
+	pros::Task ringThread(Intake::ringTask);
+	teleOp();
 }

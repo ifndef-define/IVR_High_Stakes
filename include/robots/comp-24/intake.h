@@ -6,9 +6,10 @@ class Intake
 private:
     static pros::MotorGroup *intake;
     static bool isEjecting;
-    inline static bool colorToKeep = 0; //0 for red, 1 for blue
     static int pauseCounter1;
     static int pauseCounter2;
+    inline static bool runColorSort;
+    inline static bool colorToKeep; //0 for red, 1 for blue
 
 public:
     Intake(pros::MotorGroup *intake);
@@ -19,5 +20,7 @@ public:
     static void pullBack();
     static void manualControl();
     static bool getIsEjecting();
+    static void setColorToKeep(bool color);
+    static void toggleColorSort();
     static void ringTask();
 };
