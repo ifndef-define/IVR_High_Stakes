@@ -33,21 +33,13 @@ void Arm::manualControl(){
     if(!intake.getIsEjecting){
         // Move arm to 23000 when L2 is held, return to 0 when released
         if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            armState = 2;
+            armMotor->move(armPID.update(23000, armRot->get_position()));
         } else if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            armState = 1;
+            armMotor->move(armPID.update(1600, armRot->get_position()));
         } else {
-            armState = 0;
-        }
-        armMotor->move(armPID.update(targetPosition[armState], armRot->get_position()));
-    } else {
-        if(armState > 1){
-            armMotor->move(armPID.update(6000, armRot->get_position()));
-        } else {
-            armState = 0;
+            armMotor->move(armPID.update(0, armRot->get_position()));
         }
     }
-
     // Monitor arm position to set intakeArmFlag
     if (!armFlag && armRot->get_position() > 1800) {
         armFlag = true;

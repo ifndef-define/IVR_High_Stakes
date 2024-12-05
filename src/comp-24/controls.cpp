@@ -40,3 +40,15 @@ void teleOp(){
         pros::delay(15);
     }
 }
+
+void debug(){
+    while(1){
+    // TELEMETRY //
+        lcd::print(2, "X: %f", chassis.getPose().x);
+        lcd::print(3, "Y: %f", chassis.getPose().y);
+        lcd::print(4, "Theta: %f", chassis.getPose().theta);
+
+        pros::delay(15);
+    }
+}
+
