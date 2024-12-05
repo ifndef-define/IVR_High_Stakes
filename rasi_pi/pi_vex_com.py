@@ -1,16 +1,16 @@
 ### Original Source Code for Communication ###
-# import serial as ser
-# import time
+import serial as ser
+import time
 
-# v5 = ser.Serial('/dev/ttyACM1', 115200)
+v5 = ser.Serial('/dev/ttyACM1', 115200)
 
-# while True:
-#     if v5.in_waiting > 0:
-#         line = v5.readline().decode('utf-8').rstrip()
-#         print(f"{line}")
+while True:
+    if v5.in_waiting > 0:
+        line = v5.readline().decode('utf-8').rstrip()
+        print(f"{line}")
 
-#     v5.write("Hello from Raspberry Pi\n".encode('utf-8'))
-#     time.sleep(1)
+    v5.write("Hello World\n".encode('utf-8'))
+    time.sleep(1)
 
 # ======================================================= #
 
@@ -35,25 +35,25 @@ List things for this script to do:
     - If the start signal isnt recieved, the recieve/send functions should return an error
 """
 
-import serial as ser
-import time
+# import serial as ser
+# import time
 
-# Baud: 115200 b/s ~ 14.4 KB/s
-v5 = ser.Serial(115200)
-v5.port = '/dev/ttyACM1'
+# # Baud: 115200 b/s ~ 14.4 KB/s
+# v5 = ser.Serial(115200)
+# v5.port = '/dev/ttyACM1'
 
-connected = False
+# connected = False
 
-# Try to open the port, if it fails, loop for up to 30 seconds before giving up
-def openPort():
-    for i in range(30):
-        try:
-            v5.open()
-        except ser.SerialException:
-            time.sleep(1)
+# # Try to open the port, if it fails, loop for up to 30 seconds before giving up
+# def openPort():
+#     for i in range(30):
+#         try:
+#             v5.open()
+#         except ser.SerialException:
+#             time.sleep(1)
 
-    if v5.is_open:
-        connected = True
-        return True
-    return False
+#     if v5.is_open:
+#         connected = True
+#         return True
+#     return False
 
