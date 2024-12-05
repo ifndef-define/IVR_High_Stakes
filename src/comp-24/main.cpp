@@ -10,10 +10,6 @@ void initialize() {
 	intakeColor.set_led_pwm(100);
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	imuLeft.reset(true);
-	// imuRight.reset(true);
-	// rxEnc.reset();
-	// lxEnc.reset();
-	// yEnc.reset();
 
 	armRot.reset();
 	chassis.calibrate();

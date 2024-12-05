@@ -46,28 +46,28 @@ extern Arm arm;
 extern Intake intake;
 
 // LEMLIB Config //
-lemlib::TrackingWheel horizontal;
-lemlib::TrackingWheel vertical;
+extern lemlib::TrackingWheel horizontal;
+extern lemlib::TrackingWheel vertical;
 
 // sensors for odometry
-lemlib::OdomSensors sensors;
+extern lemlib::OdomSensors sensors;
 
 // drivetrain
-lemlib::Drivetrain drivetrain;
+extern lemlib::Drivetrain drivetrain;
 
 // lateral motion controller
-lemlib::ControllerSettings linearController;
+extern lemlib::ControllerSettings linearController;
 
 // angular motion controller
-lemlib::ControllerSettings angularController;
+extern lemlib::ControllerSettings angularController;
 
 // input curve for throttle input during driver control
-lemlib::ExpoDriveCurve throttleCurve;
+extern lemlib::ExpoDriveCurve throttleCurve;
 
 // input curve for steer input during driver control
-lemlib::ExpoDriveCurve steerCurve;
+extern lemlib::ExpoDriveCurve steerCurve;
 
 // create the chassis
-lemlib::Chassis chassis;
+extern lemlib::Chassis chassis;
 
 #endif // COMP_15_DEVICES_H
