@@ -58,7 +58,7 @@ adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(16, 1, 2)); // 5 6
 //Chassis
 // Chassis joner(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2,
 //                                                                 .0,.0,.0);
-Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11);
+Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11, 100);
 Intake intake(&intakeMotor);
 
 // LEMLIB Config

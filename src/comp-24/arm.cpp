@@ -1,6 +1,6 @@
 #include "robots/comp-24/arm.h"
 
-Arm::Arm(pros::Motor *armM, pros::Rotation *armR, double kP, double kI, double kD) : armPID(kP, kI, kD, 127)
+Arm::Arm(pros::Motor *armM, pros::Rotation *armR, double kP, double kI, double kD, double exitRange) : armPID(kP, kI, kD, 127, exitRange)
 {
     armMotor = armM;
     armRot = armR;
@@ -30,16 +30,24 @@ bool Arm::getIntakePullBackFlag()
 }
 
 void Arm::manualControl(){
-    if(!intake.getIsEjecting){
+    // if(!intake.getIsEjecting){
         // Move arm to 23000 when L2 is held, return to 0 when released
         if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            armMotor->move(armPID.update(23000, armRot->get_position()));
+            armState = 2;
         } else if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            armMotor->move(armPID.update(1600, armRot->get_position()));
+            armState = 1;
         } else {
-            armMotor->move(armPID.update(0, armRot->get_position()));
+            armState = 0;
         }
-    }
+        armMotor->move(armPID.update(targetPosition[armState], armRot->get_position()));
+    // } else {
+    //     if(armState > 1){
+    //         armMotor->move(armPID.update(6000, armRot->get_position()));
+    //     } else {
+    //         armState = 0;
+    //     }
+    // }
+
     // Monitor arm position to set intakeArmFlag
     if (!armFlag && armRot->get_position() > 1800) {
         armFlag = true;

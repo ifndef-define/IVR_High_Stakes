@@ -18,8 +18,8 @@ class Chassis {
             pros::adi::Encoder *rEnc, pros::adi::Encoder *lEnc);
     Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros::IMU *imuLeft,
             pros::adi::Encoder *rEnc, pros::adi::Encoder *lEnc,
-            double kp, double ki, double kd, double kpTurn, double kiTurn, double kdTurn);
-    void setConstants(double lkP, double lkI, double lkD, double outMax, double tkP, double tkI, double tkD, double outMax2);
+            double kpLat, double kiLat, double kdLat, double lExitRange, double kpTurn, double kiTurn, double kdTurn, double tExitRange);
+    void setConstants(double lkP, double lkI, double lkD, double outMax, double lExitRange, double tkP, double tkI, double tkD, double outMax2, double tExitRange);
     double getPosition();
     void move(int fwdPwr);
     void turn(int turnPwr);

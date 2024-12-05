@@ -11,34 +11,36 @@ class PID {
             double kI = 0;
             double kD = 0;
             double outMax = 0;
+            double exitRange = 0;
         };
-        PID_consts_s pid_consts_;
+        PID_consts_s consts;
 
         // PID state variables like error, lastError, derivative, integral, etc
         // This struct can be used to store the state of the PID loop so if 
         // edge cases like saturation, etc can be handled by the user
         struct PID_state_s{
-            double error = 0;
-            double lastError = 0;
-            double derivative = 0;
-            double integral = 0;
-            double rawOut = 0;
+            float error = 0;
+            float lastError = 0;
+            float derivative = 0;
+            float integral = 0;
+            float rawOut = 0;
             bool saturated = false;
+            bool reachedTarget = false;
         };
-        PID_state_s pid_state_;
+        PID_state_s state;
 
     public:
         PID () = default;
-        PID (double kP, double kI, double kD, double outMax);
-        PID (PID_consts_s inpConsts, double outMax);
+        PID (double kP, double kI, double kD, double outMax, double exitRange);
+        PID (PID_consts_s inpConsts, double outMax, double exitRange);
 		PID (PID &other); // Copy constructor
 
         // Assignment operator overload for copying PID objects
         PID &operator=(PID & other);
 
 		// A simple runPID method that takes in the target and current value
-        double update(double target, double current);
-        void setConstants(double kP, double kI, double kD, double outMax);
+        float update(double target, double current);
+        void setConstants(double kP, double kI, double kD, double outMax, double exitRange);
         void reset();
 
         // Getters and Setters for PID constants
