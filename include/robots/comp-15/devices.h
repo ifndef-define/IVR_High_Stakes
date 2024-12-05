@@ -5,6 +5,7 @@
 #include "common/includeList.h"
 #include "robots/comp-15/includeList.h"
 #include "robots/comp-15/arm.h"
+#include "lemlib/api.hpp"
 
 class Arm;  // Forward declaration of Arm
 class Chassis;
@@ -43,5 +44,30 @@ extern adi::Pneumatics doinker;
 extern Chassis joner;
 extern Arm arm;
 extern Intake intake;
+
+// LEMLIB Config //
+lemlib::TrackingWheel horizontal;
+lemlib::TrackingWheel vertical;
+
+// sensors for odometry
+lemlib::OdomSensors sensors;
+
+// drivetrain
+lemlib::Drivetrain drivetrain;
+
+// lateral motion controller
+lemlib::ControllerSettings linearController;
+
+// angular motion controller
+lemlib::ControllerSettings angularController;
+
+// input curve for throttle input during driver control
+lemlib::ExpoDriveCurve throttleCurve;
+
+// input curve for steer input during driver control
+lemlib::ExpoDriveCurve steerCurve;
+
+// create the chassis
+lemlib::Chassis chassis;
 
 #endif // COMP_15_DEVICES_H
