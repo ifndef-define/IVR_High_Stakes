@@ -1,6 +1,7 @@
 #include "main.h"
 #include "robots/comp-24/devices.h"
 #include "robots/comp-24/controls.h"
+#include "robots/comp-24/auton.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 
 /* First method to run. Should last only a few seconds max. */
@@ -10,13 +11,13 @@ void initialize() {
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	imuLeft.reset(true);
 	// imuRight.reset(true);
-	rxEnc.reset();
-	lxEnc.reset();
-	yEnc.reset();
-
-	delay(100);
+	// rxEnc.reset();
+	// lxEnc.reset();
+	// yEnc.reset();
 
 	armRot.reset();
+	chassis.calibrate();
+	delay(100);
 	// pros::lcd::print(0, "Comp 15 Bot");
 }
 
@@ -37,19 +38,8 @@ void autonomous() {
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
-	// odomTask = new pros::Task(odom::start);
-	// if (odomTask != nullptr)
-	// 	odomTask->suspend();
+	// pros::Task ringThread(Intake::ringTask);
 
-	// odom::init(&rxEnc, &lxEnc, &yEnc, &imuLeft, {0, 0, 0});
-
-	// pros::Task odom(odom::start);
-	pros::Task ringThread(Intake::ringTask);
-
-	teleOp();
-
-	// while(1){
-		// joner.movePID(24);
-		// delay(15);
-	// }
+	// teleOp();
+	auton1(1);
 }
