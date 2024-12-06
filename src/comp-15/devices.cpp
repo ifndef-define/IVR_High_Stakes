@@ -52,26 +52,28 @@ adi::Pneumatics doinker('H', false);
 // pros::adi::Encoder X_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'C', 'D'});
 // pros::adi::Encoder R_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'E', 'F'});
 
-adi::Encoder yEnc(adi::ext_adi_port_tuple_t(16, 3, 4), true);
-adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(16, 5, 6)); // 3 4
-adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(16, 1, 2)); // 5 6
+adi::Encoder yEnc(adi::ext_adi_port_tuple_t(19, 3, 4), true);
+adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(19, 5, 6)); // 3 4
+adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(19, 1, 2)); // 5 6
 
 //Chassis
-Chassis blackBot(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2,
-                                                                .0,.0,.0);
-Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11);
+Chassis blackBot(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2, 2,
+                                                                .0,.0,.0, 1);
+Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11, 100);
 Intake intake(&intakeMotor);
 
 // LEMLIB Config
-lemlib::TrackingWheel horizontal(&rxEnc, 1.36, -1.25);
-lemlib::TrackingWheel vertical(&yEnc, 1.36, 0.375);
+const float VERT_RATIO = 1;
+const float HORI_RATIO = 1;
+lemlib::TrackingWheel vertical(&lxEnc, 1.36*VERT_RATIO, -1.125);
+lemlib::TrackingWheel horizontal(&yEnc, 1.36*HORI_RATIO, 0.375);
 
 // sensors for odometry
 lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
                             nullptr, // vertical tracking wheel 2, set to nullptr as we don't have a second one
                             &horizontal, // horizontal tracking wheel
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-                            &imuLeft // inertial sensor
+                            &imuRight // inertial sensor
 );
 
 lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
@@ -83,22 +85,22 @@ lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
 );
 
 // lateral motion controller
-lemlib::ControllerSettings linearController(7, // proportional gain (kP)
-                                            0, // integral gain (kI)
-                                            2, // derivative gain (kD)
-                                            3, // anti windup
+lemlib::ControllerSettings linearController(8, // proportional gain (kP)
+                                            0.0005, // integral gain (kI)
+                                            1.4, // derivative gain (kD)
+                                            60, // anti windup
                                             1, // small error range, in inches
                                             100, // small error range timeout, in milliseconds
                                             3, // large error range, in inches
-                                            500, // large error range timeout, in milliseconds
+                                            680, // large error range timeout, in milliseconds
                                             20 // maximum acceleration (slew)
 );
 
-// angular motion controller
-lemlib::ControllerSettings angularController(2, // proportional gain (kP)
-                                             0, // integral gain (kI)
-                                             7, // derivative gain (kD)
-                                             3, // anti windup
+// angular motion controller 2.45, 5.5 ///// 2.7,7
+lemlib::ControllerSettings angularController(2.45, // proportional gain (kP)
+                                             0.006, // integral gain (kI)
+                                             5.5, // derivative gain (kD)
+                                             60, // anti windup
                                              1, // small error range, in degrees
                                              100, // small error range timeout, in milliseconds
                                              3, // large error range, in degrees

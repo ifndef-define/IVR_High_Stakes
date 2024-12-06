@@ -64,9 +64,7 @@ float PID::update(double target, double current) {
     } else {
         state.saturated = false;
     }
-    if(fabs(state.derivative) <= consts.exitRange){
-        state.reachedTarget = true;
-    }
+    state.reachedTarget = fabs(state.derivative) <= consts.exitRange ? true : false;
     return state.rawOut;
 }
 

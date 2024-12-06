@@ -1,8 +1,8 @@
-#include "robots/comp-15/chassis.h"
+#include "robots/comp-24/chassis.h"
 
 // Constructor without PID constants
 Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros::IMU *imu, pros::adi::Encoder *R_ENC, pros::adi::Encoder *L_ENC)
-    : lPID(0, 0, 0, 127), tPID(0, 0, 0, 127) {
+    : lPID(0, 0, 0, 127, 0), tPID(0, 0, 0, 127, 0) {
     leftDrv = leftDrive;
     rightDrv = rightDrive;
     imuI = imu;
@@ -12,8 +12,9 @@ Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros
 
 // Constructor with PID constants
 Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros::IMU *imu, pros::adi::Encoder *R_ENC, pros::adi::Encoder *L_ENC,
-                 double lkP, double lkI, double lkD, double tkP, double tkI, double tkD)
-    : lPID(lkP, lkI, lkD, 127), tPID(tkP, tkI, tkD, 127) {
+                 double lkP, double lkI, double lkD, double lExitRange, 
+                 double tkP, double tkI, double tkD, double tExitRange)
+    : lPID(lkP, lkI, lkD, 127, lExitRange), tPID(tkP, tkI, tkD, 127, tExitRange) {
     leftDrv = leftDrive;
     rightDrv = rightDrive;
     imuI = imu;
@@ -21,9 +22,10 @@ Chassis::Chassis(pros::MotorGroup *leftDrive, pros::MotorGroup *rightDrive, pros
     lEnc = L_ENC;
 }
 
-void Chassis::setConstants(double lkP, double lkI, double lkD, double outMax, double tkP, double tkI, double tkD, double outMax2){
-    lPID.setConstants(lkP, lkI, lkD, outMax);
-    tPID.setConstants(tkP, tkI, tkD, outMax2);
+void Chassis::setConstants(double lkP, double lkI, double lkD, double outMax, double lExitRange, 
+                            double tkP, double tkI, double tkD, double outMax2, double tExitRange){
+    lPID.setConstants(lkP, lkI, lkD, outMax, lExitRange);
+    tPID.setConstants(tkP, tkI, tkD, outMax2, tExitRange);
 }
 
 double Chassis::getPosition(){

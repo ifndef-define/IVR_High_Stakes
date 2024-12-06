@@ -6,34 +6,32 @@ bool Intake::isEjecting;
 int Intake::pauseCounter1;
 int Intake::pauseCounter2;
 
-Intake::Intake(pros::MotorGroup *intakeMotor)
-{
+Intake::Intake(pros::MotorGroup *intakeMotor) {
     intake = intakeMotor;
     isEjecting = false;
     pauseCounter1 = 0;
     pauseCounter2 = 0;
+    runColorSort = 1;
+    colorToKeep = 0;
 }
 
-void Intake::setVoltage(int volt)
-{
+void Intake::setVoltage(int volt) {
     intake->move(volt);
 }
 
-void Intake::setRpm(int rpm)
-{
+void Intake::setRpm(int rpm) {
     intake->move_velocity(rpm);
 }
 
-void Intake::setRelative(double position, int rpm)
-{
+void Intake::setRelative(double position, int rpm) {
     intake->move_relative(position, rpm);
 }
 
-void Intake::brake(){
+void Intake::brake() {
     intake->brake();
 }
 
-void Intake::pullBack(){
+void Intake::pullBack() {
     if (arm.getIntakePullBackFlag()){
         intake->move(-127);
         if (pauseCounter1 < 7){ // 7*15 = 105ms
@@ -47,16 +45,17 @@ void Intake::pullBack(){
 }
 
 void Intake::manualControl(){
-    pullBack(); // arm goes past stage 2 -> pull back intake 
     if (!isEjecting){
         if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
+            // sift(1, intakeToggle);
             if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){
                 intake->move(127 / 2);
             } else {
                 intake->move(127);
             }
-        } else if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
-            if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){
+        } else if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+            // intakeToggle = false;
+            if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
                 intake->move(-127 / 3);
             } else {
                 intake->move(-127);
@@ -65,11 +64,11 @@ void Intake::manualControl(){
             intake->brake();
         }
     } else {
-        if (arm.getState() <= 1){
+        if (arm.getState() <= 1) {
             arm.setState(0);
         }
         intake->move(-127);
-        if (pauseCounter2 < 10){ // 10*15 = 150ms
+        if (pauseCounter2 < 10) { // 10*15 = 150ms
             pauseCounter2++;
         } else {
             pauseCounter2 = 0;
@@ -77,10 +76,19 @@ void Intake::manualControl(){
             isEjecting = false;
         }
     }
+    pullBack();
 }
 
 bool Intake::getIsEjecting(){
     return isEjecting;
+}
+
+void Intake::setColorToKeep(bool cToKeep){
+	colorToKeep = cToKeep;
+}
+
+void Intake::toggleColorSort(){
+    runColorSort = !runColorSort;
 }
 
 void Intake::ringTask() {
@@ -104,47 +112,49 @@ void Intake::ringTask() {
 	delay(1000);
 
 	while(true) {
-		// Detect Ring //
-		static bool colorFlag = false;
-		if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1])
-			detectedRing = BLUE;
-		else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1])
-			detectedRing = RED;
-		else { detectedRing = NONE; }
+        if(runColorSort){
+		    // Detect Ring //
+            static bool colorFlag = false;
+            if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1])
+                detectedRing = BLUE;
+            else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1])
+                detectedRing = RED;
+            else { detectedRing = NONE; }
 
-		if(!waitRingFlag && detectedRing != NONE) {
-			ringQueue1.push(detectedRing);
-			waitRingFlag = true;
-		} else if (detectedRing == NONE) {
-			waitRingFlag = false;
-		}
-		// Sort //
-		static bool ringProcessed = false;
+            if(!waitRingFlag && detectedRing != NONE) {
+                ringQueue1.push(detectedRing);
+                waitRingFlag = true;
+            } else if (detectedRing == NONE) {
+                waitRingFlag = false;
+            }
+            // Sort //
+            static bool ringProcessed = false;
 
-		if (!ringProcessed && intakeDist.get() <= 80) {
-			ringTop = true;
-			ringProcessed = true;
-		} else if (ringProcessed && intakeDist.get() > 80) {
-			ringProcessed = false;
-		}
+            if (!ringProcessed && intakeDist.get() <= 80) {
+                ringTop = true;
+                ringProcessed = true;
+            } else if (ringProcessed && intakeDist.get() > 80) {
+                ringProcessed = false;
+            }
 
-		if (ringTop) {
-			if ((ringQueue1.front() == RED && colorToKeep) || (ringQueue1.front() == BLUE && !colorToKeep)) {
-				delay(60);
-				isEjecting = true;
-			}
-			if (!ringQueue1.empty()) {
-				ringQueue1.pop();
-			}
-			ringTop = false;
-		}		
+            if (ringTop) {
+                if ((ringQueue1.front() == RED && colorToKeep) || (ringQueue1.front() == BLUE && !colorToKeep)) {
+                    delay(60);
+                    isEjecting = true;
+                }
+                if (!ringQueue1.empty()) {
+                    ringQueue1.pop();
+                }
+                ringTop = false;
+            }		
 
-		pros::lcd::print(5, "Hue: %f | Ring: %d", intakeColor.get_hue(), (int)detectedRing);
-		if (!ringQueue1.empty())
-			pros::lcd::print(6, "RQ: 1: %d, 2: %d | RT: %d", (int)ringQueue1.front(), (int)ringQueue1.back(), ringTop);
-		else 
-			pros::lcd::print(6, "RQ: Empty | RT: %d", ringTop);
-		pros::lcd::print(7, "Dist: %d", intakeDist.get());
+            pros::lcd::print(5, "Hue: %f | Ring: %d", intakeColor.get_hue(), (int)detectedRing);
+            if (!ringQueue1.empty())
+                pros::lcd::print(6, "RQ: 1: %d, 2: %d | RT: %d", (int)ringQueue1.front(), (int)ringQueue1.back(), ringTop);
+            else 
+                pros::lcd::print(6, "RQ: Empty | RT: %d", ringTop);
+            pros::lcd::print(7, "Dist: %d", intakeDist.get());
+        }
 		pros::delay(15);
 	}
 }

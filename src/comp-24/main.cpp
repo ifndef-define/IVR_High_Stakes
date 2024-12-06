@@ -1,4 +1,5 @@
 #include "main.h"
+
 #include "robots/comp-24/devices.h"
 #include "robots/comp-24/controls.h"
 #include "robots/comp-24/auton.h"
@@ -15,11 +16,10 @@ void initialize() {
 
 	armRot.reset();
 	chassis.calibrate(true);
-	// chassis.setPose(0, 0, 0);
-	// -58.531, -23.912, 90
-	chassis.setPose(-58.531, -23.912, 270);
+	
+	chassis.setPose(-54, 13, 90);
 	delay(100);
-	// pros::lcd::print(0, "Comp 24 Bot");
+	pros::lcd::print(0, "Comp 24 Bot");
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -40,7 +40,7 @@ void autonomous() {
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
 	pros::Task ringThread(Intake::ringTask);
-	teleOp();
+	// teleOp();
 	// pros::Task telemetry(debug);
-	// auton1();
+	auton1();
 }	

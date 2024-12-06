@@ -1,6 +1,6 @@
 #include "robots/comp-15/arm.h"
 
-Arm::Arm(pros::Motor *armM, pros::Rotation *armR, double kP, double kI, double kD) : armPID(kP, kI, kD, 127)
+Arm::Arm(pros::Motor *armM, pros::Rotation *armR, double kP, double kI, double kD, double exitRange) : armPID(kP, kI, kD, 127, exitRange)
 {
     armMotor = armM;
     armRot = armR;

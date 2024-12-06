@@ -1,1 +1,5 @@
 #include "robots/comp-15/auton.h"
+
+void auton1() {
+    
+};
