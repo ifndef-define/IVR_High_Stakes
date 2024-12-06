@@ -3,7 +3,7 @@
 
 void teleOp(){
     int z, y, L1, L2, R1, R2, buttonA, buttonB, buttonX, buttonY;
-    mogoRush.retract();
+    mogoClamp.retract();
     while(true){
         L1 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
 		L2 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
@@ -21,9 +21,10 @@ void teleOp(){
 		rightDrive.move(y - z);
 
         if(buttonB){
+            intake.toggleColorSort();
         }
         if(buttonY){
-            clampPiston.toggle();
+            mogoClamp.toggle();
         }
         if(buttonX){
             doinker.toggle();
@@ -31,6 +32,16 @@ void teleOp(){
 
         intake.manualControl();
         arm.manualControl();
+        delay(15);
+    }
+}
+
+void debug(){
+    while(1){
+    // TELEMETRY //
+        lcd::print(2, "X: %f", chassis.getPose().x);
+        lcd::print(3, "Y: %f", chassis.getPose().y);
+        lcd::print(4, "Theta: %f", chassis.getPose().theta);
 
         pros::delay(15);
     }

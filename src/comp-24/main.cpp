@@ -11,7 +11,7 @@ static bool isBlue = 0; // 0 for red, 1 for blue
 void initialize() {
 	pros::lcd::initialize();
 	intakeColor.set_led_pwm(100);
-	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 	intake.setColorToKeep(isBlue);
 
 	armRot.reset();
@@ -40,6 +40,7 @@ void autonomous() {
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
 	pros::Task ringThread(Intake::ringTask);
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	// teleOp();
 	// pros::Task telemetry(debug);
 	auton1();

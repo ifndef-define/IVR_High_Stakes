@@ -3,3 +3,4 @@
 #include "robots/comp-15/includeList.h"
 
 void teleOp();
+void debug();

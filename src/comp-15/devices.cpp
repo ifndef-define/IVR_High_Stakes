@@ -42,8 +42,9 @@ IMU imuRight(11);
 Rotation armRot(-17);
 
 //Pneumatics
-adi::Pneumatics mogoRush('F', false);
-adi::Pneumatics clampPiston('G', false);
+adi::Pneumatics mogoRushReach('A', false);
+adi::Pneumatics mogoRushClamp('B', true);
+adi::Pneumatics mogoClamp('G', false);
 adi::Pneumatics doinker('H', false);
 
 //Odometry
@@ -63,8 +64,8 @@ Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11, 100);
 Intake intake(&intakeMotor);
 
 // LEMLIB Config
-const float VERT_RATIO = 1;
-const float HORI_RATIO = 1;
+const float VERT_RATIO = 1.007352941176; //1.33225
+const float HORI_RATIO = 1.01029411765; //1.3485
 lemlib::TrackingWheel vertical(&lxEnc, 1.36*VERT_RATIO, -1.125);
 lemlib::TrackingWheel horizontal(&yEnc, 1.36*HORI_RATIO, 0.375);
 
@@ -78,7 +79,7 @@ lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
 
 lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
                               &rightDrive, // right motor group
-                              11.825, // 11.825 inch track width
+                              11.875, // 11.825 inch track width
                               lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
                               480, // drivetrain rpm is 480
                               2 // horizontal drift is 2. If we had traction wheels, it would have been 8
@@ -92,7 +93,7 @@ lemlib::ControllerSettings linearController(8, // proportional gain (kP)
                                             1, // small error range, in inches
                                             100, // small error range timeout, in milliseconds
                                             3, // large error range, in inches
-                                            680, // large error range timeout, in milliseconds
+                                            500, // large error range timeout, in milliseconds
                                             20 // maximum acceleration (slew)
 );
 

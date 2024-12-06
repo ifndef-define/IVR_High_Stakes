@@ -1,5 +1,5 @@
 #pragma once
-#include "robots/comp-24/devices.h"
+#include "robots/comp-15/devices.h"
 
 class Intake
 {

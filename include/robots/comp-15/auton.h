@@ -1,4 +1,6 @@
 #pragma once
 #include "robots/comp-15/includeList.h"
 
-void auton1();
+void runAuton(bool isBlue);
+void redAuton();
+void blueAuton();
