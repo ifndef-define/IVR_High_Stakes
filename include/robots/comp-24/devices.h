@@ -36,8 +36,9 @@ extern pros::adi::Encoder rxEnc;
 extern pros::adi::Encoder lxEnc;
 
 // Pneumatics //
-extern adi::Pneumatics mogoRush;
-extern adi::Pneumatics clampPiston;
+extern adi::Pneumatics mogoRushReach;
+extern adi::Pneumatics mogoRushClamp;
+extern adi::Pneumatics mogoClamp;
 extern adi::Pneumatics doinker;
 
 // Subsystems //

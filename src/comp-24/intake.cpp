@@ -13,6 +13,7 @@ Intake::Intake(pros::MotorGroup *intakeMotor) {
     pauseCounter2 = 0;
     runColorSort = 1;
     colorToKeep = 0;
+    autonControlFlag = 0;
 }
 
 void Intake::setVoltage(int volt) {
@@ -47,14 +48,13 @@ void Intake::pullBack() {
 void Intake::manualControl(){
     if (!isEjecting){
         if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
-            // sift(1, intakeToggle);
             if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){
                 intake->move(127 / 2);
             } else {
                 intake->move(127);
             }
         } else if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            // intakeToggle = false;
+
             if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
                 intake->move(-127 / 3);
             } else {
@@ -79,6 +79,27 @@ void Intake::manualControl(){
     pullBack();
 }
 
+void Intake::autonControl(int speed){
+    if(autonControlFlag){
+        if (!isEjecting){
+            move(speed);
+        } else {
+            if (arm.getState() <= 1) {
+                arm.setState(0);
+            }
+            intake->move(-127);
+            if (pauseCounter2 < 10) { // 10*15 = 150ms
+                pauseCounter2++;
+            } else {
+                pauseCounter2 = 0;
+                intake->brake();
+                isEjecting = false;
+            }
+        }
+    }
+    pullBack();
+}
+
 bool Intake::getIsEjecting(){
     return isEjecting;
 }
@@ -89,6 +110,10 @@ void Intake::setColorToKeep(bool cToKeep){
 
 void Intake::toggleColorSort(){
     runColorSort = !runColorSort;
+}
+
+void Intake::setAutonControlFlag(bool flag){
+    autonControlFlag = flag;
 }
 
 void Intake::ringTask() {
@@ -148,12 +173,15 @@ void Intake::ringTask() {
                 ringTop = false;
             }		
 
+            autonControl(127);
+
             pros::lcd::print(5, "Hue: %f | Ring: %d", intakeColor.get_hue(), (int)detectedRing);
             if (!ringQueue1.empty())
                 pros::lcd::print(6, "RQ: 1: %d, 2: %d | RT: %d", (int)ringQueue1.front(), (int)ringQueue1.back(), ringTop);
             else 
                 pros::lcd::print(6, "RQ: Empty | RT: %d", ringTop);
             pros::lcd::print(7, "Dist: %d", intakeDist.get());
+
         }
 		pros::delay(15);
 	}

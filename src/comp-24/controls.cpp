@@ -1,18 +1,22 @@
-#include "robots/comp-15/controls.h"
-#include "robots/comp-15/arm.h"
+#include "robots/comp-24/controls.h"
+#include "robots/comp-24/arm.h"
 
 void teleOp(){
     int z, y, L1, L2, R1, R2, buttonA, buttonB, buttonX, buttonY, buttonUp, buttonDown, buttonLeft, buttonRight;
-    mogoClamp.retract();
+    mogoRushClamp.extend();
+    mogoRushReach.extend();
+    intake.setAutonControlFlag(false);
     while(true){
         L1 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
 		L2 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
         R1 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
 		R2 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+
 		buttonA = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A);
 		buttonB = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B);
 		buttonX = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X);
 		buttonY = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y);
+
         buttonUp = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP);
         buttonDown = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN);
         buttonLeft = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT);

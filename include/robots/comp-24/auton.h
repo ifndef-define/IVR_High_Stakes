@@ -5,4 +5,4 @@
 void runAuton(bool isBlue);
 void redAuton();
 void blueAuton();
-void sift(float dist, int n);
+void sift(float dist, int n, int timeout);

@@ -10,11 +10,11 @@ void runAuton(bool isBlue) {
     }
 };
 
-void sift(float dist, int n){;
+void sift(float dist, int n, int timeout){;
     lemlib::Pose start = chassis.getPose();
     for(int i = 0; i < n; i++){
-        chassis.moveToPose(start.x+dist*std::cos(start.theta), start.y+dist*std::sin(start.theta), start.theta, 1000, {}, 0);
-        chassis.moveToPose(start.x-dist*std::cos(start.theta), start.y-dist*std::sin(start.theta), start.theta, 1000, {.forwards = 0}, 0);
+        chassis.moveToPose(start.x+dist*std::cos(start.theta), start.y+dist*std::sin(start.theta), start.theta, timeout, {}, 0);
+        chassis.moveToPose(start.x-dist*std::cos(start.theta), start.y-dist*std::sin(start.theta), start.theta, timeout, {.forwards = 0}, 0);
     }
 }
 
@@ -31,7 +31,6 @@ void redAuton(){
         }
         delay(15);
     }
-    // chassis.turnToHeading(95, 1000);
     mogoRushClamp.retract();
     chassis.moveToPose(-42.5, 59, 90, 1600, {.forwards = false, 
                                             .maxSpeed = 127, 
@@ -46,7 +45,7 @@ void redAuton(){
         delay(15);
     }
 
-    //chassis.tank(0, 0, 1);
+    chassis.tank(0, 0, 0);
     delay(500);
 
     chassis.turnToHeading(270, 1400,{.direction = lemlib::AngularDirection::CW_CLOCKWISE, 
@@ -64,12 +63,15 @@ void redAuton(){
     delay(250);
 
     chassis.turnToHeading(200, 1000);
-    intake.setVoltage(127);
-    delay(500);
+    delay(100);
+    // intake.setVoltage(127);
+    
+    // delay(500);
+    delay(200);
     //chassis.follow(comp_white_3_txt, 5, 10000);
     chassis.moveToPose(-24, 48, 270, 3000, {.maxSpeed = 127/4});
-    chassis.moveToPose(-48, 48, 270, 3000, {.maxSpeed = 127/4});
-
+    chassis.moveToPose(-46, 48, 270, 3000, {.maxSpeed = 127/4});
+    
 
 };
 
