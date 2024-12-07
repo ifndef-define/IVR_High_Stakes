@@ -7,7 +7,11 @@ namespace lemlib {
 ExpoDriveCurve defaultDriveCurve = ExpoDriveCurve(0, 0, 1);
 
 void Chassis::tank(int left, int right, bool disableDriveCurve) {
-    if (disableDriveCurve) {
+    if(left == 0 && right == 0){
+        drivetrain.leftMotors->brake();
+        drivetrain.rightMotors->brake();
+    
+    } else if (disableDriveCurve) {
         drivetrain.leftMotors->move(left);
         drivetrain.rightMotors->move(right);
     } else {

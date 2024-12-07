@@ -16,7 +16,7 @@ ASSET(comp_white_2_txt);
 void redAuton(){
     chassis.follow(comp_white_1_txt, 15, 1500);
     while(chassis.isInMotion()){
-        if(chassis.getPose().x >= -50){
+        if(chassis.getPose().x >= -45){
             mogoRushReach.extend();
             mogoRushClamp.extend(); // reversed
         }
@@ -24,19 +24,20 @@ void redAuton(){
     }
     // chassis.turnToHeading(95, 1000);
     mogoRushClamp.retract();
-    chassis.moveToPose(-43, 60, 85, 1600, {.forwards = false, 
+    chassis.moveToPose(-41, 59, 95, 1600, {.forwards = false, 
                                             .maxSpeed = 127, 
                                             .minSpeed = 127/1.5});
 
     while(chassis.isInMotion()){
-        if(chassis.getPose().x <= -28){
-            
+        if(chassis.getPose().x <= -32){
+            mogoRushClamp.extend();
+            delay(100);
+            mogoRushReach.retract();
         }
         delay(15);
     }
-    mogoRushClamp.extend();
-    delay(100);
-    mogoRushReach.retract();
+    chassis.tank(0, 0, 1);
+    
     // chassis.turnToHeading(270, 1400);
     // chassis.follow(comp_white_2_txt, 15, 2200, 0);
     // while(chassis.isInMotion()){
