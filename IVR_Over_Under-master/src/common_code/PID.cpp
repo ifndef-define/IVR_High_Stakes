@@ -2,40 +2,40 @@
 
 //Default Constructor with motor min/max (-127, 127)
 PID::PID(double kp, double ki, double kd){
-    pid_consts.kP = kp;
-    pid_consts.kI = ki;
-    pid_consts.kD = kd;
+    consts.kP = kp;
+    consts.kI = ki;
+    consts.kD = kd;
 }
 
 //Custom Constructor with custom min/max values
 PID::PID(double kp, double ki, double kd, double min, double max){
-    pid_consts.kP = kp;
-    pid_consts.kI = ki;
-    pid_consts.kD = kd;
-    pid_consts.OUT_MIN = min;
-    pid_consts.OUT_MAX = max;
+    consts.kP = kp;
+    consts.kI = ki;
+    consts.kD = kd;
+    consts.OUT_MIN = min;
+    consts.OUT_MAX = max;
 }
 
 //Set kP
 void PID::set_kP(double kp){
-    pid_consts.kP = kp;
+    consts.kP = kp;
 }
 
 //Set kI
 void PID::set_kI(double ki){
-    pid_consts.kI = ki;
+    consts.kI = ki;
 }
 
 //Set kD
 void PID::set_kD(double kd){
-    pid_consts.kD = kd;
+    consts.kD = kd;
 }
 
 //Set all constants
 void PID::setConstants(double kp, double ki, double kd){
-    pid_consts.kP = kp;
-    pid_consts.kI = ki;
-    pid_consts.kD = kd;
+    consts.kP = kp;
+    consts.kI = ki;
+    consts.kD = kd;
 }
 
 //Get PID state values
@@ -44,8 +44,8 @@ PID::PID_state_s PID::getState(){
 }
 
 //Get PID constants
-PID::PID_consts_s PID::getConstants(){
-    return pid_consts;
+PID::consts_s PID::getConstants(){
+    return consts;
 }
 
 //Update PID loop
@@ -64,13 +64,13 @@ double PID::updatePID(double target, double current, double tolerance, double er
         //Update derivative and lastError
         pid_state.derivative = pid_state.error - pid_state.lastError;
         pid_state.lastError = pid_state.error; 
-        pid_state.output = pid_consts.kP * pid_state.error + pid_consts.kI * pid_state.integral + pid_consts.kD * pid_state.derivative;
+        pid_state.output = consts.kP * pid_state.error + consts.kI * pid_state.integral + consts.kD * pid_state.derivative;
         //Ensures output doesn't exceed max/min (saturation)
-        if(pid_state.output > pid_consts.OUT_MAX){
-            pid_state.output = pid_consts.OUT_MAX;
+        if(pid_state.output > consts.OUT_MAX){
+            pid_state.output = consts.OUT_MAX;
             pid_state.saturated = true;
-        } else if(pid_state.output < pid_consts.OUT_MIN){
-            pid_state.output = pid_consts.OUT_MIN;
+        } else if(pid_state.output < consts.OUT_MIN){
+            pid_state.output = consts.OUT_MIN;
             pid_state.saturated = true;
         } else {
             pid_state.saturated = false;

@@ -14,12 +14,14 @@ void initialize() {
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	intake.setColorToKeep(isBlue);
 
+	pros::lcd::print(0, "Comp 21 Bot");
 	armRot.reset();
 	chassis.calibrate(true);
 	
 	chassis.setPose(-54, 13, 90);
+	leftDrive.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	rightDrive.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 	delay(100);
-	pros::lcd::print(0, "Comp 24 Bot");
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */

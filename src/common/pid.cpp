@@ -78,3 +78,11 @@ void PID::reset() {
     state.reachedTarget = false;
     ranFirstLoop = false;
 }
+
+PID::PID_consts_s PID::getConstants() {
+    return consts;
+}
+
+PID::PID_state_s PID::getState() {
+    return state;
+}

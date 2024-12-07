@@ -1,32 +1,25 @@
--54, 13, 99.984
--52, 13, 99.984
--50, 13, 99.966
--48, 12.999, 99.944
--46, 12.998, 97.69
--44, 12.996, 95.055
--42, 12.992, 92.344
--40, 12.987, 89.551
--38, 12.98, 86.668
--36, 12.969, 83.686
--34, 12.954, 80.594
--32, 12.934, 77.378
--30, 12.907, 74.023
--28.001, 12.871, 70.508
--26.001, 12.824, 66.809
--24.002, 12.762, 62.892
--22.004, 12.677, 58.714
--20.007, 12.564, 54.216
--18.013, 12.409, 49.309
--16.025, 12.195, 43.857
--14.049, 11.89, 37.623
--12.099, 11.448, 30.127
--10.205, 10.81, 20
--9.5, 10.5, 0
--9.5, 10.5, 0
-8.81, 2.454, 0
+-54, 13, 124.489
+-52, 13.035, 123.797
+-50.001, 13.08, 119.606
+-48.002, 13.136, 115.263
+-46.003, 13.203, 110.75
+-44.004, 13.279, 106.046
+-42.006, 13.36, 101.122
+-40.008, 13.442, 95.946
+-38.009, 13.517, 90.475
+-36.01, 13.57, 84.65
+-34.01, 13.574, 78.395
+-32.012, 13.49, 71.595
+-30.027, 13.252, 64.08
+-28.081, 12.798, 55.561
+-26.212, 12.09, 45.472
+-24.437, 11.169, 32.377
+-22.7, 10.071, 0
+-22.7, 10.071, 0
+-5.798, -0.621, 0
 endData
+255
 127
-100
 200
--54, 13, -23.295, 13, -14.761, 13, -9.5, 10.5
-#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":11.932,"robotHeight":8,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":0.7750015500031,"fieldImage":{"displayName":"VURC 2025 - High Stakes","signature":"VURC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"1CPZj4NMpx","x":-54,"y":13,"lock":true,"visible":true,"heading":90,"__type":"end-point"},{"uid":"2Jc1q40Fvt","x":-23.295,"y":13,"lock":false,"visible":true,"__type":"control"},{"uid":"GWjLvOHKvs","x":-14.761,"y":13,"lock":false,"visible":true,"__type":"control"},{"uid":"iWVUBdhVvA","x":-9.5,"y":10.5,"lock":false,"visible":true,"heading":125,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"EPVjYQkbZ3"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"black_1","uid":"KiAvFpEc9g","lock":false,"visible":true},{"segments":[{"controls":[{"uid":"9JKoMBFqxL","x":-54,"y":13,"lock":false,"visible":true,"heading":90,"__type":"end-point"},{"uid":"pL8INssxbX","x":-43,"y":-7,"lock":false,"visible":true,"heading":150,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"kuhqXlNWTE"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"black_3","uid":"2SGvEpf0F8","lock":true,"visible":false},{"segments":[{"controls":[{"uid":"FYEjtrYqbj","x":-43,"y":-7,"lock":false,"visible":true,"heading":330,"__type":"end-point"},{"uid":"uU92pIVVbq","x":-48.235274266814514,"y":-4.837460149644112,"lock":false,"visible":true,"__type":"control"},{"uid":"OtCJVdkhex","x":-49.22144895379319,"y":-3.9300059119079473,"lock":false,"visible":true,"__type":"control"},{"uid":"Z38baPUr43","x":-54.4567232206077,"y":-1.76746606155206,"lock":false,"visible":true,"heading":0,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"B3k7Z2dL2e"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"black_4","uid":"Bzts66lGk5","lock":true,"visible":false},{"segments":[{"controls":[{"uid":"lepZPWWyyK","x":-43,"y":-7,"lock":false,"visible":true,"heading":329.99999999999994,"__type":"end-point"},{"uid":"gwVaxhFAYK","x":-71.8567838739441,"y":-23.500942421180923,"lock":false,"visible":true,"__type":"control"},{"uid":"Tc0XBTlx3T","x":-34.71909680894939,"y":-39.170852575187126,"lock":false,"visible":true,"__type":"control"},{"uid":"GewvBkSMt8","x":-28.294433645806855,"y":-43.55842741830886,"lock":false,"visible":true,"heading":0,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"URKjmD2Lkm"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"black_6","uid":"WF391enLmi","lock":true,"visible":false}]}
+-54, 13, -33.258, 13.293, -30.221, 15.18, -22.7, 10.071
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":11.932,"robotHeight":8,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":0.7750015500031,"fieldImage":{"displayName":"VURC 2025 - High Stakes","signature":"VURC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"1CPZj4NMpx","x":-54,"y":13,"lock":true,"visible":true,"heading":90,"__type":"end-point"},{"uid":"2Jc1q40Fvt","x":-33.25813091049634,"y":13.293190992421632,"lock":false,"visible":true,"__type":"control"},{"uid":"GWjLvOHKvs","x":-30.220673416235787,"y":15.179641979971027,"lock":false,"visible":true,"__type":"control"},{"uid":"iWVUBdhVvA","x":-22.700157848025075,"y":10.070503888691348,"lock":false,"visible":true,"heading":105.00000076293944,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"EPVjYQkbZ3"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":127},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.048},"maxDecelerationRate":255},"name":"black_1","uid":"KiAvFpEc9g","lock":false,"visible":true},{"segments":[{"controls":[{"uid":"9JKoMBFqxL","x":-54,"y":13,"lock":false,"visible":true,"heading":90,"__type":"end-point"},{"uid":"pL8INssxbX","x":-43,"y":-7,"lock":false,"visible":true,"heading":150,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"kuhqXlNWTE"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"black_3","uid":"2SGvEpf0F8","lock":true,"visible":false},{"segments":[{"controls":[{"uid":"FYEjtrYqbj","x":-43,"y":-7,"lock":false,"visible":true,"heading":330,"__type":"end-point"},{"uid":"uU92pIVVbq","x":-48.235274266814514,"y":-4.837460149644112,"lock":false,"visible":true,"__type":"control"},{"uid":"OtCJVdkhex","x":-49.22144895379319,"y":-3.9300059119079473,"lock":false,"visible":true,"__type":"control"},{"uid":"Z38baPUr43","x":-54.4567232206077,"y":-1.76746606155206,"lock":false,"visible":true,"heading":0,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"B3k7Z2dL2e"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"black_4","uid":"Bzts66lGk5","lock":true,"visible":false},{"segments":[{"controls":[{"uid":"lepZPWWyyK","x":-43,"y":-7,"lock":false,"visible":true,"heading":329.99999999999994,"__type":"end-point"},{"uid":"gwVaxhFAYK","x":-71.8567838739441,"y":-23.500942421180923,"lock":false,"visible":true,"__type":"control"},{"uid":"Tc0XBTlx3T","x":-34.71909680894939,"y":-39.170852575187126,"lock":false,"visible":true,"__type":"control"},{"uid":"GewvBkSMt8","x":-28.294433645806855,"y":-43.55842741830886,"lock":false,"visible":true,"heading":0,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"URKjmD2Lkm"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"black_6","uid":"WF391enLmi","lock":true,"visible":false}]}
