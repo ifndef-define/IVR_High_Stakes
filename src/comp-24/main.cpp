@@ -22,6 +22,7 @@ void initialize() {
 	// delay(200);
 	armRot.reset();
 	// armMotor.brake();
+	pros::Task ringThread(Intake::ringTask);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -33,7 +34,6 @@ void competition_initialize() {}
 /* Autonomous Method */
 void autonomous() {
 	// pros::Task odomTask(odom::start);
-	pros::Task ringThread(Intake::ringTask);
 	pros::Task telemetry(debug);
 	runAuton(isBlue);
 }
@@ -41,7 +41,7 @@ void autonomous() {
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
 	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-	pros::Task ringThread(Intake::ringTask);
+	// pros::Task ringThread(Intake::ringTask);
 	teleOp();
 	// runAuton(isBlue);
 }
