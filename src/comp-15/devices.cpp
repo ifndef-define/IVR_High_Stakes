@@ -37,8 +37,8 @@ Motor armMotor(-11, pros::MotorGears::red);
 //Sensors
 Distance intakeDist(6);
 Optical intakeColor(5);
-IMU imuLeft(20);
-IMU imuRight(11);
+IMU imuLeft(16);
+IMU imuRight(20);
 Rotation armRot(-17);
 
 //Pneumatics
@@ -74,7 +74,7 @@ lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
                             nullptr, // vertical tracking wheel 2, set to nullptr as we don't have a second one
                             &horizontal, // horizontal tracking wheel
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-                            &imuRight // inertial sensor
+                            &imuLeft // inertial sensor
 );
 
 lemlib::Drivetrain drivetrain(&leftDrive, // left motor group

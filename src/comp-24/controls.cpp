@@ -1,8 +1,9 @@
-#include "robots/comp-24/controls.h"
-#include "robots/comp-24/arm.h"
+#include "robots/comp-15/controls.h"
+#include "robots/comp-15/arm.h"
 
 void teleOp(){
-    int z, y, L1, L2, R1, R2, buttonA, buttonB, buttonX, buttonY;
+    int z, y, L1, L2, R1, R2, buttonA, buttonB, buttonX, buttonY, buttonUp, buttonDown, buttonLeft, buttonRight;
+    mogoClamp.retract();
     while(true){
         L1 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
 		L2 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
@@ -12,7 +13,11 @@ void teleOp(){
 		buttonB = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B);
 		buttonX = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X);
 		buttonY = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y);
-		
+        buttonUp = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP);
+        buttonDown = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN);
+        buttonLeft = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT);
+        buttonRight = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT);
+
 		y = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 		z = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)/1.5;
 
@@ -23,7 +28,7 @@ void teleOp(){
             intake.toggleColorSort();
         }
         if(buttonY){
-            clampPiston.toggle();
+            mogoClamp.toggle();
         }
         if(buttonX){
             doinker.toggle();
@@ -31,13 +36,7 @@ void teleOp(){
 
         intake.manualControl();
         arm.manualControl();
-
-        // TELEMETRY //
-        lcd::print(2, "X: %f", chassis.getPose().x);
-        lcd::print(3, "Y: %f", chassis.getPose().y);
-        lcd::print(4, "Theta: %f", chassis.getPose().theta);
-
-        pros::delay(15);
+        delay(15);
     }
 }
 
@@ -51,4 +50,3 @@ void debug(){
         pros::delay(15);
     }
 }
-

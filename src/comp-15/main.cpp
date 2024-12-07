@@ -17,7 +17,7 @@ void initialize() {
 	chassis.calibrate(true);
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 	// chassis.setPose(-50, 30, 270);
-	chassis.setPose(-53, 61, 90); //53.5, 61, 90
+	chassis.setPose(-53.5, 61, 90); //53.5, 61, 90
 
 	// armMotor.move(10);
 	// delay(200);

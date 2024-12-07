@@ -41,8 +41,9 @@ IMU imuRight(11);
 Rotation armRot(-21);
 
 //Pneumatics
-adi::Pneumatics mogoRush('F', false);
-adi::Pneumatics clampPiston('H', false);
+adi::Pneumatics mogoRushReach('F', false);
+adi::Pneumatics mogoRushClamp('C', false);
+adi::Pneumatics mogoClamp('H', false);
 adi::Pneumatics doinker('G', false);
 
 //Odometry

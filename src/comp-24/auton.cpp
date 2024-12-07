@@ -1,23 +1,54 @@
-#include "robots/comp-24/auton.h"
+#include "robots/comp-15/auton.h"
+#include "string.h"
+#include <filesystem>
 
-// ASSET(mogoRushMid_txt);
-ASSET(comp_black_1_txt);
-void auton1() {
-    // while(1){
-    //     lcd::print(0, "X: %f", chassis.getPose().x);
-    //     lcd::print(1, "Y: %f", chassis.getPose().y);
+void runAuton(bool isBlue) {
+    if(isBlue){
+        blueAuton();
+    } else {
+        redAuton();
+    }
+};
+
+//RED ASSETS
+ASSET(comp_white_1_txt);
+ASSET(comp_white_2_txt);
+void redAuton(){
+    chassis.follow(comp_white_1_txt, 15, 1500);
+    while(chassis.isInMotion()){
+        if(chassis.getPose().x >= -50){
+            mogoRushReach.extend();
+            mogoRushClamp.extend(); // reversed
+        }
+        delay(15);
+    }
+    // chassis.turnToHeading(95, 1000);
+    mogoRushClamp.retract();
+    chassis.moveToPose(-43, 60, 85, 1600, {.forwards = false, 
+                                            .maxSpeed = 127, 
+                                            .minSpeed = 127/1.5});
+
+    while(chassis.isInMotion()){
+        if(chassis.getPose().x <= -28){
+            
+        }
+        delay(15);
+    }
+    mogoRushClamp.extend();
+    delay(100);
+    mogoRushReach.retract();
+    // chassis.turnToHeading(270, 1400);
+    // chassis.follow(comp_white_2_txt, 15, 2200, 0);
+    // while(chassis.isInMotion()){
+    //     if(chassis.getPose().y <= 47){
+    //         mogoClamp.extend();
+    //         intake.setVoltage(127);
+    //     }
     //     delay(15);
     // }
-    // chassis.moveToPoint(0,72,100000);
-    // turn to face heading 90 with a very long timeout
-    // chassis.turnToHeading(90, 10000);
-    // chassis.turnToHeading(180, 2000);
-    // chassis.turnToHeading(270, 2000);
-    // chassis.turnToHeading(90, 2000);
-    // chassis.turnToHeading(0, 2000);
-    // chassis.moveToPoint(0, 24*2, 10000);
-    // chassis.moveToPose(0, 48, 0, 10000);
-    chassis.follow(comp_black_1_txt, 15, 4000);
-    // clampPiston.extend();
-    // chassis.moveToPose(-58.531, -23.912, 90, 4000);
-}
+    // intake.setVoltage(0);
+};
+
+void blueAuton(){
+    
+};
