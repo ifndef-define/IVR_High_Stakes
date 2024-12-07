@@ -16,7 +16,7 @@ ASSET(comp_white_2_txt);
 void redAuton(){
     chassis.follow(comp_white_1_txt, 15, 1500);
     while(chassis.isInMotion()){
-        if(chassis.getPose().x >= -45){
+        if(chassis.getPose().x >= -50){
             mogoRushReach.extend();
             mogoRushClamp.extend(); // reversed
         }
@@ -24,7 +24,7 @@ void redAuton(){
     }
     // chassis.turnToHeading(95, 1000);
     mogoRushClamp.retract();
-    chassis.moveToPose(-41, 59, 95, 1600, {.forwards = false, 
+    chassis.moveToPose(-42.5, 61, 90, 1600, {.forwards = false, 
                                             .maxSpeed = 127, 
                                             .minSpeed = 127/1.5});
 
@@ -36,18 +36,27 @@ void redAuton(){
         }
         delay(15);
     }
-    chassis.tank(0, 0, 1);
+
+    //chassis.tank(0, 0, 1);
+    delay(250);
     
-    // chassis.turnToHeading(270, 1400);
-    // chassis.follow(comp_white_2_txt, 15, 2200, 0);
-    // while(chassis.isInMotion()){
-    //     if(chassis.getPose().y <= 47){
-    //         mogoClamp.extend();
-    //         intake.setVoltage(127);
-    //     }
-    //     delay(15);
-    // }
-    // intake.setVoltage(0);
+    chassis.turnToHeading(270, 1400,{.direction = lemlib::AngularDirection::CW_CLOCKWISE, 
+                                    .maxSpeed = 127/2});
+    chassis.moveToPose(-15, 56, 280, 1600, {.forwards = false, 
+                                            .maxSpeed = 127/2, 
+                                            .minSpeed = 127/3});
+    while(chassis.isInMotion()){
+        if(chassis.getPose().x >= -23){
+            mogoClamp.extend();
+            intake.setVoltage(127);
+        }
+        delay(15);
+    }
+
+    delay(500);
+
+    chassis.turnToHeading(200, 1000);
+    //intake.setVoltage(0);
 };
 
 void blueAuton(){
