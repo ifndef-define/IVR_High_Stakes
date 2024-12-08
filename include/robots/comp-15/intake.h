@@ -10,6 +10,7 @@ private:
     static int pauseCounter2;
     inline static bool runColorSort;
     inline static bool colorToKeep; //0 for red, 1 for blue
+    inline static bool autonControlFlag; //run intake in auton
 
 public:
     Intake(pros::MotorGroup *intake);
@@ -19,8 +20,11 @@ public:
     static void brake();
     static void pullBack();
     static void manualControl();
+    static void autonControl(int speed);
     static bool getIsEjecting();
     static void setColorToKeep(bool color);
+    static void setAutonControlFlag(bool flag);
     static void toggleColorSort();
     static void ringTask();
+    static void ringTaskNew();
 };

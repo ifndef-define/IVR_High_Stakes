@@ -32,11 +32,11 @@ Controller ctrl_master(E_CONTROLLER_MASTER);
 MotorGroup rightDrive({3, 4, -1, 2}, MotorGears::blue);
 MotorGroup leftDrive({-9, -8, 10, -7}, MotorGears::blue);
 MotorGroup intakeMotor({-14, 20}, pros::MotorGears::green);
-Motor armMotor(-11, pros::MotorGears::red);
+Motor armMotor(11, pros::MotorGears::red);
 
 //Sensors
-Distance intakeDist(6);
-Optical intakeColor(5);
+// Distance intakeDist(6);
+Optical intakeColor(6);
 IMU imuLeft(16);
 IMU imuRight(20);
 Rotation armRot(-17);
@@ -98,7 +98,7 @@ lemlib::ControllerSettings linearController(8, // proportional gain (kP)
 );
 
 // angular motion controller 2.45, 5.5 ///// 2.7,7
-lemlib::ControllerSettings angularController(2.45, // proportional gain (kP)
+lemlib::ControllerSettings angularController(2.1, // proportional gain (kP)
                                              0.006, // integral gain (kI)
                                              5.5, // derivative gain (kD)
                                              60, // anti windup
