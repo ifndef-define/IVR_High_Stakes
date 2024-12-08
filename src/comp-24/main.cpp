@@ -11,16 +11,11 @@ void initialize() {
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	intake.setColorToKeep(isBlue);
 
-	pros::lcd::print(0, "Comp 15 Bot");
 	chassis.calibrate(true);
-	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
-	// chassis.setPose(-50, 30, 270);
-	chassis.setPose(-53.5, 61, 90); //53.5, 61, 90
+	chassis.setPose(-53.5, 61, 90);
 
-	// armMotor.move(10);
-	//  delay(200);
-	// armRot.reset();
-	// armMotor.brake();
+	pros::lcd::print(0, "Comp 15 Bot");
+	pros::Task telemetry(debug);
 	pros::Task ringThread(Intake::ringTask);
 }
 
@@ -32,13 +27,12 @@ void competition_initialize() {}
 
 /* Autonomous Method */
 void autonomous() {
-	// pros::Task odomTask(odom::start);
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 	runAuton(isBlue);
 }
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-	pros::Task telemetry(debug);
 	teleOp();
 }

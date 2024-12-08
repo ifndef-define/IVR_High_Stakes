@@ -34,8 +34,8 @@ MotorGroup intakeMotor({-13, 17}, pros::MotorGears::green);
 Motor armMotor(-14, pros::MotorGears::red);
 
 //Sensors
-Distance intakeDist(18);
-Optical intakeColor(15);
+// Distance intakeDist(18);
+Optical intakeColor(18);
 IMU imuLeft(20);
 IMU imuRight(11);
 Rotation armRot(-21);
@@ -60,7 +60,7 @@ adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(16, 1, 2)); // 5 6
 // Chassis joner(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2,
 //                                                                 .0,.0,.0);
 // Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11, 3);
-Arm arm(&armMotor, &armRot, 2, 0.0, 0, 3);
+Arm arm(&armMotor, &armRot, 6.5, 0,8, 3);
 Intake intake(&intakeMotor);
 
 // LEMLIB Config

@@ -20,7 +20,7 @@ extern MotorGroup intakeMotor;
 extern Motor armMotor;
 
 // Sensors //
-extern Distance intakeDist;
+// extern Distance intakeDist;
 extern Optical intakeColor;
 extern IMU imuLeft;
 extern IMU imuRight;

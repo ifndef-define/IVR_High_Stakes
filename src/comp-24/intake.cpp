@@ -64,9 +64,9 @@ void Intake::manualControl(){
             intake->brake();
         }
     } else {
-        // if (arm.getState() <= 1) {
-        //     arm.setState(0);
-        // }
+        if (arm.getState() <= 1) {
+            arm.setState(0);
+        }
         intake->move(-127);
         if (pauseCounter2 < 10) { // 10*15 = 150ms
             pauseCounter2++;
@@ -82,7 +82,7 @@ void Intake::manualControl(){
 void Intake::autonControl(int speed){
     if(autonControlFlag){
         if (!isEjecting){
-            move(speed);
+            intake->move(speed);
         } else {
             if (arm.getState() <= 1) {
                 arm.setState(0);
@@ -116,78 +116,11 @@ void Intake::setAutonControlFlag(bool flag){
     autonControlFlag = flag;
 }
 
-void Intake::ringTask() {
-	typedef enum {
-		NONE,
-		RED,
-		BLUE
-	} RingColor;
-	queue<RingColor> ringQueue1;
-	vector<int> blueRange = {200, 240};
-	vector<int> redRange = {0, 30};
-	RingColor detectedRing = NONE;
-	int tolerance = 10;
-
-	bool ringTop = false;
-	bool waitRingFlag = false;
-	int pos = 0;
-
-	// short int ringFlag = 0b00000000;
-
-	delay(1000);
-
-	while(true) {
-        if(runColorSort){
-		    // Detect Ring //
-            static bool colorFlag = false;
-            if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1])
-                detectedRing = BLUE;
-            else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1])
-                detectedRing = RED;
-            else { detectedRing = NONE; }
-
-            if(!waitRingFlag && detectedRing != NONE) {
-                ringQueue1.push(detectedRing);
-                waitRingFlag = true;
-            } else if (detectedRing == NONE) {
-                waitRingFlag = false;
-            }
-            // Sort //
-            static bool ringProcessed = false;
-
-            if (!ringProcessed && intakeDist.get() <= 80) {
-                ringTop = true;
-                ringProcessed = true;
-            } else if (ringProcessed && intakeDist.get() > 80) {
-                ringProcessed = false;
-            }
-
-            if (ringTop) {
-                if ((ringQueue1.front() == RED && colorToKeep) || (ringQueue1.front() == BLUE && !colorToKeep)) {
-                    delay(60);
-                    isEjecting = true;
-                }
-                if (!ringQueue1.empty()) {
-                    ringQueue1.pop();
-                }
-                ringTop = false;
-            }		
-
-            autonControl(127);
-
-            pros::lcd::print(5, "Hue: %f | Ring: %d", intakeColor.get_hue(), (int)detectedRing);
-            if (!ringQueue1.empty())
-                pros::lcd::print(6, "RQ: 1: %d, 2: %d | RT: %d", (int)ringQueue1.front(), (int)ringQueue1.back(), ringTop);
-            else 
-                pros::lcd::print(6, "RQ: Empty | RT: %d", ringTop);
-            pros::lcd::print(7, "Dist: %d", intakeDist.get());
-
-        }
-		pros::delay(15);
-	}
+bool Intake::getAutonControlFlag(){
+    return autonControlFlag;
 }
 
-void Intake::ringTaskNew() {
+void Intake::ringTask() {
     typedef enum {
 		NONE,
 		RED,
@@ -203,14 +136,83 @@ void Intake::ringTaskNew() {
                 if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { detectedRing = BLUE; }
                 else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]) { detectedRing = RED; }
                 else { detectedRing = NONE; }
-                
                 if((detectedRing == RED && colorToKeep) || (detectedRing == BLUE && !colorToKeep)) { 
-                    delay(60);
+                    // delay(60);
                     isEjecting = true;
                 }
             }
-
             autonControl(127);
         }
     }
 }
+
+// void Intake::ringTask() {
+// 	typedef enum {
+// 		NONE,
+// 		RED,
+// 		BLUE
+// 	} RingColor;
+// 	queue<RingColor> ringQueue1;
+// 	vector<int> blueRange = {200, 240};
+// 	vector<int> redRange = {0, 30};
+// 	RingColor detectedRing = NONE;
+// 	int tolerance = 10;
+
+// 	bool ringTop = false;
+// 	bool waitRingFlag = false;
+// 	int pos = 0;
+
+// 	// short int ringFlag = 0b00000000;
+
+// 	delay(1000);
+
+// 	while(true) {
+//         if(runColorSort){
+// 		    // Detect Ring //
+//             static bool colorFlag = false;
+//             if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1])
+//                 detectedRing = BLUE;
+//             else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1])
+//                 detectedRing = RED;
+//             else { detectedRing = NONE; }
+
+//             if(!waitRingFlag && detectedRing != NONE) {
+//                 ringQueue1.push(detectedRing);
+//                 waitRingFlag = true;
+//             } else if (detectedRing == NONE) {
+//                 waitRingFlag = false;
+//             }
+//             // Sort //
+//             static bool ringProcessed = false;
+
+//             if (!ringProcessed && intakeDist.get() <= 80) {
+//                 ringTop = true;
+//                 ringProcessed = true;
+//             } else if (ringProcessed && intakeDist.get() > 80) {
+//                 ringProcessed = false;
+//             }
+
+//             if (ringTop) {
+//                 if ((ringQueue1.front() == RED && colorToKeep) || (ringQueue1.front() == BLUE && !colorToKeep)) {
+//                     delay(60);
+//                     isEjecting = true;
+//                 }
+//                 if (!ringQueue1.empty()) {
+//                     ringQueue1.pop();
+//                 }
+//                 ringTop = false;
+//             }		
+
+//             autonControl(127);
+
+//             pros::lcd::print(5, "Hue: %f | Ring: %d", intakeColor.get_hue(), (int)detectedRing);
+//             if (!ringQueue1.empty())
+//                 pros::lcd::print(6, "RQ: 1: %d, 2: %d | RT: %d", (int)ringQueue1.front(), (int)ringQueue1.back(), ringTop);
+//             else 
+//                 pros::lcd::print(6, "RQ: Empty | RT: %d", ringTop);
+//             pros::lcd::print(7, "Dist: %d", intakeDist.get());
+
+//         }
+// 		pros::delay(15);
+// 	}
+// }

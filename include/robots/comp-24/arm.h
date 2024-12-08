@@ -7,7 +7,7 @@ private:
     pros::Rotation *armRot;
     int armState;
     // int targetPosition[3] = {0, 1600, 14000};
-    int targetPosition[3] = {1, 16, 140};
+    int targetPosition[3] = {-2, 10, 140};
     bool intakePullBackFlag;
     bool armFlag;
     double armAngle;
@@ -16,10 +16,10 @@ private:
 public:
     Arm(pros::Motor *armM, pros::Rotation *armR, double kP, double kI, double kD, double exitRange);
     void setPosition(int pos);
-    void getAngle();
     double normalizeAngle(double angle);
-    int getState();
+    double getNormalizedAngle();
     void setState(int state);
+    int getState();
     void setIntakePullBackFlag(bool state);
     bool getIntakePullBackFlag();
     void manualControl();

@@ -3,9 +3,10 @@
 
 void teleOp(){
     int z, y, L1, L2, R1, R2, buttonA, buttonB, buttonX, buttonY, buttonUp, buttonDown, buttonLeft, buttonRight;
-    mogoRushClamp.extend();
-    mogoRushReach.extend();
-    intake.setAutonControlFlag(false);
+    bool bruh = true;
+    mogoRushClamp.retract();
+    mogoRushReach.retract();
+    // intake.setAutonControlFlag(false);
     while(true){
         L1 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
 		L2 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
@@ -22,11 +23,12 @@ void teleOp(){
         buttonLeft = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT);
         buttonRight = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT);
 
-		y = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-		z = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)/1.5;
+		// y = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+		// z = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)/1.5;
+        // leftDrive.move(y + z);
+		// rightDrive.move(y - z);
 
-        leftDrive.move(y + z);
-		rightDrive.move(y - z);
+        chassis.arcade(y, z);
 
         if(buttonB){
             intake.toggleColorSort();
@@ -38,7 +40,12 @@ void teleOp(){
             doinker.toggle();
         }
 
-        intake.manualControl();
+        if(buttonUp){
+            bruh = !bruh;
+            intake.setAutonControlFlag(bruh);
+        }
+        
+        // intake.manualControl();
         arm.manualControl();
         delay(15);
     }
@@ -53,8 +60,9 @@ void debug(){
         // lcd::print(1, "Arm: %f", arm.normalizeAngle(armRot.get_position()));
 
         pros::lcd::print(1, "Arm State: %d", arm.getState());
-        pros::lcd::print(2, "Arm Pos: %f", arm.normalizeAngle(armRot.get_position()));
+        pros::lcd::print(2, "Arm Pos: %f", arm.getNormalizedAngle());
         // pros::lcd::print(3, "PID Output: %f", armPID.update(targetPosition[armState], armRot->get_position()));
+        pros::lcd::print(3, "Intake: %s", intake.getAutonControlFlag());
 
         pros::delay(15);
     }
