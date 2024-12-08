@@ -23,8 +23,8 @@ void teleOp(){
         buttonLeft = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT);
         buttonRight = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT);
 
-		// y = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-		// z = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)/1.5;
+		y = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+		z = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)/1.5;
         // leftDrive.move(y + z);
 		// rightDrive.move(y - z);
 
