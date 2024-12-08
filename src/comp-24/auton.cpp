@@ -1,6 +1,4 @@
-#include "robots/comp-15/auton.h"
-#include "string.h"
-#include <filesystem>
+#include "robots/comp-24/auton.h"
 
 void runAuton(bool isBlue) {
     if(isBlue){
@@ -65,12 +63,13 @@ void redAuton(){
     chassis.turnToHeading(200, 1000);
     delay(100);
     // intake.setVoltage(127);
+    intake.setAutonControlFlag(true);
     
     // delay(500);
     delay(200);
     //chassis.follow(comp_white_3_txt, 5, 10000);
-    chassis.moveToPose(-24, 48, 270, 3000, {.maxSpeed = 127/4});
-    chassis.moveToPose(-46, 48, 270, 3000, {.maxSpeed = 127/4});
+    // chassis.moveToPose(-24, 48, 270, 3000, {.maxSpeed = 127/4});
+    // chassis.moveToPose(-46, 48, 270, 3000, {.maxSpeed = 127/4});
     
 
 };

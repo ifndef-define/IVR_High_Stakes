@@ -59,7 +59,8 @@ adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(16, 1, 2)); // 5 6
 //Chassis
 // Chassis joner(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2,
 //                                                                 .0,.0,.0);
-Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11, 100);
+// Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11, 3);
+Arm arm(&armMotor, &armRot, 2, 0.0, 0, 3);
 Intake intake(&intakeMotor);
 
 // LEMLIB Config
@@ -88,11 +89,11 @@ lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
 lemlib::ControllerSettings linearController(8, // proportional gain (kP)
                                             0.0005, // integral gain (kI)
                                             1.4, // derivative gain (kD)
-                                            0, // anti windup
-                                            0, // small error range, in inches
-                                            0, // small error range timeout, in milliseconds
-                                            0, // large error range, in inches
-                                            0, // large error range timeout, in milliseconds
+                                            60, // anti windup
+                                            1, // small error range, in inches
+                                            100, // small error range timeout, in milliseconds
+                                            3, // large error range, in inches
+                                            600, // large error range timeout, in milliseconds
                                             0 // maximum acceleration (slew)
 );
 

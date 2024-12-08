@@ -1,5 +1,4 @@
 #include "main.h"
-#include "robots/comp-24/devices.h"
 #include "robots/comp-24/controls.h"
 #include "robots/comp-24/auton.h"
 
@@ -19,8 +18,8 @@ void initialize() {
 	chassis.setPose(-53.5, 61, 90); //53.5, 61, 90
 
 	// armMotor.move(10);
-	// delay(200);
-	armRot.reset();
+	//  delay(200);
+	// armRot.reset();
 	// armMotor.brake();
 	pros::Task ringThread(Intake::ringTask);
 }
@@ -34,14 +33,12 @@ void competition_initialize() {}
 /* Autonomous Method */
 void autonomous() {
 	// pros::Task odomTask(odom::start);
-	pros::Task telemetry(debug);
 	runAuton(isBlue);
 }
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
-	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-	// pros::Task ringThread(Intake::ringTask);
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+	pros::Task telemetry(debug);
 	teleOp();
-	// runAuton(isBlue);
 }

@@ -26,4 +26,5 @@ public:
     static void setAutonControlFlag(bool flag);
     static void toggleColorSort();
     static void ringTask();
+    static void ringTaskNew();
 };

@@ -47,9 +47,14 @@ void teleOp(){
 void debug(){
     while(1){
     // TELEMETRY //
-        lcd::print(2, "X: %f", chassis.getPose().x);
-        lcd::print(3, "Y: %f", chassis.getPose().y);
-        lcd::print(4, "Theta: %f", chassis.getPose().theta);
+        // lcd::print(2, "X: %f", chassis.getPose().x);
+        // lcd::print(3, "Y: %f", chassis.getPose().y);
+        // lcd::print(4, "Theta: %f", chassis.getPose().theta);
+        // lcd::print(1, "Arm: %f", arm.normalizeAngle(armRot.get_position()));
+
+        pros::lcd::print(1, "Arm State: %d", arm.getState());
+        pros::lcd::print(2, "Arm Pos: %f", arm.normalizeAngle(armRot.get_position()));
+        // pros::lcd::print(3, "PID Output: %f", armPID.update(targetPosition[armState], armRot->get_position()));
 
         pros::delay(15);
     }

@@ -64,9 +64,9 @@ void Intake::manualControl(){
             intake->brake();
         }
     } else {
-        if (arm.getState() <= 1) {
-            arm.setState(0);
-        }
+        // if (arm.getState() <= 1) {
+        //     arm.setState(0);
+        // }
         intake->move(-127);
         if (pauseCounter2 < 10) { // 10*15 = 150ms
             pauseCounter2++;
@@ -87,7 +87,7 @@ void Intake::autonControl(int speed){
             if (arm.getState() <= 1) {
                 arm.setState(0);
             }
-            intake->move(-127);
+            intake->move(-speed);
             if (pauseCounter2 < 10) { // 10*15 = 150ms
                 pauseCounter2++;
             } else {
@@ -185,4 +185,32 @@ void Intake::ringTask() {
         }
 		pros::delay(15);
 	}
+}
+
+void Intake::ringTaskNew() {
+    typedef enum {
+		NONE,
+		RED,
+		BLUE
+	} RingColor;
+	vector<int> blueRange = {200, 240};
+	vector<int> redRange = {0, 30};
+	RingColor detectedRing = NONE;
+
+    while(true) {
+        if(runColorSort){
+            if(intakeColor.get_proximity() > 200) {
+                if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { detectedRing = BLUE; }
+                else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]) { detectedRing = RED; }
+                else { detectedRing = NONE; }
+                
+                if((detectedRing == RED && colorToKeep) || (detectedRing == BLUE && !colorToKeep)) { 
+                    delay(60);
+                    isEjecting = true;
+                }
+            }
+
+            autonControl(127);
+        }
+    }
 }
