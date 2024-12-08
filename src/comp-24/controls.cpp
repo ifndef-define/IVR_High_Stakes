@@ -6,7 +6,7 @@ void teleOp(){
     bool bruh = true;
     mogoRushClamp.retract();
     mogoRushReach.retract();
-    // intake.setAutonControlFlag(false);
+    intake.setAutonControlFlag(false);
     while(true){
         L1 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
 		L2 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
@@ -40,12 +40,12 @@ void teleOp(){
             doinker.toggle();
         }
 
-        if(buttonUp){
-            bruh = !bruh;
-            intake.setAutonControlFlag(bruh);
-        }
+        // if(buttonUp){
+        //     bruh = !bruh;
+        //     intake.setAutonControlFlag(bruh);
+        // }
         
-        // intake.manualControl();
+        intake.manualControl();
         arm.manualControl();
         delay(15);
     }
