@@ -79,10 +79,27 @@ void Intake::manualControl(){
     pullBack();
 }
 
+int avg(std::vector<double> vec){
+    int sum = 0;
+    for (int i = 0; i < vec.size(); i++){
+        sum += vec[i];
+    }
+    return sum / vec.size();
+}
+
 void Intake::autonControl(int speed){
     if(autonControlFlag){
         if (!isEjecting){
             intake->move(speed);
+            // if (avg(intake->get_efficiency_all()) < 0.05) {
+            //     intake->move(-speed);
+            //     delay(300);
+            //     intake->move(speed);
+            //     delay(300);
+            //     intake->move(-speed);
+            //     delay(300);
+            //     intake->move(speed);
+            // }
         } else {
             if (arm.getState() <= 1) {
                 arm.setState(0);
@@ -129,7 +146,7 @@ void Intake::ringTask() {
 		RED,
 		BLUE
 	} RingColor;
-	vector<int> blueRange = {130, 240};
+	vector<int> blueRange = {110, 240};
 	vector<int> redRange = {0, 30};
 	RingColor detectedRing = NONE;
 

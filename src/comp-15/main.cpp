@@ -49,10 +49,10 @@ void opcontrol() {
 	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	pros::Task ringThread(Intake::ringTask);
 	// pros::Task telemetry(debug);
-	// teleOp();
+	runAuton(isBlue);
 	// intake.setAutonControlFlag(true);
+	teleOp();
 	// while(1)
 	// 	delay(1000);
 	// mogoRushReach.extend();
-	runAuton(isBlue);
 }
