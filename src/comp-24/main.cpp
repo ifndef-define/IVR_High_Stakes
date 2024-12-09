@@ -14,8 +14,8 @@ void initialize() {
 	chassis.calibrate(true);
 	chassis.setPose(-53.5, 61, 90);
 
-	pros::lcd::print(0, "Comp 15 Bot");
-	pros::Task telemetry(debug);
+	pros::lcd::print(0, "Comp 24 Bot");
+	// pros::Task telemetry(debug);
 	pros::Task ringThread(Intake::ringTask);
 }
 

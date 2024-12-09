@@ -1,10 +1,13 @@
 #include "robots/comp-24/intake.h"
 #include "robots/comp-24/arm.h"
 
-pros::MotorGroup *Intake::intake;
-bool Intake::isEjecting;
-int Intake::pauseCounter1;
-int Intake::pauseCounter2;
+pros::MotorGroup* Intake::intake = nullptr;
+bool Intake::isEjecting = false;
+int Intake::pauseCounter1 = 0;
+int Intake::pauseCounter2 = 0;
+bool Intake::runColorSort = false;
+bool Intake::colorToKeep = false; // 0 for red, 1 for blue
+bool Intake::autonControlFlag = false; // Run intake in autonomous
 
 Intake::Intake(pros::MotorGroup *intakeMotor) {
     intake = intakeMotor;
@@ -126,7 +129,7 @@ void Intake::ringTask() {
 		RED,
 		BLUE
 	} RingColor;
-	vector<int> blueRange = {200, 240};
+	vector<int> blueRange = {130, 240};
 	vector<int> redRange = {0, 30};
 	RingColor detectedRing = NONE;
 
@@ -137,7 +140,7 @@ void Intake::ringTask() {
                 else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]) { detectedRing = RED; }
                 else { detectedRing = NONE; }
                 if((detectedRing == RED && colorToKeep) || (detectedRing == BLUE && !colorToKeep)) { 
-                    // delay(60);
+                    delay(60);
                     isEjecting = true;
                 }
             }
@@ -145,7 +148,6 @@ void Intake::ringTask() {
         }
     }
 }
-
 // void Intake::ringTask() {
 // 	typedef enum {
 // 		NONE,
@@ -214,5 +216,5 @@ void Intake::ringTask() {
 
 //         }
 // 		pros::delay(15);
-// 	}
+// 	 }
 // }

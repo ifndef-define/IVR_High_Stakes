@@ -48,33 +48,30 @@ double Arm::getNormalizedAngle(){
 }
 
 void Arm::manualControl(){
-    // if(!intake.getIsEjecting){
-        // Move arm to 23000 when L2 is held, return to 0 when released
-        if(!ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-            if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-                armState = 2;
-            } else if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-                armState = 1;
-            } else {
-                armState = 0;
-            }
-            armMotor->move(armPID.update(targetPosition[armState], 
-                            normalizeAngle(armRot->get_position())));
+    // Move arm to 23000 when L2 is held, return to 0 when released
+    if(!ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+        if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+            armState = 2;
+        } else if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+            armState = 1;
         } else {
-            if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && normalizeAngle(armRot->get_position()) < targetPosition[2]) {
-                armMotor->move(127);
-            } else if (getNormalizedAngle() > targetPosition[2]+5) {
-                armMotor->move(armPID.update(targetPosition[2], normalizeAngle(armRot->get_position())));
-            } else if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-                armMotor->move(-127);
-            } else {
-                armMotor->move(0);
-            }
-            
+            armState = 0;
         }
+        armMotor->move(armPID.update(targetPosition[armState], getNormalizedAngle()));
+    } else {
+        if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && getNormalizedAngle() < targetPosition[2]-5) {
+            armMotor->move(127);
+        } else if (getNormalizedAngle() > targetPosition[2]+5) {
+            armMotor->move(armPID.update(targetPosition[2], getNormalizedAngle()));
+        } else if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+            armMotor->move(-127);
+        } else {
+            armMotor->move(0);
+        }
+    }
 
     // Monitor arm position to set intakeArmFlag
-    if (!armFlag && armRot->get_position() > 1700) {
+    if (!armFlag && armRot->get_position() > 1800) {
         armFlag = true;
         intakePullBackFlag = true;
     }

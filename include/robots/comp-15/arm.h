@@ -8,7 +8,7 @@ private:
     int armState;
     int lastArmState;
     // int targetPosition[4] = {0, 2000, 11400, 14400};
-    int targetPosition[4] = {-2, 10, 14, 140};
+    int targetPosition[4] = {-1.5, 10, 14, 140};
     bool intakePullBackFlag;
     bool armFlag;
     PID armPID;

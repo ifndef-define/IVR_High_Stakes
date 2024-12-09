@@ -45,6 +45,7 @@ adi::Pneumatics mogoRushReach('F', false);
 adi::Pneumatics mogoRushClamp('C', false);
 adi::Pneumatics mogoClamp('H', false);
 adi::Pneumatics doinker('G', false);
+adi::Pneumatics intakePist('E', false);
 
 //Odometry
 // #define SMART_PORT 16
@@ -60,7 +61,7 @@ adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(16, 1, 2)); // 5 6
 // Chassis joner(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2,
 //                                                                 .0,.0,.0);
 // Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11, 3);
-Arm arm(&armMotor, &armRot, 6.5, 0,8, 3);
+Arm arm(&armMotor, &armRot, 7, 0.07, 12, 3);
 Intake intake(&intakeMotor);
 
 // LEMLIB Config

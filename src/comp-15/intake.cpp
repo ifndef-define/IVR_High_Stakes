@@ -54,7 +54,7 @@ void Intake::manualControl(){
                 intake->move(127);
             }
         } else if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            // intakeToggle = false;
+            // intakeToggle = false;0--[][]
             if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
                 intake->move(-127 / 3);
             } else {

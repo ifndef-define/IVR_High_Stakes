@@ -5,7 +5,7 @@ void teleOp(){
     int z, y, L1, L2, R1, R2, buttonA, buttonB, buttonX, buttonY, buttonUp, buttonDown, buttonLeft, buttonRight;
     bool bruh = true;
     mogoRushClamp.retract();
-    mogoRushReach.retract();
+    // mogoRushReach.retract();
     intake.setAutonControlFlag(false);
     while(true){
         L1 = ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
@@ -24,7 +24,7 @@ void teleOp(){
         buttonRight = ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT);
 
 		y = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-		z = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)/1.5;
+		z = ctrl_master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         // leftDrive.move(y + z);
 		// rightDrive.move(y - z);
 
@@ -39,11 +39,6 @@ void teleOp(){
         if(buttonX){
             doinker.toggle();
         }
-
-        // if(buttonUp){
-        //     bruh = !bruh;
-        //     intake.setAutonControlFlag(bruh);
-        // }
         
         intake.manualControl();
         arm.manualControl();
