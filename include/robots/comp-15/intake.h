@@ -24,7 +24,8 @@ public:
     static bool getIsEjecting();
     static void setColorToKeep(bool color);
     static void setAutonControlFlag(bool flag);
+    static bool getAutonControlFlag();
     static void toggleColorSort();
     static void ringTask();
-    static void ringTaskNew();
+    // static void ringTaskNew();
 };

@@ -40,6 +40,7 @@ extern adi::Pneumatics mogoRushClamp;
 extern adi::Pneumatics mogoRushReach;
 extern adi::Pneumatics mogoClamp;
 extern adi::Pneumatics doinker;
+extern adi::Pneumatics intakeLift;
 
 // Subsystems //
 extern Chassis joner;

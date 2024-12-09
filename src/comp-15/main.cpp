@@ -12,7 +12,8 @@ void initialize() {
 	intakeColor.set_led_pwm(100);
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	intake.setColorToKeep(isBlue);
-	mogoRushClamp.extend();
+	// mogoRushClamp.extend();
+	// intakeLift.extend();
 
 	pros::lcd::print(0, "Comp 15 Bot");
 	chassis.calibrate(true);
@@ -46,9 +47,12 @@ void autonomous() {
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
 	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-	pros::Task ringThread(Intake::ringTaskNew);
+	pros::Task ringThread(Intake::ringTask);
 	// pros::Task telemetry(debug);
 	// teleOp();
-
+	// intake.setAutonControlFlag(true);
+	// while(1)
+	// 	delay(1000);
+	// mogoRushReach.extend();
 	runAuton(isBlue);
 }

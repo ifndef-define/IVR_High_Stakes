@@ -46,6 +46,7 @@ adi::Pneumatics mogoRushReach('A', false);
 adi::Pneumatics mogoRushClamp('B', true);
 adi::Pneumatics mogoClamp('G', false);
 adi::Pneumatics doinker('H', false);
+adi::Pneumatics intakeLift('F', false);
 
 //Odometry
 // #define SMART_PORT 16
@@ -103,7 +104,7 @@ lemlib::ControllerSettings angularController(2.1, // proportional gain (kP)
                                              5.5, // derivative gain (kD)
                                              60, // anti windup
                                              1, // small error range, in degrees
-                                             100, // small error range timeout, in milliseconds
+                                             200, // small error range timeout, in milliseconds
                                              3, // large error range, in degrees
                                              500, // large error range timeout, in milliseconds
                                              0 // maximum acceleration (slew)

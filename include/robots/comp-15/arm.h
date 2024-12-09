@@ -16,10 +16,10 @@ private:
 public:
     Arm(pros::Motor *armM, pros::Rotation *armR, double kP, double kI, double kD, double exitRange);
     void setPosition(int pos);
-    void getAngle();
     double normalizeAngle(double angle);
-    int getState();
+    double getNormalizedAngle();
     void setState(int state);
+    int getState();
     void setIntakePullBackFlag(bool state);
     bool getIntakePullBackFlag();
     void manualControl();

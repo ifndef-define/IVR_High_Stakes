@@ -36,11 +36,15 @@ bool Arm::getIntakePullBackFlag()
  * and 180 degrees. This is useful for calculating the difference between two
  * angles, as it will give the shortest distance between the two angles.
  *
- * @param pos angle to be normalized (centidegrees)
- * @return normalized angle
+ * @param angle angle to be normalized (centidegrees)
+ * @return normalized angle (-180, 180]
  */
 double Arm::normalizeAngle(double angle){
     return (angle/100 - (std::floor((angle/100 + 180.0)/360.0))*360.0);
+}
+
+double Arm::getNormalizedAngle(){
+    return normalizeAngle(armRot->get_position());
 }
 
 void Arm::manualControl(){
@@ -57,17 +61,20 @@ void Arm::manualControl(){
             armMotor->move(armPID.update(targetPosition[armState], 
                             normalizeAngle(armRot->get_position())));
         } else {
-            if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+            if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && normalizeAngle(armRot->get_position()) < targetPosition[2]) {
                 armMotor->move(127);
+            } else if (getNormalizedAngle() > targetPosition[2]+5) {
+                armMotor->move(armPID.update(targetPosition[2], normalizeAngle(armRot->get_position())));
             } else if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
                 armMotor->move(-127);
             } else {
                 armMotor->move(0);
             }
+            
         }
 
     // Monitor arm position to set intakeArmFlag
-    if (!armFlag && armRot->get_position() >= 1600) {
+    if (!armFlag && armRot->get_position() > 1700) {
         armFlag = true;
         intakePullBackFlag = true;
     }
