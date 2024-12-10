@@ -10,7 +10,7 @@ const static bool isBlue = 0; // 0 for red, 1 for blue
 void initialize() {
 	pros::lcd::initialize();
 	intakeColor.set_led_pwm(100);
-	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 	intake.setColorToKeep(isBlue);
 	// mogoRushClamp.extend();
 	// intakeLift.extend();
@@ -49,7 +49,7 @@ void opcontrol() {
 	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	pros::Task ringThread(Intake::ringTask);
 	// pros::Task telemetry(debug);
-	runAuton(isBlue);
+	// runAuton(isBlue);
 	// intake.setAutonControlFlag(true);
 	teleOp();
 	// while(1)

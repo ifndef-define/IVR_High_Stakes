@@ -6,8 +6,9 @@ private:
     pros::Motor *armMotor;
     pros::Rotation *armRot;
     int armState;
+    int lastArmState;
     // int targetPosition[3] = {0, 1600, 14000};
-    int targetPosition[3] = {1, 16, 140};
+    int targetPosition[4] = {0, 18, 26, 140};
     bool intakePullBackFlag;
     bool armFlag;
     double armAngle;
@@ -20,6 +21,8 @@ public:
     double getNormalizedAngle();
     void setState(int state);
     int getState();
+    void incrementArmState();
+    void decrementArmState();
     void setIntakePullBackFlag(bool state);
     bool getIntakePullBackFlag();
     void manualControl();

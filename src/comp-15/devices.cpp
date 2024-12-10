@@ -32,7 +32,7 @@ Controller ctrl_master(E_CONTROLLER_MASTER);
 MotorGroup rightDrive({3, 4, -1, 2}, MotorGears::blue);
 MotorGroup leftDrive({-9, -8, 10, -7}, MotorGears::blue);
 MotorGroup intakeMotor({-14, 20}, pros::MotorGears::green);
-Motor armMotor(11, pros::MotorGears::red);
+Motor armMotor(-11, pros::MotorGears::red);
 
 //Sensors
 // Distance intakeDist(6);
@@ -61,8 +61,8 @@ adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(19, 1, 2)); // 5 6
 //Chassis
 Chassis blackBot(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2, 2,
                                                                 .0,.0,.0, 1);
-Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11, 100);
-Intake intake(&intakeMotor);
+Arm arm(&armMotor, &armRot, 5.5, 0.0001, 15, 3);
+Intake intake(&intakeMotor); 
 
 // LEMLIB Config
 const float VERT_RATIO = 1.007352941176; //1.33225
