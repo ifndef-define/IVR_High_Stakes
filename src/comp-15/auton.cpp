@@ -57,7 +57,7 @@ void redAuton(){
     i_waitUntil(!chassis.isInMotion());
     // about face
     // move to grab second mogo
-    chassis.moveToPose(chassis.getPose().x+1, -54.5, 0, 2200, {.forwards=false, .maxSpeed=127/1.5});
+    chassis.moveToPose(chassis.getPose().x+1, -54.5, 0, 2500, {.forwards=false, .maxSpeed=127/1.5});
     mogoRushClamp.extend();
     // allow mogo to slide into clamp
     while(chassis.isInMotion()){

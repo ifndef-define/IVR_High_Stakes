@@ -25,7 +25,7 @@ void initialize() {
 
 	// armMotor.move(10);
 	// delay(200);
-	armRot.reset();
+	// armRot.reset();
 	// armMotor.brake();
 }
 
@@ -40,14 +40,14 @@ void competition_initialize() {}
 /* Autonmous Method */
 void autonomous() {
 	// pros::Task odomTask(odom::start);
-	// pros::Task ringThread(Intake::ringTask);
-	// runAuton(isBlue);
+	pros::Task ringThread(Intake::ringTask);
+	runAuton(isBlue);
 }
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
 	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-	pros::Task ringThread(Intake::ringTask);
+	// pros::Task ringThread(Intake::ringTask);
 	// pros::Task telemetry(debug);
 	// runAuton(isBlue);
 	// intake.setAutonControlFlag(true);
