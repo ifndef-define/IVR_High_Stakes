@@ -79,3 +79,12 @@ void Arm::manualControl(){
         armFlag = false;
     }
 }
+
+bool Arm::setPosition(int pos){
+    armMotor->move(armPID.update(pos, getNormalizedAngle()));
+    if(armPID.getState().reachedTarget){
+        return true;
+    } else {
+        return false;
+    }
+}
