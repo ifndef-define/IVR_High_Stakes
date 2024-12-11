@@ -90,15 +90,22 @@ void Arm::manualControl(){
     // if(!intake.getIsEjecting){
         // Move arm to 23000 when L2 is held, return to 0 when released
         if(!ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-            if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-                lastArmState = armState;
-                armState = 3;
-            } else if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+            if(ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
+                if (armState != 3) {
+                    lastArmState = armState;
+                    armState = 3;
+                } 
+                else {
+                    // armState = lastArmState;
+                    armState = 0;
+                }
+                armMotor->move(armPID.update(targetPosition[armState], getNormalizedAngle()));
+            } else if(ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
                 incrementArmState();
-            } else {
-                armState = lastArmState;
             }
-            armMotor->move(armPID.update(targetPosition[armState], getNormalizedAngle()));
+            if(armState >= 0){
+                armMotor->move(armPID.update(targetPosition[armState], getNormalizedAngle()));
+            }
         } else {
             if(ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && getNormalizedAngle() < targetPosition[2]) {
                 armMotor->move(127);
@@ -112,7 +119,7 @@ void Arm::manualControl(){
         }
 
     // Monitor arm position to set intakeArmFlag
-    if (!armFlag && armRot->get_position() > 1700) {
+    if (!armFlag && armRot->get_position() > 2000) {
         armFlag = true;
         intakePullBackFlag = true;
     }

@@ -60,7 +60,7 @@ adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(19, 1, 2)); // 5 6
 //Chassis
 Chassis blackBot(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2, 2,
                                                                 .0,.0,.0, 1);
-Arm arm(&armMotor, &armRot, 7, 0,8, 3);
+Arm arm(&armMotor, &armRot, 5.5, 0.0001, 15, 3);
 Intake intake(&intakeMotor);
 
 // LEMLIB Config

@@ -7,8 +7,8 @@ private:
     pros::Rotation *armRot;
     int armState;
     int lastArmState;
-    // int targetPosition[4] = {0, 2000, 11400, 14400};
-    int targetPosition[4] = {-.5, 18, 26, 140};
+    // int targetPosition[3] = {0, 1600, 14000};
+    double targetPosition[4] = {-.5, 18, 26, 140};
     bool intakePullBackFlag;
     bool armFlag;
     PID armPID;
