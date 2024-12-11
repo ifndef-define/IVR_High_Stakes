@@ -8,7 +8,7 @@ const static bool isBlue = 0; // 0 for red, 1 for blue
 void initialize() {
 	pros::lcd::initialize();
 	intakeColor.set_led_pwm(100);
-	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 	intake.setColorToKeep(isBlue);
 
 	chassis.calibrate(true);
@@ -28,6 +28,8 @@ void competition_initialize() {}
 /* Autonomous Method */
 void autonomous() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
+	leftDrive.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE);
+	rightDrive.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE);
 	runAuton(isBlue);
 }
 

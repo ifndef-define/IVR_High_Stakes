@@ -135,7 +135,7 @@ void Intake::ringTask() {
 
     while(true) {
         if(runColorSort){
-            if(intakeColor.get_proximity() > 200) {
+            if(intakeColor.get_proximity() > 180) {
                 if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { detectedRing = BLUE; }
                 else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]) { detectedRing = RED; }
                 else { detectedRing = NONE; }
