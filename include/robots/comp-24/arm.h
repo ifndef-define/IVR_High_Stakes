@@ -6,7 +6,8 @@ private:
     pros::Motor *armMotor;
     pros::Rotation *armRot;
     int armState;
-    int targetPosition[3] = {0, 1600, 14000};
+    // int targetPosition[3] = {0, 1600, 14000};
+    int targetPosition[4] = {-1, 10, 20, 140};
     bool intakePullBackFlag;
     bool armFlag;
     PID armPID;
