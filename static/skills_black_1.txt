@@ -1,0 +1,68 @@
+-17, -52, 48.03
+-18.426, -50.598, 47.835
+-19.702, -49.06, 47.772
+-20.814, -47.4, 47.836
+-21.751, -45.635, 48.01
+-22.507, -43.786, 48.271
+-23.083, -41.871, 48.59
+-23.458, -39.907, 49.301
+-23.667, -37.919, 49.652
+-23.718, -35.921, 49.981
+-23.623, -33.924, 50.28
+-23.39, -31.939, 50.544
+-23.029, -29.972, 50.959
+-22.537, -28.033, 51.108
+-21.936, -26.127, 51.219
+-21.23, -24.256, 51.292
+-20.425, -22.426, 51.327
+-19.524, -20.641, 51.323
+-18.53, -18.906, 51.279
+-17.445, -17.226, 51.193
+-16.266, -15.611, 50.88
+-14.992, -14.069, 50.645
+-13.629, -12.607, 50.35
+-12.177, -11.233, 49.988
+-10.633, -9.962, 49.555
+-8.991, -8.823, 48.457
+-7.253, -7.836, 47.797
+-5.43, -7.016, 47.079
+-3.525, -6.413, 45.613
+-1.558, -6.063, 44.98
+0.437, -5.971, 44.291
+2.419, -6.217, 44.363
+4.346, -6.741, 40.727
+6.285, -7.152, 33.989
+8.187, -7.739, 25.488
+9.717, -8.999, 27.762
+10.637, -10.764, 40.504
+11.09, -12.709, 47.234
+11.29, -14.698, 51.13
+11.358, -16.697, 53.338
+11.356, -18.697, 54.271
+11.325, -20.697, 54.94
+11.287, -22.696, 54.57
+11.258, -24.696, 54.202
+11.249, -26.696, 53.923
+11.268, -28.696, 53.808
+11.323, -30.695, 53.619
+11.416, -32.693, 53.473
+11.551, -34.688, 50.899
+11.382, -36.664, 45.684
+10.795, -38.573, 40.629
+9.841, -40.326, 36.953
+8.479, -41.783, 39.155
+6.822, -42.897, 43.859
+5.014, -43.748, 37.628
+3.137, -44.438, 30.133
+1.229, -45.039, 20
+0.175, -45.35, 0
+0.175, -45.35, 0
+-19.01, -51.001, 0
+endData
+127
+55
+200
+-17, -52, -35.088, -36.01, -12.977, 0.778, 5.131, -7.037
+5.131, -7.037, 14.471, -7.419, 10.087, -18.093, 11.612, -35.438
+11.612, -35.438, 10.659, -41.728, 7.419, -43.253, 0.175, -45.35
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":11.932,"robotHeight":8,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"VURC 2025 - High Stakes (Skills)","signature":"VURC 2025 - High Stakes (Skills)","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"LlCrwKYFRI","x":-17,"y":-52,"lock":false,"visible":true,"heading":310,"__type":"end-point"},{"uid":"kjkjfEY8CC","x":-35.087554724285475,"y":-36.01010885762719,"lock":false,"visible":true,"__type":"control"},{"uid":"upU90N1twp","x":-12.976753181385021,"y":0.7776902611640822,"lock":false,"visible":true,"__type":"control"},{"uid":"08tdTxK49J","x":5.131230840817936,"y":-7.037334422102457,"lock":false,"visible":true,"heading":90,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"B8HJmAL3pG"},{"controls":[{"uid":"08tdTxK49J","x":5.131230840817936,"y":-7.037334422102457,"lock":false,"visible":true,"heading":90,"__type":"end-point"},{"uid":"gOoeqTz2xk","x":14.471138389112092,"y":-7.418555138359361,"lock":false,"visible":true,"__type":"control"},{"uid":"GLGWD5mZnA","x":10.087100152157692,"y":-18.092735193552684,"lock":false,"visible":true,"__type":"control"},{"uid":"QYLXxyFKOk","x":11.61198301718531,"y":-35.43827778324183,"lock":false,"visible":true,"heading":180,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"5odx0EAU6H"},{"controls":[{"uid":"QYLXxyFKOk","x":11.61198301718531,"y":-35.43827778324183,"lock":false,"visible":true,"heading":180,"__type":"end-point"},{"uid":"OvfEN36uTV","x":10.65893122654305,"y":-41.728419601480745,"lock":false,"visible":true,"__type":"control"},{"uid":"rGoJjRB9EL","x":7.418555138359363,"y":-43.253302466508366,"lock":false,"visible":true,"__type":"control"},{"uid":"naMNp69dqf","x":0.175,"y":-45.35,"lock":false,"visible":true,"heading":270,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"tYEFCh8Kza"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":55},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"skills_black_1","uid":"L8GyECSwlD","lock":false,"visible":true}]}

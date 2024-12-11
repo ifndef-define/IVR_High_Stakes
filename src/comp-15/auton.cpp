@@ -191,3 +191,94 @@ void redAuton(){
 void blueAuton(){
     
 };
+
+//SKILLS ASSETS
+ASSET(skills_black_1_txt);
+ASSET(skills_black_2_txt);
+ASSET(skills_black_3_txt);
+ASSET(skills_black_4_txt);
+
+void skillsAuton(){
+    chassis.setPose(-52, 0, 90);
+    intake.setVoltage(-127);
+    delay(250);
+    intake.setVoltage(127);
+    delay(200);
+
+    chassis.moveToPose(-58.5, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
+
+    delay(1500);
+    intake.setVoltage(0);
+
+    chassis.moveToPose(-54, 0, 90, 500);
+    chassis.turnToHeading(300, 1000);
+    chassis.moveToPose(-17, -52, 310, 2800, {.forwards = false, .minSpeed = 45}, false);
+
+    mogoClamp.extend();   
+    delay(400);
+
+    intake.setVoltage(127);
+    chassis.follow(skills_black_1_txt, 15, 7000, true, true);    
+
+    while(chassis.isInMotion()){ 
+        if(chassis.getPose().x >= -1 && chassis.getPose().y >= -15){
+            intake.brake();
+        } else {
+            intake.setVoltage(127);
+        }
+        delay(10);
+    }          
+    i_waitUntil(!chassis.isInMotion());
+    chassis.follow(skills_black_2_txt, 15, 3200, true, false);
+
+    delay(400);
+    chassis.moveToPose(chassis.getPose().x + 7*sqrt(2), chassis.getPose().y + 7*sqrt(2), 225, 2200, {.forwards = false}, false);
+    chassis.turnToHeading(45, 1000, {}, false); 
+    chassis.moveToPose(-67, -67, 45, 1600, {.forwards = false}); 
+    i_waitUntil(!chassis.isInMotion());
+    mogoClamp.retract();
+    intake.setVoltage(0);   
+    i_waitUntil(!chassis.isInMotion());
+    chassis.moveToPose(-50, -51.5, 45, 1000);       
+
+    chassis.turnToHeading(230, 1000, {}, false);   
+    chassis.moveToPose(35, -25, 230, 3000, {.forwards = false, .minSpeed = 55}, false);
+    mogoClamp.extend();   
+    delay(200);
+    chassis.turnToHeading(210, 1000, {}, false);   
+    intake.setAutonControlFlag(true);
+    intake.setVoltage(127);
+
+    chassis.moveToPose(6, -60, 210, 3000, {}, false);
+    delay(500);
+    chassis.turnToHeading(75, 1000, {}, false);  
+    chassis.moveToPose(50, -28, 45, 3000, {}, false);
+    delay(500);
+    chassis.turnToHeading(180, 1000, {}, false);  
+
+    chassis.follow(skills_black_4_txt, 15, 7000, true, false);  
+
+    i_waitUntil(!chassis.isInMotion());
+    delay(400);
+    chassis.moveToPose(chassis.getPose().x - 7*sqrt(2), chassis.getPose().y + 7*sqrt(2), 135, 2200, {.forwards = false}, false);
+    intake.setAutonControlFlag(false);
+    intake.setVoltage(127);
+    chassis.moveToPose(chassis.getPose().x + 7*sqrt(2), chassis.getPose().y - 7*sqrt(2), 135, 2200, {}, false);
+    delay(400);
+    chassis.moveToPose(chassis.getPose().x - 7*sqrt(2), chassis.getPose().y + 7*sqrt(2), 135, 2200, {.forwards = false}, false);
+    chassis.turnToHeading(315, 1000, {}, false);  
+    chassis.moveToPose(67, -67, 315, 1600, {.forwards = false}); 
+    i_waitUntil(!chassis.isInMotion());
+    mogoClamp.retract();    
+    
+    chassis.moveToPose(50, -50, 315, 1600); 
+    i_waitUntil(!chassis.isInMotion());
+    chassis.turnToHeading(135, 1000, {}, false); 
+    chassis.moveToPose(0, 0, 315, 6000, {.forwards = false, .maxSpeed = 70}); 
+    arm.setState(3);
+    while(true)
+    {
+        arm.manualControl();
+        delay(10);
+    }
+};

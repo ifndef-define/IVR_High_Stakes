@@ -42,7 +42,7 @@ void competition_initialize() {}
 void autonomous() {
 	// pros::Task odomTask(odom::start);
 	// pros::Task ringThread(Intake::ringTask);
-	// runAuton(isBlue);
+	skillsAuton();
 }
 
 /* Driver Control. Runs default if not connected to field controler */

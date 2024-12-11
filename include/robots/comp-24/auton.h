@@ -5,3 +5,4 @@
 void runAuton(bool isBlue);
 void redAuton();
 void blueAuton();
+void skillsAuton();
