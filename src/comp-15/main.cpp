@@ -23,6 +23,7 @@ void initialize() {
 	// chassis.setPose(-50, 30, 270);
 	chassis.setPose(-54, 13, 90); //53.5, 61, 90
 
+	pros::Task ringThread(Intake::ringTask);
 	// armMotor.move(10);
 	// delay(200);
 	// armRot.reset();

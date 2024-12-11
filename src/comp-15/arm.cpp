@@ -75,8 +75,10 @@ void Arm::manualControl(){
                 if (armState != 3) {
                     lastArmState = armState;
                     armState = 3;
-                } else {
-                    armState = lastArmState;
+                } 
+                else {
+                    // armState = lastArmState;
+                    armState = 0;
                 }
                 armMotor->move(armPID.update(targetPosition[armState], getNormalizedAngle()));
             } else if(ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
@@ -99,7 +101,7 @@ void Arm::manualControl(){
         }
 
     // Monitor arm position to set intakeArmFlag
-    if (!armFlag && armRot->get_position() > 1700) {
+    if (!armFlag && armRot->get_position() > 2000) {
         armFlag = true;
         intakePullBackFlag = true;
     }
