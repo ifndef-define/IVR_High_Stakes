@@ -1,32 +1,32 @@
 -19.89, 38.568, 56.039
--21.889, 38.607, 54.615
--23.887, 38.712, 53.153
--25.878, 38.898, 51.649
--27.86, 39.161, 50.101
--29.828, 39.516, 48.502
--31.779, 39.955, 46.85
--33.706, 40.489, 45.137
--35.605, 41.117, 43.356
--37.471, 41.836, 41.499
--39.299, 42.645, 39.555
--41.085, 43.546, 37.51
--42.825, 44.531, 35.347
--44.52, 45.593, 33.043
--46.168, 46.725, 30.566
--47.77, 47.922, 27.869
--49.329, 49.175, 24.881
--50.844, 50.48, 21.482
--52.322, 51.828, 17.432
--53.767, 53.211, 12.095
--55.183, 54.623, 6.048
--56.574, 56.06, 0
--57.945, 57.516, 0
+-21.889, 38.61, 54.615
+-23.886, 38.724, 53.153
+-25.875, 38.926, 51.649
+-27.855, 39.213, 50.101
+-29.816, 39.6, 48.503
+-31.758, 40.08, 46.85
+-33.672, 40.658, 45.137
+-35.552, 41.339, 43.356
+-37.395, 42.115, 41.499
+-39.197, 42.982, 39.555
+-40.955, 43.936, 37.511
+-42.667, 44.969, 35.348
+-44.333, 46.075, 33.043
+-45.958, 47.242, 30.566
+-47.543, 48.46, 27.869
+-49.095, 49.722, 24.881
+-50.618, 51.019, 21.482
+-52.117, 52.342, 17.433
+-53.599, 53.686, 12.095
+-55.069, 55.041, 6.048
+-56.534, 56.402, 0
+-58, 57.764, 0
 -59.176, 58.849, 0
 -59.176, 58.849, 0
--72.746, 73.541, 0
+-73.873, 72.413, 0
 endData
 39.4
 127
 200
--19.89, 38.568, -38.895, 38.568, -48.974, 47.713, -59.176, 58.849
-#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":12,"robotHeight":12,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"VURC 2025 - High Stakes","signature":"VURC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"xdS2GtqCeH","x":-19.89,"y":38.568,"lock":false,"visible":true,"heading":272.75054931640625,"__type":"end-point"},{"uid":"qvwVMKubrT","x":-38.89452320595791,"y":38.568,"lock":false,"visible":true,"__type":"control"},{"uid":"rgEj5i6x6I","x":-48.973590017929304,"y":47.712502670323715,"lock":false,"visible":true,"__type":"control"},{"uid":"kEnuzxgtz8","x":-59.17591523091643,"y":58.849392024958526,"lock":false,"visible":true,"heading":315,"__type":"end-point"}],"speedProfiles":[{"uid":"87gn54kdJH","xPos":0.9047619047619048,"yPos":0,"followBentRate":true}],"lookaheadKeyframes":[],"uid":"hS36887x9S"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":0,"to":127},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0.016,"to":1},"maxDecelerationRate":39.4},"name":"comp_white_4","uid":"BIi4oIF9Z4","lock":false,"visible":true}]}
+-19.89, 38.568, -38.895, 38.568, -47.857, 48.452, -59.176, 58.849
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":12,"robotHeight":12,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"VURC 2025 - High Stakes","signature":"VURC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"xdS2GtqCeH","x":-19.89,"y":38.568,"lock":false,"visible":true,"heading":272.75054931640625,"__type":"end-point"},{"uid":"qvwVMKubrT","x":-38.89452320595791,"y":38.568,"lock":false,"visible":true,"__type":"control"},{"uid":"rgEj5i6x6I","x":-47.8565470079508,"y":48.45248883474873,"lock":false,"visible":true,"__type":"control"},{"uid":"kEnuzxgtz8","x":-59.17591523091643,"y":58.849392024958526,"lock":false,"visible":true,"heading":315,"__type":"end-point"}],"speedProfiles":[{"uid":"87gn54kdJH","xPos":0.9047619047619048,"yPos":0,"followBentRate":true}],"lookaheadKeyframes":[],"uid":"hS36887x9S"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":0,"to":127},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0.016,"to":1},"maxDecelerationRate":39.4},"name":"comp_white_4","uid":"BIi4oIF9Z4","lock":false,"visible":true}]}

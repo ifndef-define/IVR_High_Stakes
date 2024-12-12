@@ -47,6 +47,7 @@ ASSET(comp_white_2_txt);
 ASSET(comp_white_5_txt);
 ASSET(comp_white_4_txt);
 ASSET(comp_white_6_txt);
+ASSET(comp_white_7_txt);
 void redAuton(){
     intakeLift.extend();
     mogoRushReach.extend();
@@ -54,7 +55,7 @@ void redAuton(){
     chassis.follow(comp_white_1_txt, 15, 1500, 1, 0);
 
     mogoRushClamp.retract();
-    chassis.moveToPose(-42, 60, 90, 1600, {.forwards = false,
+    chassis.moveToPose(-44, 60, 90, 1700, {.forwards = false,
                                             .maxSpeed = 127,
                                             .minSpeed = 127}, 0);
 
@@ -106,11 +107,11 @@ void redAuton(){
     // chassis.turnToPoint(-72, 72, 700, {}, 1);
     
     float dist = 3;
-    int n = 3;
+    int n = 4;
     int timeout = 750;
     lemlib::Pose start2 = chassis.getPose();
     for(int i = 0; i < n; i++) {
-        if (i==2) {
+        if (i==3) {
             start2.x += 2;
             start2.y += 2;     
         }
@@ -121,7 +122,7 @@ void redAuton(){
             315, timeout, {.maxSpeed=40}, false);
             delay(300);
 
-        if (i==2) {
+        if (i==3) {
             chassis.moveToPose(start2.x+16, start2.y-16, 
                 315, timeout, {.forwards = false}, false);
         }
@@ -131,10 +132,9 @@ void redAuton(){
     
     chassis.turnToHeading(90, 1200, {}, 1);
     // chassis.follow(comp_white_5_txt, 15, 3000, 1, 1);
-    chassis.moveToPose(-5, 60, 90, 1500, {.forwards = 1,
-                                            .maxSpeed = 127/2}, 1);
+    chassis.moveToPose(-5, 59, 90, 1500, {.maxSpeed = 127/2}, 1);
     while(chassis.isInMotion()){
-        if(chassis.getPose().x >= -25){
+        if(chassis.getPose().x >= -28){
             intakeLift.extend();
         }
         delay(15);
@@ -142,47 +142,109 @@ void redAuton(){
     delay(500);
     intakeLift.retract();
     delay(500);
-    // chassis.moveToPose(-5, 59, 90, 1000, {}, 1);
-    chassis.swingToPoint(0, 70, lemlib::DriveSide::RIGHT, 700, 
-        {.direction=lemlib::AngularDirection::CCW_COUNTERCLOCKWISE, .maxSpeed=127/2}, 0);
 
-    chassis.moveToPose(chassis.getPose().x-(2*1.414), chassis.getPose().y-(2*1.414), 
-                chassis.getPose().theta, timeout, {.forwards=false, .maxSpeed=16},0);
-    
-    static bool inArm = false;
-    static int curTime = pros::millis();
-
-    static vector<int> blueRange = {115, 270};
-	static vector<int> redRange = {300, 30};
-    do {
-        if(intakeColor.get_proximity()<200){
-            if(intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]){
-                delay(60);
-                intake.setAutonControlFlag(false);
-                intakeMotor.move_relative(100, 127);
-                delay(300);       
-                inArm = true;
-            } else {
-                intake.setAutonControlFlag(true);
-            }
-        } else {
-            arm.setPosition(16);
+    chassis.follow(comp_white_6_txt, 15, 8000, 0, 0);
+    mogoClamp.retract();
+    chassis.turnToHeading(180, 700, {}, 0);
+    chassis.moveToPose(-47,12.5, 180, 3000, {.forwards = 0}, 1);
+    while(chassis.isInMotion()){
+        if(chassis.getPose().y <= -3){
+            mogoClamp.extend();
         }
         delay(15);
-    } while((pros::millis()-curTime) < 4000);
-
-    static int curTime1 = pros::millis();
-    while(inArm && (arm.getNormalizedAngle()-160) > 10 || (pros::millis()-curTime1) < 4000){
-        arm.setPosition(160);
-        delay(15);
     }
+    intake.setAutonControlFlag(true);
+    chassis.turnToPoint(-59, 0, 800, {}, 0);
+    chassis.follow(comp_white_7_txt, 15, 3000, 0, 0);
 
-    chassis.follow(comp_white_6_txt, 15, 10000, 0, 0);
-    while(chassis.isInMotion()){
-        arm.setPosition(0);
-        delay(15);
-    }
+    // chassis.moveToPose(-5, 59, 90, 1000, {}, 1);
+    // chassis.swingToPoint(0, 70, lemlib::DriveSide::RIGHT, 700, 
+    //     {.direction=lemlib::AngularDirection::CCW_COUNTERCLOCKWISE, .maxSpeed=127/2}, 0);
 
+    // chassis.moveToPose(chassis.getPose().x-(2*1.414), chassis.getPose().y-(2*1.414), 
+    //             chassis.getPose().theta, timeout, {.forwards=false, .maxSpeed=16},0);
+    // chassis.follow(comp_white_6_txt, 15, 6000, 0, 1);
+    // chassis.moveToPose(-20, 43, 0, 2000, {.forwards = 0,
+    //                                         .maxSpeed = 127/1.5,
+    //                                         .minSpeed = 127/2}, 0);
+    // while(chassis.isInMotion()){
+    //     if(chassis.getPose().y <= 45){
+    //         chassis.cancelMotion();
+    //     }
+    //     delay(15);
+    // }
+    // intake.setAutonControlFlag(false);
+    // chassis.moveToPose(-18, 18, 0, 2000, {.forwards = 0,
+    //                                         .maxSpeed = 127/1.5,
+    //                                         .minSpeed = 127/2}, 1);
+    // while(chassis.isInMotion()){
+    //     if(chassis.getPose().y <= 20){
+    //         chassis.cancelMotion();
+    //     }
+    //     delay(15);
+    // }
+
+    // chassis.moveToPose(-11, -11, 0, 2000, {.forwards = 0,
+    //                                         .maxSpeed = 127/1.5,
+    //                                         .minSpeed = 127/2}, 1);
+    // while(chassis.isInMotion()){
+    //     if(chassis.getPose().y <= -9){
+    //         chassis.cancelMotion();
+    //     }
+    //     delay(15);
+    // }
+
+    // chassis.moveToPose(-34, -20, 45, 2000, {.forwards = 0,
+    //                                         .maxSpeed = 127/1.5,
+    //                                         .minSpeed = 127/2}, 1);
+    // while(chassis.isInMotion()){
+    //     if(chassis.getPose().x <= -17){
+    //         chassis.cancelMotion();
+    //     }
+    //     delay(15);
+    // }
+
+    chassis.turnToHeading(38, 700, {}, 0);
+    chassis.moveToPose(-26, -6, 38, 3000, {.forwards = 1,
+                                            .maxSpeed = 127/1.5,
+                                            .minSpeed = 127/2}, 0);
+    
+    // static bool inArm = false;
+    // static int curTime = pros::millis();
+
+    // static vector<int> blueRange = {115, 270};
+	// static vector<int> redRange = {300, 30};
+    // do {
+    //     if(intakeColor.get_proximity()<200){
+    //         if(intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]){
+    //             delay(60);
+    //             intake.setAutonControlFlag(false);
+    //             intakeMotor.move_relative(100, 127);
+    //             delay(300);       
+    //             inArm = true;
+    //         } else {
+    //             intake.setAutonControlFlag(true);
+    //         }
+    //     } else {
+    //         arm.setPosition(16);
+    //     }
+    //     delay(15);
+    // } while((pros::millis()-curTime) < 4000);
+
+    // static int curTime1 = pros::millis();
+    // while(inArm && (arm.getNormalizedAngle()-160) > 10 || (pros::millis()-curTime1) < 4000){
+    //     arm.setPosition(160);
+    //     delay(15);
+    // }
+
+    // chassis.follow(comp_white_6_txt, 15, 2200, 1, 0);
+
+    // while(chassis.isInMotion()){
+    //     intake.setAutonControlFlag(true);
+    //     delay(15);
+    // }
+
+    // intake.setAutonControlFlag(false);
 
     // while(chassis.isInMotion()){
     //     arm.setPosition(16);
