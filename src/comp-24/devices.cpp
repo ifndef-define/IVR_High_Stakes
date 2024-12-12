@@ -97,7 +97,7 @@ lemlib::ControllerSettings linearController(8, // proportional gain (kP)
 );
 
 // angular motion controller 2.45, 5.5 ///// 2.7,7
-lemlib::ControllerSettings angularController(2.45, // proportional gain (kP)
+lemlib::ControllerSettings angularController(2.1, // proportional gain (kP)
                                              0.006, // integral gain (kI)
                                              5.5, // derivative gain (kD)
                                              60, // anti windup
