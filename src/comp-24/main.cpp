@@ -10,13 +10,14 @@ void initialize() {
 	intakeColor.set_led_pwm(100);
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	intake.setColorToKeep(isBlue);
+	mogoRushReach.extend();
 
 	chassis.calibrate(true);
 	chassis.setPose(-53.5, 61, 90);
 
 	pros::lcd::print(0, "Comp 24 Bot");
 	// pros::Task telemetry(debug);
-	pros::Task ringThread(Intake::ringTask);
+	// pros::Task ringThread(Intake::ringTask);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -28,11 +29,11 @@ void competition_initialize() {}
 /* Autonomous Method */
 void autonomous() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
-	runAuton(isBlue);
 }
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+	// runAuton(isBlue);
 	teleOp();
 }

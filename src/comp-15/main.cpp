@@ -42,9 +42,9 @@ void autonomous() {
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
-	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	// pros::Task ringThread(Intake::ringTask);
 	// pros::Task telemetry(debug);
-	// teleOp();
 	runAuton(isBlue);
+	teleOp();
 }

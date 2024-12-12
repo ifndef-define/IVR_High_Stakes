@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "DrivTest",
+    "project_name": "rivert",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -299,7 +299,8 @@
     },
     "upload_options": {
       "slot": 2,
-      "after": "screen"
+      "after": "screen",
+      "icon": "clawbot"
     },
     "use_early_access": true
   }
