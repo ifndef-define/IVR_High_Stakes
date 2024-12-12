@@ -45,7 +45,7 @@ adi::Pneumatics mogoRushReach('F', false);
 adi::Pneumatics mogoRushClamp('C', false);
 adi::Pneumatics mogoClamp('H', false);
 adi::Pneumatics doinker('G', false);
-adi::Pneumatics intakePist('E', false);
+adi::Pneumatics intakeLift('E', false);
 
 //Odometry
 // #define SMART_PORT 16
