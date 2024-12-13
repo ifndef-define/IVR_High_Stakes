@@ -296,42 +296,63 @@ void blueAuton() {
 
 //SKILLS ASSETS
 ASSET(skills_black_1_txt);
-ASSET(skills_black_2_txt);
+//ASSET(skills_black_2_txt);
 ASSET(skills_black_3_txt);
 ASSET(skills_black_4_txt);
 
 void skillsAuton(){
+
+    uint32_t timeStart = pros::millis();
+
+    
     chassis.setPose(-52, 0, 90);
+    arm.setPosition(0);
     intake.setVoltage(-127);
     delay(250);
     intake.setVoltage(127);
-    delay(750);
+    delay(400);
 
-    chassis.moveToPose(-59, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
-
-    delay(1500);
-    intake.setVoltage(0);
+    chassis.moveToPose(-58.5, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
+    while(chassis.isInMotion())
+    {
+        if(intakeColor.get_proximity() >= 170)
+        {
+            intake.brake();
+        }
+        else
+        {
+            intake.setVoltage(127);
+        }
+    }
+    i_waitUntil(!chassis.isInMotion());
+    intake.setAutonControlFlag(true);
+    delay(750); //tune
+    intake.setAutonControlFlag(false);
 
     chassis.moveToPose(-54, 0, 90, 500);
     chassis.turnToHeading(300, 1000);
-    chassis.moveToPose(-17, -52, 310, 2800, {.forwards = false, .minSpeed = 45}, false);
+    chassis.moveToPose(-20, -51, 310, 2800, {.forwards = false, .maxSpeed = 127/2}, false);
 
     mogoClamp.extend();   
     delay(400);
 
     intake.setVoltage(127);
-    chassis.follow(skills_black_1_txt, 15, 7000, true, true);    
+    chassis.follow(skills_black_1_txt, 15, 8000, true, true);    
 
     while(chassis.isInMotion()){ 
-        if(chassis.getPose().x >= -1 && chassis.getPose().y >= -15){
+        if(chassis.getPose().x >= 0 && chassis.getPose().y >= -27){
             intake.brake();
-        } else {
+        } 
+        else if(chassis.getPose().x >= -20 && chassis.getPose().x <= -10){
+            intake.brake();
+        }
+        else {
             intake.setVoltage(127);
         }
         delay(10);
     }          
-    i_waitUntil(!chassis.isInMotion());
-    chassis.follow(skills_black_2_txt, 15, 3200, true, false);
+    
+    chassis.moveToPose(-60, -63.267, 235, 2500, {.maxSpeed = 127/2}, false);
 
     delay(400);
     chassis.moveToPose(chassis.getPose().x + 7*sqrt(2), chassis.getPose().y + 7*sqrt(2), 225, 2200, {.forwards = false}, false);
@@ -344,17 +365,16 @@ void skillsAuton(){
     chassis.moveToPose(-50, -51.5, 45, 1000);       
 
     chassis.turnToHeading(230, 1000, {}, false);   
-    chassis.moveToPose(35, -25, 230, 3000, {.forwards = false, .minSpeed = 55}, false);
+    chassis.moveToPose(35, -25, 230, 3000, {.forwards = false, .maxSpeed = 127/2}, false);
     mogoClamp.extend();   
     delay(200);
     chassis.turnToHeading(210, 1000, {}, false);   
     intake.setAutonControlFlag(true);
-    intake.setVoltage(127);
 
-    chassis.moveToPose(6, -60, 210, 3000, {}, false);
+    chassis.moveToPose(4, -56, 210, 3000, {}, false);
     delay(500);
-    chassis.turnToHeading(75, 1000, {}, false);  
-    chassis.moveToPose(50, -28, 45, 3000, {}, false);
+    chassis.turnToHeading(75, 1000, {.maxSpeed = 60}, false);  
+    chassis.moveToPose(50, -28, 45, 3000, {.maxSpeed = 60}, false);
     delay(500);
     chassis.turnToHeading(180, 1000, {}, false);  
 
@@ -368,19 +388,28 @@ void skillsAuton(){
     chassis.moveToPose(chassis.getPose().x + 7*sqrt(2), chassis.getPose().y - 7*sqrt(2), 135, 2200, {}, false);
     delay(400);
     chassis.moveToPose(chassis.getPose().x - 7*sqrt(2), chassis.getPose().y + 7*sqrt(2), 135, 2200, {.forwards = false}, false);
-    chassis.turnToHeading(315, 1000, {}, false);  
+    chassis.turnToHeading(315, 2500, {.direction = lemlib::AngularDirection::CW_CLOCKWISE}, false);  
     chassis.moveToPose(67, -67, 315, 1600, {.forwards = false}); 
     i_waitUntil(!chassis.isInMotion());
     mogoClamp.retract();    
+    intake.setVoltage(0);
     
     chassis.moveToPose(50, -50, 315, 1600); 
     i_waitUntil(!chassis.isInMotion());
     chassis.turnToHeading(135, 1000, {}, false); 
     chassis.moveToPose(0, 0, 315, 6000, {.forwards = false, .maxSpeed = 70}); 
-    arm.setState(3);
+    // arm.setState(3);
     while(true)
     {
-        arm.manualControl();
+        // arm.manualControl();
+        arm.setPosition(140);
+
+        if((pros::millis() - timeStart) > 59000)
+        {
+            arm.setPosition(0);
+            // arm.manualControl();
+        }
+
         delay(10);
     }
 };
