@@ -150,12 +150,20 @@ void Intake::ringTask() {
                 }
             }
             if(autonControlFlag) {
-                autonControl(127);
+                autonControl(100);
             } else {
                 intake->brake();
             } 
         }
+
+        delay(10);
     }
+}
+
+void Intake::releaseIntake(bool inv){
+    intake->move(inv ? 127 : -127);
+    delay(80);
+    intake->brake();
 }
 
 // void Intake::ringTask() {
