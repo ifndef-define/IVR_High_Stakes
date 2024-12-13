@@ -3,7 +3,8 @@
 
 void teleOp(){
     int z, y, L1, L2, R1, R2, buttonA, buttonB, buttonX, buttonY, buttonUp, buttonDown, buttonLeft, buttonRight;
-    bool bruh = true;
+   static bool high = false;
+    static bool low = false;
     mogoRushClamp.retract();
     // mogoRushReach.retract();
     intake.setAutonControlFlag(false);
@@ -38,6 +39,21 @@ void teleOp(){
         }
         if(buttonX){
             doinker.toggle();
+        }
+        if(buttonUp){
+            high = !high;
+            low = false;
+        } else if(buttonDown){
+            low = !low;
+            high = false;
+        }
+
+        if(high){
+            arm.setState(-1);
+            arm.setPosition(140);
+        } else if(low){
+            arm.setState(-1);
+            arm.setPosition(0);
         }
         
         intake.manualControl();

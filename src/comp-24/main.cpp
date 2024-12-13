@@ -16,7 +16,7 @@ void initialize() {
 
 	pros::lcd::print(0, "Comp 24 Bot");
 	// pros::Task telemetry(debug);
-	pros::Task ringThread(Intake::ringTask);
+	// pros::Task ringThread(Intake::ringTask);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
