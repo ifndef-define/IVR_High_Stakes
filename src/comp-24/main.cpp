@@ -9,7 +9,7 @@ const static bool isBlue = 0; // 0 for red, 1 for blue
 void initialize() {
 	pros::lcd::initialize();
 	intakeColor.set_led_pwm(100);
-	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 	intake.setColorToKeep(isBlue);
 
 	pros::lcd::print(0, "Comp 15 Bot");

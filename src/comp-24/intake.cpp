@@ -1,5 +1,5 @@
-#include "robots/comp-15/intake.h"
-#include "robots/comp-15/arm.h"
+#include "robots/comp-24/intake.h"
+#include "robots/comp-24/arm.h"
 
 pros::MotorGroup *Intake::intake;
 bool Intake::isEjecting;
@@ -61,7 +61,6 @@ void Intake::manualControl(){
                 intake->move(-127);
             }
         } else {
-            intake->brake();
         }
     } else {
         if (arm.getState() <= 1) {
@@ -142,14 +141,15 @@ bool Intake::getAutonControlFlag(){
 
 void Intake::ringTask() {
     typedef enum {
-        NONE,
-        RED,
-        BLUE
-    } RingColor;
-    vector<int> blueRange = {120, 240};
-    vector<int> redRange = {0, 30};
-    RingColor detectedRing = NONE;
-    while(1) {
+		NONE,
+		RED,
+		BLUE
+	} RingColor;
+	vector<int> blueRange = {110, 240};
+	vector<int> redRange = {0, 30};
+	RingColor detectedRing = NONE;
+
+    while(true) {
         if(runColorSort){
             if(intakeColor.get_proximity() > 200) {
                 if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { detectedRing = BLUE; }
@@ -160,11 +160,7 @@ void Intake::ringTask() {
                     isEjecting = true;
                 }
             }
-            if(autonControlFlag) {
-                autonControl(127);
-            } else {
-                intake->brake();
-            } 
+            autonControl(127);
         }
     }
 }
@@ -239,87 +235,3 @@ void Intake::ringTask() {
 // 		pros::delay(15);
 // 	}
 // }
-
-// Fein
- 
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- // Fein
- 
