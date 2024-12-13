@@ -38,7 +38,8 @@ void autonomous() {
 	// pros::Task ringThread(Intake::ringTask);
 	// pros::Task telemetry(debug);
 	// runAuton(isBlue);
-	skillsAuton();
+	// skillsAuton();
+	skillsCaller();
 }
 
 /* Driver Control. Runs default if not connected to field controler */

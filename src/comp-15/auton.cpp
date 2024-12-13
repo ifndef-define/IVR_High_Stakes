@@ -208,9 +208,9 @@ void skillsAuton(){
     intake.setVoltage(-127);
     delay(250);
     intake.setVoltage(127);
-    delay(200);
+    delay(750);
 
-    chassis.moveToPose(-58.5, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
+    chassis.moveToPose(-59, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
 
     delay(1500);
     intake.setVoltage(0);

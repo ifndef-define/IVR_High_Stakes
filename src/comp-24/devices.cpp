@@ -34,8 +34,8 @@ MotorGroup intakeMotor({-13, 17}, pros::MotorGears::green);
 Motor armMotor(-14, pros::MotorGears::red);
 
 //Sensors
-Distance intakeDist(18);
-Optical intakeColor(15);
+// Distance intakeDist(18);
+Optical intakeColor(18);
 IMU imuLeft(20);
 IMU imuRight(11);
 Rotation armRot(-21);

@@ -145,13 +145,13 @@ void Intake::ringTask() {
 		RED,
 		BLUE
 	} RingColor;
-	vector<int> blueRange = {110, 240};
-	vector<int> redRange = {0, 30};
+	vector<int> blueRange = {115, 270};
+    vector<int> redRange = {300, 30};
 	RingColor detectedRing = NONE;
 
     while(true) {
         if(runColorSort){
-            if(intakeColor.get_proximity() > 200) {
+            if(intakeColor.get_proximity() > 170) {
                 if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { detectedRing = BLUE; }
                 else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]) { detectedRing = RED; }
                 else { detectedRing = NONE; }
