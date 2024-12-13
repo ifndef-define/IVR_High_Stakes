@@ -42,7 +42,8 @@ void competition_initialize() {}
 void autonomous() {
 	// pros::Task odomTask(odom::start);
 	// pros::Task ringThread(Intake::ringTask);
-	skillsAuton();
+	// skillsAuton();
+	redAuton();
 }
 
 /* Driver Control. Runs default if not connected to field controler */
@@ -51,9 +52,13 @@ void opcontrol() {
 	// pros::Task ringThread(Intake::ringTask);
 	// pros::Task telemetry(debug);
 	// runAuton(isBlue);
+	// blueAuton();
+	redAuton();
+	// intake.setAutonControlFlag(false);
+	// intake.autonControl(20);
 	// intake.setAutonControlFlag(true);
 	teleOp();
-	// while(1)
-	// 	delay(1000);
+	while(1)
+		delay(1000);
 	// mogoRushReach.extend();
 }

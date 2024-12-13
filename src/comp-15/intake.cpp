@@ -162,7 +162,15 @@ void Intake::ringTask() {
             }
             autonControl(100);
         }
+
+        delay(10);
     }
+}
+
+void Intake::releaseIntake(bool inv){
+    intake->move(inv ? 127 : -127);
+    delay(80);
+    intake->brake();
 }
 
 // void Intake::ringTask() {
