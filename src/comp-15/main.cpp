@@ -21,7 +21,7 @@ void initialize() {
 	leftDrive.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE);
 	rightDrive.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE);
 	// chassis.setPose(-50, 30, 270);
-	chassis.setPose(-54, 13, 90); //53.5, 61, 90
+	// chassis.setPose(-54, 13, 90); //53.5, 61, 90
 
 	pros::Task ringThread(Intake::ringTask);
 	// armMotor.move(10);

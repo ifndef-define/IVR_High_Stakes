@@ -298,9 +298,9 @@
       }
     },
     "upload_options": {
-      "slot": 3,
+      "slot": 5,
       "after": "screen",
-      "icon": "pizza"
+      "icon": "X"
     },
     "use_early_access": true
   }
