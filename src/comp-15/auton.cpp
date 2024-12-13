@@ -234,24 +234,25 @@ void skillsAuton(){
     intake.setVoltage(-127);
     delay(250);
     intake.setVoltage(127);
-    delay(400);
+    delay(750);
 
     chassis.moveToPose(-58.5, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
-    while(chassis.isInMotion())
-    {
-        if(intakeColor.get_proximity() >= 170)
-        {
-            intake.brake();
-        }
-        else
-        {
-            intake.setVoltage(127);
-        }
-    }
-    i_waitUntil(!chassis.isInMotion());
-    intake.setAutonControlFlag(true);
+    // while(chassis.isInMotion())
+    // {
+    //     if(intakeColor.get_proximity() >= 170)
+    //     {
+    //         intake.brake();
+    //     }
+    //     else
+    //     {
+    //         intake.setVoltage(127);
+    //     }
+    // }
+    // i_waitUntil(!chassis.isInMotion());
+    // intake.setAutonControlFlag(true);
     delay(750); //tune
-    intake.setAutonControlFlag(false);
+    // intake.setAutonControlFlag(false);
+    intake.setVoltage(0);
 
     chassis.moveToPose(-54, 0, 90, 500);
     chassis.turnToHeading(300, 1000);
@@ -289,8 +290,15 @@ void skillsAuton(){
     chassis.moveToPose(-50, -51.5, 45, 1000);       
 
     chassis.turnToHeading(230, 1000, {}, false);   
-    chassis.moveToPose(35, -25, 230, 3000, {.forwards = false, .maxSpeed = 127/2}, false);
-    mogoClamp.extend();   
+    chassis.moveToPose(36, -24, 235, 3000, {.forwards = false, .maxSpeed = 127/2}, true);
+    while(chassis.isInMotion())
+    {
+        if(chassis.getPose().x > 33)
+        {
+            mogoClamp.extend(); 
+        }
+    }
+      
     delay(200);
     chassis.turnToHeading(210, 1000, {}, false);   
     intake.setAutonControlFlag(true);

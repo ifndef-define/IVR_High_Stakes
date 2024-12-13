@@ -111,6 +111,7 @@ void skillsAuton(){
     chassis.moveToPose(-66, 78, 320, 3300, {.maxSpeed = 127/2}, false);
     
     delay(800);
+    intake.setVoltage(100);
     chassis.moveToPose(chassis.getPose().x + 7*sqrt(2), chassis.getPose().y - 7*sqrt(2), 320, 1200, {.forwards = false}, false);
     chassis.turnToHeading(135, 1000, {}, false); 
     chassis.moveToPose(-58, 72, 135, 1000, {.forwards = false});
