@@ -12,11 +12,9 @@ void initialize() {
 	intake.setColorToKeep(isBlue);
 
 	chassis.calibrate(true);
-	chassis.setPose(-53.5, 61, 90);
 
 	pros::lcd::print(0, "Comp 24 Bot");
 	// pros::Task telemetry(debug);
-	// pros::Task ringThread(Intake::ringTask);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -27,6 +25,7 @@ void competition_initialize() {}
 
 /* Autonomous Method */
 void autonomous() {
+	pros::Task ringThread(Intake::ringTask);
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 	runAuton(isBlue);
 }

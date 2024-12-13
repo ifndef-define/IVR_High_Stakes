@@ -54,14 +54,14 @@ void Intake::manualControl(){
             if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){
                 intake->move(127 / 2);
             } else {
-                intake->move(127);
+                intake->move(105);
             }
         } else if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
 
             if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
                 intake->move(-127 / 3);
             } else {
-                intake->move(-127);
+                intake->move(-105);
             }
         } else {
             intake->brake();
@@ -83,19 +83,21 @@ void Intake::manualControl(){
 }
 
 void Intake::autonControl(int speed){
-    if (!isEjecting){
-        intake->move(speed);
-    } else {    
-        if (arm.getState() <= 1) {
-            arm.setState(0);
-        }
-        intake->move(-speed);
-        if (pauseCounter2 < 10) { // 10*15 = 150ms
-            pauseCounter2++;
-        } else {
-            pauseCounter2 = 0;
-            intake->brake();
-            isEjecting = false;
+    if(autonControlFlag){
+        if (!isEjecting){
+            intake->move(speed);
+        } else {    
+            if (arm.getState() <= 1) {
+                arm.setState(0);
+            }
+            intake->move(-speed);
+            if (pauseCounter2 < 10 * (127/speed)) { // 10*15 = 150ms
+                pauseCounter2++;
+            } else {
+                pauseCounter2 = 0;
+                intake->brake();
+                isEjecting = false;
+            }
         }
     }
     pullBack();
@@ -132,7 +134,7 @@ void Intake::ringTask() {
 	RingColor detectedRing = NONE;
     while(1) {
         if(runColorSort){
-            if(intakeColor.get_proximity() > 210) {
+            if(intakeColor.get_proximity() > 170) {
                 if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { detectedRing = BLUE; }
                 else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]) { detectedRing = RED; }
                 else { detectedRing = NONE; }
@@ -141,12 +143,9 @@ void Intake::ringTask() {
                     isEjecting = true;
                 }
             }
-            if(autonControlFlag) {
-                autonControl(127);
-            } else {
-                intake->brake();
-            } 
+            autonControl(100);
         }
+        delay(15);
     }
 }
 // void Intake::ringTask() {
