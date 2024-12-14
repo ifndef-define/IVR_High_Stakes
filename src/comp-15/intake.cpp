@@ -61,6 +61,7 @@ void Intake::manualControl(){
                 intake->move(-127);
             }
         } else {
+            intake->brake();
         }
     } else {
         if (arm.getState() <= 1) {
@@ -104,7 +105,7 @@ void Intake::autonControl(int speed){
                 arm.setState(0);
             }
             intake->move(-speed);
-            if (pauseCounter2 < 10*127/speed) { // 10*15 = 150ms
+            if (pauseCounter2 < 12*127/speed) { // 10*15 = 150ms
                 pauseCounter2++;
             } else {
                 pauseCounter2 = 0;

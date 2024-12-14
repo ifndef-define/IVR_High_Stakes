@@ -32,6 +32,7 @@
 
 // RED AUTO ASSETS
 ASSET(comp_black_1_txt);
+ASSET(comp_black_4_txt);
 
 void redAuton(){
     chassis.setPose(-54, 13, 90);
@@ -41,8 +42,6 @@ void redAuton(){
     mogoRushClamp.extend();
     // move to grab mogo under ladder
     chassis.follow(comp_black_1_txt, 15, 3000, true);
-    // release intake
-    intake.releaseIntake();
     // wait
     i_waitUntil(!chassis.isInMotion());
     // clamp goal
@@ -64,6 +63,8 @@ void redAuton(){
     while(chassis.isInMotion()){
         if(chassis.getPose().y <= -27) {
             mogoClamp.extend();
+            // release intake
+            intake.releaseIntake();
             break;
         }
         delay(10);
@@ -92,15 +93,15 @@ void redAuton(){
     
     // lightly intake
     intake.setAutonControlFlag(true);
-    delay(200);
+    delay(300);
     intake.setAutonControlFlag(false);
+    // pull back slighty
+    chassis.moveToPose(chassis.getPose().x-5, chassis.getPose().y-5, 42, 750, {.maxSpeed=127/2});
     delay(100);
-            // // pull back slighty
-            // chassis.moveToPose(chassis.getPose().x-5, chassis.getPose().y-5, 42, 750, {.maxSpeed=127/2});
-    // turn to knock ring out
-    chassis.turnToHeading(300, 1000, {.maxSpeed=127/2}, false);
     // start intake
     intake.setAutonControlFlag(true);
+    // turn to knock ring out
+    chassis.turnToHeading(300, 1000, {.maxSpeed=127/2}, false);
     // move to stack, and corner stack
     chassis.moveToPose(chassis.getPose().x-15, chassis.getPose().y+8, 300, 1000, {.maxSpeed=127/2});
     // turn to corner stack
@@ -111,19 +112,19 @@ void redAuton(){
 
     // cycle through the ring stack
     float dist = 3.3;
-    int n = 4;
+    int n = 3;
     int timeout = 750;
     lemlib::Pose start2 = chassis.getPose();
     for(int i = 0; i < n; i++) {
         // last loop pull out more
         if (i==n-1) {
-            chassis.moveToPose(start2.x+(dist*1.414)+2, start2.y+(dist*1.414)+2, 
-                225, timeout, {.forwards=false, .maxSpeed=20},0);
+            chassis.moveToPose(start2.x+(dist*1.414)+1, start2.y+(dist*1.414)+1, 
+                225, timeout, {.forwards=false, .maxSpeed=20},SYNC);
         }
-        else if (i=0) { // first loop pull out less
-            chassis.moveToPose(start2.x+(dist*1.414)-1.5, start2.y+(dist*1.414)-1.5, 
-                225, timeout, {.forwards=false, .maxSpeed=20},0);
-        }
+        else if (i==0) { // first loop pull out less
+            chassis.moveToPose(start2.x+(dist*1.414)-.5, start2.y+(dist*1.414)-.5, 
+                225, timeout, {.forwards=false, .maxSpeed=20},SYNC);
+        } 
     
         // let intake to clean
         delay(400);
@@ -134,44 +135,54 @@ void redAuton(){
 
         // last loop move back to goal
         if (i==n-1) {
-            chassis.moveToPose(start2.x+6, start2.y+6, 
+            chassis.moveToPose(start2.x+7, start2.y+7, 
                 225, timeout, {.forwards = false}, false);
         }
     }
-
-    // about face
-    chassis.turnToHeading(53, 1000, {.direction=lemlib::AngularDirection::CCW_COUNTERCLOCKWISE, .maxSpeed=127/2}, false);
-    // drop mogo
-    mogoClamp.retract();
-    // push into corner
-    chassis.moveToPose(chassis.getPose().x-10, chassis.getPose().y-10, 53, 1300, {.forwards=false, .minSpeed=50}, false);
-    // stop intake
+    chassis.turnToHeading(90, 1000, {.maxSpeed=(int)ceil(127/1.5)}, false);
     intake.setAutonControlFlag(false);
-    // move to bottom of high stake
-    chassis.moveToPose(chassis.getPose().x+13, chassis.getPose().y+13, 53, 2000, {}, false);
-    chassis.turnToPoint(0, -24, 1000, {.maxSpeed=(int)ceil(127/1.5)}, false);
-    // use intake up to prevent breaking bot
     intakeLift.extend();
-    // move to ladder
-    chassis.moveToPose(0, -20, 45, 2000, {}, false);
-    // slow turn to ensure contact
-    chassis.tank(10,0);
-    // stop all motion
+    // Go to ladder
+    chassis.moveToPose(-26, chassis.getPose().y, 90, 2000, {}, false);
+    // chassis.turnToHeading(0, 1000, {.maxSpeed=127/2}, false);
+    chassis.moveToPoint(-22, -15, 3000, {.maxSpeed=127/2}, false);
+    doinker.extend();       
+    chassis.tank(30,0);
+    delay(1500);
     chassis.cancelAllMotions();
+    chassis.tank(0,0);
+
+    // // about face
+    // chassis.turnToHeading(53, 1000, {.direction=lemlib::AngularDirection::CCW_COUNTERCLOCKWISE, .maxSpeed=127/2}, false);
+    // // drop mogo
+    // mogoClamp.retract();
+    // // push into corner
+    // chassis.moveToPose(chassis.getPose().x-10, chassis.getPose().y-10, 53, 1300, {.forwards=false, .minSpeed=50}, false);
+    // // stop intake
+    // intake.setAutonControlFlag(false);
+    // // move to bottom of high stake
+    // chassis.moveToPose(chassis.getPose().x+13, chassis.getPose().y+13, 53, 2000, {}, false);
+    // chassis.turnToPoint(0, -24, 1000, {.maxSpeed=(int)ceil(127/1.5)}, false);
+    // // use intake up to prevent breaking bot
+    // intakeLift.extend();
+    // // move to ladder
+    // chassis.moveToPose(0, -20, 45, 2000, {}, false);
+    // // slow turn to ensure contact
+    // chassis.tank(10,0);
+    // // stop all motion
+    // chassis.cancelAllMotions();
 
 };
 
 ASSET(comp_black_1_blue_txt);
 void blueAuton() {
-    chassis.setPose(54, 13, 270);
+    chassis.setPose(54, -13, 270);
 
-    // drop mogo rush right as auto starts
+        // drop mogo rush right as auto starts
     mogoRushReach.extend();
     mogoRushClamp.extend();
     // move to grab mogo under ladder
     chassis.follow(comp_black_1_blue_txt, 15, 3000, true);
-    // release intake
-    intake.releaseIntake();
     // wait
     i_waitUntil(!chassis.isInMotion());
     // clamp goal
@@ -182,17 +193,18 @@ void blueAuton() {
     mogoRushClamp.extend();
     delay(30);
     // about face
-    chassis.turnToHeading(169, 1200, {.maxSpeed=100});
+    chassis.turnToHeading(169, 1200, {.direction=lemlib::AngularDirection::CW_CLOCKWISE, .maxSpeed=100});
     delay(100);
     mogoRushReach.retract();
     i_waitUntil(!chassis.isInMotion());
-    mogoRushClamp.extend();
     // move to grab second mogo
-    chassis.moveToPose(chassis.getPose().x+2, 24, 180, 2500, {.forwards=false, .maxSpeed=127/2});
+    chassis.moveToPose(chassis.getPose().x-2, 24, 180, 2500, {.forwards=false, .maxSpeed=127/2});
     // allow mogo to slide into clamp
     while(chassis.isInMotion()){
         if(chassis.getPose().y >= 20) {
             mogoClamp.extend();
+            // release intake
+            intake.releaseIntake();
             break;
         }
         delay(10);
@@ -200,14 +212,16 @@ void blueAuton() {
     // wait till mogo clamp
     i_waitUntil(!chassis.isInMotion());
     // another about face for mirror difference
-    chassis.turnToHeading(0, 1000, {.direction=lemlib::AngularDirection::CW_CLOCKWISE, .maxSpeed=127/2});
+    chassis.turnToHeading(358, 1000, {.direction=lemlib::AngularDirection::CW_CLOCKWISE, .maxSpeed=127/2});
     // continue to rings
-    chassis.moveToPose(chassis.getPose().x, -55, 0, 1000, {.forwards=false, .maxSpeed=127/2});
+    chassis.moveToPose(chassis.getPose().x-2, -55.5, 0, 3500, {.forwards=false, .maxSpeed=127/2});
     // swing to face two stack on auto line
     chassis.swingToHeading(273, lemlib::DriveSide::RIGHT, 800, 
         {.direction=lemlib::AngularDirection::CCW_COUNTERCLOCKWISE, .maxSpeed=127/2}, false);
     // intake on
     intake.setAutonControlFlag(true);
+    // the ring we want is on top this top
+    intakeLift.extend();
     // move to stack
     chassis.moveToPose(chassis.getPose().x-10, chassis.getPose().y, 270, 900, {}, false);
     // pull back to next stack
@@ -215,7 +229,7 @@ void blueAuton() {
     // lift intake
     intakeLift.extend();
     // turn to face goal
-    chassis.swingToHeading(317, lemlib::DriveSide::RIGHT, 1000, {.maxSpeed=127/2}, false);
+    chassis.swingToHeading(313, lemlib::DriveSide::RIGHT, 1000, {.maxSpeed=127/2}, false);
     // move to stack to grab red ring
     intake.setAutonControlFlag(false);
     chassis.moveToPose(chassis.getPose().x-4.5, chassis.getPose().y+4, 313, 1000, {.maxSpeed=127/2}, false);
@@ -225,72 +239,64 @@ void blueAuton() {
     
     // lightly intake
     intake.setAutonControlFlag(true);
-    delay(200);
+    delay(300);
     intake.setAutonControlFlag(false);
+    // pull back slighty
+    chassis.moveToPose(chassis.getPose().x+5, chassis.getPose().y-5, 42, 750, {.maxSpeed=127/2});
     delay(100);
-            // // pull back slighty
-            // chassis.moveToPose(chassis.getPose().x-5, chassis.getPose().y-5, 42, 750, {.maxSpeed=127/2});
-    // turn to knock ring out
-    chassis.turnToHeading(50, 1000, {.maxSpeed=127/2}, false);
     // start intake
     intake.setAutonControlFlag(true);
+    // turn to knock ring out
+    chassis.turnToHeading(70, 1000, {.maxSpeed=127/2}, false);
     // move to stack, and corner stack
-    chassis.moveToPose(chassis.getPose().x-15, chassis.getPose().y+8, 50, 1000, {.maxSpeed=127/2});
+    chassis.moveToPose(chassis.getPose().x+15, chassis.getPose().y+8, 70, 1000, {.maxSpeed=127/2});
     // turn to corner stack
     chassis.turnToHeading(135, 1000, {.maxSpeed=127/2}, false);
     delay(300);
     // move into stack
-    chassis.moveToPose(chassis.getPose().x+17, chassis.getPose().y-17, 135, 1000, {.maxSpeed=127/2}, false);
+    chassis.moveToPose(chassis.getPose().x+17, chassis.getPose().y-17, 225, 1000, {.maxSpeed=127/2}, false);
 
     // cycle through the ring stack
     float dist = 3.3;
-    int n = 4;
+    int n = 3;
     int timeout = 750;
     lemlib::Pose start2 = chassis.getPose();
     for(int i = 0; i < n; i++) {
         // last loop pull out more
         if (i==n-1) {
-            chassis.moveToPose(start2.x-(dist*1.414)-2, start2.y+(dist*1.414)+2, 
-                225, timeout, {.forwards=false, .maxSpeed=20},0);
+            chassis.moveToPose(start2.x+(dist*1.414)-1, start2.y+(dist*1.414)+1, 
+                225, timeout, {.forwards=false, .maxSpeed=20},SYNC);
         }
-        else if (i=0) { // first loop pull out less
-            chassis.moveToPose(start2.x-(dist*1.414)+1.5, start2.y+(dist*1.414)-1.5, 
-                225, timeout, {.forwards=false, .maxSpeed=20},0);
-        }
+        else if (i==0) { // first loop pull out less
+            chassis.moveToPose(start2.x+(dist*1.414)-.5, start2.y+(dist*1.414)-.5, 
+                225, timeout, {.forwards=false, .maxSpeed=20},SYNC);
+        } 
     
         // let intake to clean
         delay(400);
 
         // move forward
         chassis.moveToPose(start2.x+1, start2.y-1, 
-            225, timeout, {.maxSpeed=40}, false);
+            135, timeout, {.maxSpeed=40}, false);
 
         // last loop move back to goal
         if (i==n-1) {
-            chassis.moveToPose(start2.x-6, start2.y+6, 
-                225, timeout, {.forwards = false}, false);
+            chassis.moveToPose(start2.x-7, start2.y+7, 
+                135, timeout, {.forwards = false}, false);
         }
     }
-
-    // about face
-    chassis.turnToHeading(318, 1000, {.direction=lemlib::AngularDirection::CW_CLOCKWISE, .maxSpeed=127/2}, false);
-    // drop mogo
-    mogoClamp.retract();
-    // push into corner
-    chassis.moveToPose(chassis.getPose().x-10, chassis.getPose().y-10, 318, 1300, {.forwards=false, .minSpeed=50}, false);
-    // stop intake
+    chassis.turnToHeading(0, 1000, {.maxSpeed=(int)ceil(127/1.5)}, false);
     intake.setAutonControlFlag(false);
-    // move to bottom of high stake
-    chassis.moveToPose(chassis.getPose().x+13, chassis.getPose().y+13, 318, 2000, {}, false);
-    chassis.turnToPoint(0, -24, 1000, {.maxSpeed=(int)ceil(127/1.5)}, false);
-    // use intake up to prevent breaking bot
     intakeLift.extend();
-    // move to ladder
-    chassis.moveToPose(0, -20, 315, 2000, {}, false);
-    // slow turn to ensure contact
-    chassis.tank(0,10);
-    // stop all motion
+    // Go to ladder
+    chassis.moveToPose(26, chassis.getPose().y, 90, 2000, {}, false);
+    // chassis.turnToHeading(0, 1000, {.maxSpeed=127/2}, false);
+    chassis.moveToPoint(22, -15, 3000, {.maxSpeed=127/2}, false);
+    doinker.extend();       
+    chassis.tank(0,30);
+    delay(1500);
     chassis.cancelAllMotions();
+    chassis.tank(0,0);
 
 };
 
