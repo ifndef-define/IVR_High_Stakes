@@ -8,9 +8,9 @@ private:
     static bool isEjecting;
     static int pauseCounter1;
     static int pauseCounter2;
-    inline static bool runColorSort;
-    inline static bool colorToKeep; //0 for red, 1 for blue
-    inline static bool autonControlFlag; //run intake in auton
+    static bool runColorSort;
+    static bool colorToKeep; //0 for red, 1 for blue
+    static bool autonControlFlag; //run intake in auton
 
 public:
     Intake(pros::MotorGroup *intake);

@@ -5,5 +5,7 @@
 void runAuton(bool isBlue);
 void redAuton();
 void blueAuton();
-void skillsAuton();
+void moveFwd(float dist, int timeout, float maxSpeed, float minSpeed);
+float convertAngle(float angle);
+
 void skillsCaller();

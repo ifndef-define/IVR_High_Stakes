@@ -72,4 +72,4 @@ extern lemlib::ExpoDriveCurve steerCurve;
 // create the chassis
 extern lemlib::Chassis chassis;
 
-#endif // COMP_15_DEVICES_H
+#endif // COMP_24_DEVICES_H

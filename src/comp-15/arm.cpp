@@ -4,6 +4,7 @@ Arm::Arm(pros::Motor *armM, pros::Rotation *armR, double kP, double kI, double k
 {
     armMotor = armM;
     armRot = armR;
+    lastArmState = 0;
     armState = 0;
     intakePullBackFlag = false;
     armFlag = false;
@@ -67,6 +68,34 @@ double Arm::getNormalizedAngle(){
     return normalizeAngle(armRot->get_position());
 }
 
+// void Arm::manualControl(){
+//     if (!intake.getIsEjecting()){
+//         if (ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){
+//             armState = 4;
+//         }
+//         else if (ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){
+//             incrementArmState();
+//         }
+//         else if (ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)){
+//             decrementArmState();
+//         }
+//         // Monitor arm position to set intakeArmFlag
+//         if (!armFlag && armRot->get_position() > 1800) {
+//             armFlag = true;
+//             intakePullBackFlag = true;
+//         }
+//         if (armRot->get_position() < 1600) {
+//             armFlag = false;
+//         }
+//     } else {
+//         if(armState > 1){
+//             armState = 2;
+//         } else {
+//             armState = 0;
+//         }
+//     }
+//     updatePosition();
+// }
 void Arm::manualControl(){
     // if(!intake.getIsEjecting){
         // Move arm to 23000 when L2 is held, return to 0 when released
