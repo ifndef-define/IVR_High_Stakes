@@ -2,7 +2,7 @@
 #include "robots/comp-24/controls.h"
 #include "robots/comp-24/auton.h"
 
-const static bool isBlue = 0; // 0 for red, 1 for blue
+const static bool isBlue = 1; // 0 for red, 1 for blue
 
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
