@@ -4,3 +4,4 @@
 #include "./drive_parent.h"
 #include "./pid.h"
 #include "./odom.h"
+#include "./gui.h"

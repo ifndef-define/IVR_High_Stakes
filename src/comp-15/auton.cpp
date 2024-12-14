@@ -1,38 +1,36 @@
 #include "robots/comp-15/auton.h"
 
-void redAuton();
-void blueAuton();
+// void redAuton();
+// void blueAuton();
 
-void runAuton(bool isBlue) {
-    if(isBlue){
-        uint32_t timestart = pros::millis();
-        pros::Task blueTask(blueAuton);
-        while(pros::millis()-timestart < 30000) {
-            delay(10);
-        }
-        blueTask.remove();
-        for (int i=0;i<3;i++) {
-            ctrl_master.rumble(".");
-            delay(100);
-        }
-    } else {
-        uint32_t timestart = pros::millis();
-        pros::Task redTask(redAuton);
-        while(pros::millis()-timestart < 30000) {
-            delay(10);
-        }
-        redTask.remove();
-        for (int i=0;i<3;i++) {
-            ctrl_master.rumble(".");
-            delay(100);
-        }
-    }
-};
+// void runAuton(bool isBlue) {
+//     if(isBlue){
+//         uint32_t timestart = pros::millis();
+//         pros::Task blueTask(blueAuton);
+//         while(pros::millis()-timestart < 30000) {
+//             delay(10);
+//         }
+//         blueTask.remove();
+//         for (int i=0;i<3;i++) {
+//             ctrl_master.rumble(".");
+//             delay(100);
+//         }
+//     } else {
+//         uint32_t timestart = pros::millis();
+//         pros::Task redTask(redAuton);
+//         while(pros::millis()-timestart < 30000) {
+//             delay(10);
+//         }
+//         redTask.remove();
+//         for (int i=0;i<3;i++) {
+//             ctrl_master.rumble(".");
+//             delay(100);
+//         }
+//     }
+// };
 
 //RED ASSETS
 ASSET(comp_black_1_txt);
-ASSET(comp_black_2_txt);
-ASSET(comp_black_3_txt);
 
 void redAuton(){
     // drop mogo rush right as auto starts
@@ -225,7 +223,6 @@ ASSET(skills_black_3_txt);
 ASSET(skills_black_4_txt);
 
 void skillsAuton(){
-    chassis.setPose(-52, 0, 90);
     intake.setVoltage(-127);
     delay(250);
     intake.setVoltage(127);

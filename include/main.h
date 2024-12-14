@@ -21,6 +21,7 @@
  */
 #include "api.h" // DO NOT REMOVE //
 #include "pros/apix.h"
+#include "liblvgl/lvgl.h"
 ///////////////////////////////////////
 
 /**
@@ -53,6 +54,9 @@
 #endif
 #ifndef M_E
 #define M_E 2.71828182845904523536
+#endif
+#ifndef PROS_LVGL
+#define PROS_LVGL
 #endif
 ///////////////////////////////////////
 

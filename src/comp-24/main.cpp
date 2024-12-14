@@ -2,49 +2,69 @@
 #include "robots/comp-24/devices.h"
 #include "robots/comp-24/controls.h"
 #include "robots/comp-24/auton.h"
+#include "common/pid.h"
 
-const static bool isBlue = 0; // 0 for red, 1 for blue
+// const static bool isBlue = 0; // 0 for red, 1 for blue
 
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
-	pros::lcd::initialize();
+	// pros::lcd::initialize();
+	lv_init();
+	ui::init();
 	intakeColor.set_led_pwm(100);
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-	intake.setColorToKeep(isBlue);
 
-	pros::lcd::print(0, "Comp 15 Bot");
+	// pros::lcd::print(0, "Comp 24 Bot");
 	chassis.calibrate(true);
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
-	// chassis.setPose(-50, 30, 270);
-	// chassis.setPose(-53.5, 61, 90); //53.5, 61, 90
-	chassis.setPose(-52, 24, 90);
-
-	// armMotor.move(10);
-	// delay(200);
-	armRot.reset();
-	// armMotor.brake();
-	pros::Task ringThread(Intake::ringTask);
 }
 
+pros::Task *ringTask;
 /* Runs when robot is disabled from competition controller after driver/auton */
 void disabled() {}
 
 /* If connected to competition controller, this runs after initialize */
 void competition_initialize() {}
 
-/* Autonomous Method */
+/* Autonmous Method */
 void autonomous() {
-	// pros::Task odomTask(odom::start);
-	// pros::Task ringThread(Intake::ringTask);
-	// pros::Task telemetry(debug);
-	// runAuton(isBlue);
-	// skillsAuton();
-	skillsCaller();
+	if (ui::selection == ui::COLOR_BLUE) {
+		ringTask = new pros::Task(Intake::ringTask);
+		intake.setColorToKeep(1);
+		chassis.setPose(-54, 13, 90);
+		blueAuton();
+	} else if (ui::selection == ui::COLOR_RED) {
+		ringTask = new pros::Task(Intake::ringTask);
+		intake.setColorToKeep(0);
+		chassis.setPose(54, 13, 270);
+		redAuton();
+	} else {
+		chassis.setPose(-52, 0, 90);
+		skillsAuton();
+	}
 }
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
+
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+
+	pros::Task ringTControler([&]{
+		do {
+			if (ui::COLOR_GREEN) {
+				if (ringTask != nullptr) {
+					ringTask->suspend();
+				}
+			} else {
+				if (ringTask == nullptr) {
+					ringTask = new pros::Task(Intake::ringTask);
+				}
+			}
+
+			delay(30);
+		} while (!pros::competition::is_connected());
+	});
+
+
 	teleOp();
-	// runAuton(isBlue);
 }
