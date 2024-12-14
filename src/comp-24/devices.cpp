@@ -45,6 +45,7 @@ adi::Pneumatics mogoRushReach('F', false);
 adi::Pneumatics mogoRushClamp('C', false);
 adi::Pneumatics mogoClamp('H', false);
 adi::Pneumatics doinker('G', false);
+adi::Pneumatics intakeLift('E', false);
 
 //Odometry
 // #define SMART_PORT 16
@@ -59,7 +60,8 @@ adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(16, 1, 2)); // 5 6
 //Chassis
 // Chassis joner(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2,
 //                                                                 .0,.0,.0);
-Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11, 100);
+// Arm arm(&armMotor, &armRot, 0.045, 0.0, 0.11, 3);
+Arm arm(&armMotor, &armRot, 5.5, 0.0001, 15.0, 3.0);
 Intake intake(&intakeMotor);
 
 // LEMLIB Config
@@ -88,16 +90,16 @@ lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
 lemlib::ControllerSettings linearController(8, // proportional gain (kP)
                                             0.0005, // integral gain (kI)
                                             1.4, // derivative gain (kD)
-                                            0, // anti windup
-                                            0, // small error range, in inches
-                                            0, // small error range timeout, in milliseconds
-                                            0, // large error range, in inches
-                                            0, // large error range timeout, in milliseconds
+                                            60, // anti windup
+                                            1, // small error range, in inches
+                                            100, // small error range timeout, in milliseconds
+                                            3, // large error range, in inches
+                                            600, // large error range timeout, in milliseconds
                                             0 // maximum acceleration (slew)
 );
 
 // angular motion controller 2.45, 5.5 ///// 2.7,7
-lemlib::ControllerSettings angularController(2.1, // proportional gain (kP)
+lemlib::ControllerSettings angularController(2.45, // proportional gain (kP)
                                              0.006, // integral gain (kI)
                                              5.5, // derivative gain (kD)
                                              60, // anti windup

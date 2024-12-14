@@ -43,7 +43,7 @@ Rotation armRot(-17);
 
 //Pneumatics
 adi::Pneumatics mogoRushReach('A', false);
-adi::Pneumatics mogoRushClamp('B', true);
+adi::Pneumatics mogoRushClamp('B', false);
 adi::Pneumatics mogoClamp('G', false);
 adi::Pneumatics doinker('H', false);
 adi::Pneumatics intakeLift('F', false);

@@ -2,7 +2,11 @@
 #include "robots/comp-15/includeList.h"
 #include "robots/comp-15/arm.h"
 
-void runAuton(bool isBlue);
+#define ASYNC true
+#define SYNC false
+#define FORWARD true
+#define REVERSE false
+
 void redAuton();
 void blueAuton();
 void skillsAuton();

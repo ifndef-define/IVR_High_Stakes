@@ -30,5 +30,7 @@ public:
     static bool getAutonControlFlag();
     static void toggleColorSort();
     static void ringTask();
+    // Standard spin in rev to release intake
+    static void releaseIntake(bool inv=false);
     // static void ringTaskNew();
 };

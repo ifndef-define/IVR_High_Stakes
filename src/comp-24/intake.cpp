@@ -104,7 +104,7 @@ void Intake::autonControl(int speed){
                 arm.setState(0);
             }
             intake->move(-speed);
-            if (pauseCounter2 < 10) { // 10*15 = 150ms
+            if (pauseCounter2 < 10*127/speed) { // 10*15 = 150ms
                 pauseCounter2++;
             } else {
                 pauseCounter2 = 0;
@@ -160,7 +160,7 @@ void Intake::ringTask() {
                     isEjecting = true;
                 }
             }
-            autonControl(127);
+            autonControl(100);
         }
     }
 }
