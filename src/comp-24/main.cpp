@@ -41,7 +41,7 @@ void autonomous() {
 		// chassis.setPose(-52, 0, 90);
 		ringTask = new pros::Task(Intake::ringTask);
 		// chassis.setPose(-52, 27, 90);
-		skillsAuton();
+		runAuton(0);
 	// }
 }
 
