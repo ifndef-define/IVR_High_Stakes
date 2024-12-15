@@ -34,7 +34,7 @@ bool Arm::getIntakePullBackFlag()
 void Arm::incrementArmState()
 {
         armState++;
-        if (armState > 2)
+        if (armState > 1)
         {
             armState = 0;
         }
@@ -46,7 +46,7 @@ void Arm::decrementArmState()
     armState--;
     if (armState < 0)
     {
-        armState = 2;
+        armState = 1;
     }
 }
 
@@ -102,7 +102,7 @@ void Arm::manualControl(){
         if(!ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             if(ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
                 if (armState != 3) {
-                    lastArmState = armState;
+                    // lastArmState = armState;
                     armState = 3;
                 } 
                 else {
@@ -134,7 +134,7 @@ void Arm::manualControl(){
         armFlag = true;
         intakePullBackFlag = true;
     }
-    if (armRot->get_position() < 1600) {
+    if (armRot->get_position() < 1700) {
         armFlag = false;
     }
 }

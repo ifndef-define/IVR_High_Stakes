@@ -8,8 +8,8 @@
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
 	// pros::lcd::initialize();
-	lv_init();
-	ui::init();
+	// lv_init();
+	// ui::init();
 	intakeColor.set_led_pwm(100);
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
@@ -27,43 +27,51 @@ void competition_initialize() {}
 
 /* Autonmous Method */
 void autonomous() {
-	if (ui::selection == ui::COLOR_BLUE) {
+	// if (ui::selection == ui::COLOR_BLUE) {
+	// 	ringTask = new pros::Task(Intake::ringTask);
+	// 	intake.setColorToKeep(1);
+	// 	chassis.setPose(-54, 13, 90);
+	// 	blueAuton();
+	// } else if (ui::selection == ui::COLOR_RED) {
+	// 	ringTask = new pros::Task(Intake::ringTask);
+	// 	intake.setColorToKeep(0);
+	// 	chassis.setPose(54, 13, 270);
+	// 	redAuton();
+	// } else {
+		// chassis.setPose(-52, 0, 90);
 		ringTask = new pros::Task(Intake::ringTask);
-		intake.setColorToKeep(1);
-		chassis.setPose(-54, 13, 90);
-		blueAuton();
-	} else if (ui::selection == ui::COLOR_RED) {
-		ringTask = new pros::Task(Intake::ringTask);
-		intake.setColorToKeep(0);
-		chassis.setPose(54, 13, 270);
-		redAuton();
-	} else {
-		chassis.setPose(-52, 0, 90);
+		// chassis.setPose(-52, 27, 90);
 		skillsAuton();
-	}
+	// }
 }
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
 
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+	if (ringTask != nullptr) {
+		ringTask->suspend();
+	}
 
-	pros::Task ringTControler([&]{
-		do {
-			if (ui::COLOR_GREEN) {
-				if (ringTask != nullptr) {
-					ringTask->suspend();
-				}
-			} else {
-				if (ringTask == nullptr) {
-					ringTask = new pros::Task(Intake::ringTask);
-				}
-			}
+	// pros::Task ringTControler([&]{
+	// 	do {
+	// 		if (ui::COLOR_GREEN) {
+	// 			if (ringTask != nullptr) {
+	// 				ringTask->suspend();
+	// 			}
+	// 		} else {
+	// 			if (ringTask == nullptr) {
+	// 				ringTask = new pros::Task(Intake::ringTask);
+	// 			}
+	// 		}
 
-			delay(30);
-		} while (!pros::competition::is_connected());
-	});
+	// 		delay(30);
+	// 	} while (!pros::competition::is_connected());
+	// });
 
 
 	teleOp();
+
+	while(1)
+		delay(1000);
 }

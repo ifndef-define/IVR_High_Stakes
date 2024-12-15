@@ -317,9 +317,9 @@ void skillsAuton(){
     intake.setVoltage(-127);
     delay(250);
     intake.setVoltage(127);
-    delay(750);
+    delay(600);
 
-    chassis.moveToPose(-58.5, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
+    chassis.moveToPose(-59, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
     // while(chassis.isInMotion())
     // {
     //     if(intakeColor.get_proximity() >= 170)

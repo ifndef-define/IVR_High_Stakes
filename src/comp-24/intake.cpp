@@ -64,6 +64,7 @@ void Intake::manualControl(){
                 intake->move(-127);
             }
         } else {
+            intake->move(0);
         }
     } else {
         if (arm.getState() <= 1) {
@@ -128,24 +129,23 @@ void Intake::ringTask() {
 		RED,
 		BLUE
 	} RingColor;
-	vector<int> blueRange = {130, 270};
-	vector<int> redRange = {300, 30};
+	vector<int> blueRange = {115, 270};
+    vector<int> redRange = {300, 30};
 	RingColor detectedRing = NONE;
-    while(1) {
+
+    while(true) {
         if(runColorSort){
             if(intakeColor.get_proximity() > 170) {
                 if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { detectedRing = BLUE; }
-                else { detectedRing = RED; }
-                // else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]) { detectedRing = RED; }
-                // else { detectedRing = NONE; }
+                else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]) { detectedRing = RED; }
+                else { detectedRing = NONE; }
                 if((detectedRing == RED && colorToKeep) || (detectedRing == BLUE && !colorToKeep)) { 
                     delay(60);
                     isEjecting = true;
                 }
             }
-            autonControl(127);
+            autonControl(100);
         }
-        delay(15);
     }
 }
 // void Intake::ringTask() {

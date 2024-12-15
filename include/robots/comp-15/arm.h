@@ -8,7 +8,7 @@ private:
     int armState;
     int lastArmState;
     // int targetPosition[3] = {0, 1600, 14000};
-    double targetPosition[4] = {0, 18, 26, 145};
+    double targetPosition[4] = {0, 13, 26, 145};
     bool intakePullBackFlag;
     bool armFlag;
     double armAngle;
