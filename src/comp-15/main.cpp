@@ -7,19 +7,21 @@
 // const static bool isBlue = 0; // 0 for red, 1 for blue
 
 /* First method to run. Should last only a few seconds max. */
+pros::Task *ringTask;
 void initialize() {
 	pros::lcd::initialize();
 	// lv_init();
 	// ui::init();
 	intakeColor.set_led_pwm(100);
+	intakeColor.set_integration_time(20);
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
 	// pros::lcd::print(0, "Comp 15 Bot");
 	chassis.calibrate(true);
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
+	ringTask = new pros::Task(Intake::ringTask);
 }
 
-pros::Task *ringTask;
 /* Runs when robot is disabled from competition controller after driver/auton */
 void disabled() {}
 
@@ -39,7 +41,6 @@ void autonomous() {
 	// 	chassis.setPose(54, 13, 270);
 	// 	redAuton();
 	// } else {
-		ringTask = new pros::Task(Intake::ringTask);
 		// chassis.setPose(-52, 0, 90);
 		skillsAuton();
 	// }
