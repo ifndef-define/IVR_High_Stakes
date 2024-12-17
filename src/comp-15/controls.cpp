@@ -21,13 +21,13 @@ void teleOp(){
         leftDrive.move(y + z);
 		rightDrive.move(y - z);
 
-        if(buttonB){
+        if(buttonX){
             intake.toggleColorSort();
         }
         if(buttonY){
             mogoClamp.toggle();
         }
-        if(buttonX){
+        if(buttonB){
             doinker.toggle();
         }
 

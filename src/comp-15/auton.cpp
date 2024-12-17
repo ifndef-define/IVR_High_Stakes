@@ -33,25 +33,27 @@
 // };
 
 // RED AUTO ASSETS
-ASSET(comp_black_1_txt);
+ASSET(comp_black_1_tune_txt);
+
 
 void redAuton(){
-    chassis.setPose(-54, 13, 90);
+    // chassis.setPose(-54, 13, 90);
 
     // drop mogo rush right as auto starts
     mogoRushReach.extend();
     mogoRushClamp.extend();
     // move to grab mogo under ladder
-    chassis.follow(comp_black_1_txt, 15, 3000, true);
+    chassis.follow(comp_black_1_tune_txt, 15, 3000, true);
     // wait
     i_waitUntil(!chassis.isInMotion());
     // clamp goal
     mogoRushClamp.retract();
     // Spin move to move goal to back clamp
-    chassis.swingToHeading(170, lemlib::DriveSide::LEFT, 1000, {.maxSpeed=100}, false);
+    chassis.swingToHeading(175, lemlib::DriveSide::LEFT, 1000, {.maxSpeed=100}, false);
     // let go of goal
     mogoRushClamp.extend();
     delay(30);
+    chassis.moveToPose(chassis.getPose().x+.5, chassis.getPose().y+3, 180, 1000, {.forwards=false, .maxSpeed=127/2});
     // about face
     chassis.turnToHeading(349, 1200, {.maxSpeed=100});
     delay(100);
@@ -59,10 +61,10 @@ void redAuton(){
     i_waitUntil(!chassis.isInMotion());
     mogoRushClamp.extend();
     // move to grab second mogo
-    chassis.moveToPose(chassis.getPose().x-2, -55.5, 0, 2500, {.forwards=false, .maxSpeed=127/2});
+    chassis.moveToPose(chassis.getPose().x+.5, -55.5, 0, 2500, {.forwards=false, .maxSpeed=127/2});
     // allow mogo to slide into clamp
     while(chassis.isInMotion()){
-        if(chassis.getPose().y <= -27) {
+        if(chassis.getPose().y <= -33) {
             mogoClamp.extend();
             // release intake
             intake.releaseIntake();
@@ -87,7 +89,7 @@ void redAuton(){
     chassis.swingToHeading(47, lemlib::DriveSide::LEFT, 1000, {.maxSpeed=127/2}, false);
     // move to stack to grab red ring
     intake.setAutonControlFlag(false);
-    chassis.moveToPose(chassis.getPose().x+4.5, chassis.getPose().y+4, 43, 1000, {.maxSpeed=127/2}, false);
+    chassis.moveToPose(chassis.getPose().x+4.75, chassis.getPose().y+4.3, 43, 1000, {.maxSpeed=127/2}, false);
 
     // drop intake on red top ring
     intakeLift.retract();
@@ -106,10 +108,10 @@ void redAuton(){
     // move to stack, and corner stack
     chassis.moveToPose(chassis.getPose().x-15, chassis.getPose().y+8, 300, 1000, {.maxSpeed=127/2});
     // turn to corner stack
-    chassis.turnToHeading(225, 1000, {.maxSpeed=127/2}, false);
+    chassis.turnToHeading(221, 1000, {.maxSpeed=127/2}, false);
     delay(300);
     // move into stack
-    chassis.moveToPose(chassis.getPose().x-17, chassis.getPose().y-17, 225, 1000, {.maxSpeed=127/2}, false);
+    chassis.moveToPose(chassis.getPose().x-18, chassis.getPose().y-18, 224, 1000, {.maxSpeed=127/2}, false);
 
     // cycle through the ring stack
     float dist = 3.3;
@@ -128,7 +130,7 @@ void redAuton(){
         } 
     
         // let intake to clean
-        delay(400);
+        delay(300);
 
         // move forward
         chassis.moveToPose(start2.x-1, start2.y-1, 
@@ -142,16 +144,25 @@ void redAuton(){
     }
     chassis.turnToHeading(90, 1000, {.maxSpeed=(int)ceil(127/1.5)}, false);
     intake.setAutonControlFlag(false);
-    intakeLift.extend();
+    // intakeLift.extend();
     // Go to ladder
-    chassis.moveToPose(-26, chassis.getPose().y, 90, 2000, {}, false);
+    chassis.moveToPose(-30, chassis.getPose().y, 90, 2000, {}, false);
+    intake.setAutonControlFlag(true);
     // chassis.turnToHeading(0, 1000, {.maxSpeed=127/2}, false);
-    chassis.moveToPoint(-22, -15, 3000, {.maxSpeed=127/2}, false);
+    chassis.moveToPoint(-30, -10, 3000, {.maxSpeed=127/2}, false);
     doinker.extend();       
-    chassis.tank(30,0);
-    delay(1500);
-    chassis.cancelAllMotions();
-    chassis.tank(0,0);
+    chassis.swingToHeading(40, lemlib::DriveSide::RIGHT, 2000, {.maxSpeed=127/2}, false);
+    // armMotor.set_brake_mode(BRAKE_HOLD);
+    // while(1) {
+    //     arm.setPosition(30);
+    //     delay(10);
+    // }
+
+
+    // chassis.tank(30,0);
+    // delay(1500);
+    // chassis.cancelAllMotions();
+    // chassis.tank(0,0);
 
     // // about face
     // chassis.turnToHeading(53, 1000, {.direction=lemlib::AngularDirection::CCW_COUNTERCLOCKWISE, .maxSpeed=127/2}, false);
@@ -319,7 +330,7 @@ void skillsAuton(){
     intake.setVoltage(127);
     delay(600);
 
-    chassis.moveToPose(-59, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
+    chassis.moveToPose(-58.5, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
     // while(chassis.isInMotion())
     // {
     //     if(intakeColor.get_proximity() >= 170)
@@ -333,7 +344,7 @@ void skillsAuton(){
     // }
     // i_waitUntil(!chassis.isInMotion());
     // intake.setAutonControlFlag(true);
-    delay(750); //tune
+    delay(1500); //tune
     // intake.setAutonControlFlag(false);
     intake.setVoltage(0);
 
@@ -360,7 +371,7 @@ void skillsAuton(){
         delay(10);
     }          
     
-    chassis.moveToPose(-60, -63.267, 235, 2500, {.maxSpeed = 127/2}, false);
+    chassis.moveToPose(-63, -66.267, 235, 3000, {.maxSpeed = 127/2}, false);
 
     delay(400);
     chassis.moveToPose(chassis.getPose().x + 7*sqrt(2), chassis.getPose().y + 7*sqrt(2), 225, 2200, {.forwards = false}, false);
@@ -373,17 +384,19 @@ void skillsAuton(){
     chassis.moveToPose(-50, -51.5, 45, 1000);       
 
     chassis.turnToHeading(230, 1000, {}, false);   
-    chassis.moveToPose(36, -24, 235, 3000, {.forwards = false, .maxSpeed = 127/2}, true);
-    while(chassis.isInMotion())
-    {
-        if(chassis.getPose().x > 33)
-        {
-            mogoClamp.extend(); 
-        }
-    }
+    chassis.moveToPose(38, -22, 235, 3000, {.forwards = false, .maxSpeed = 127/2}, false);
+    mogoClamp.extend();
+    // while(chassis.isInMotion())
+    // {
+    //     if(chassis.getPose().x > 35)
+    //     {
+    //         mogoClamp.extend(); 
+    //     }
+    //     delay(10);
+    // }
       
-    delay(200);
-    chassis.turnToHeading(210, 1000, {}, false);   
+    delay(600);
+    chassis.turnToHeading(210, 1000, {.maxSpeed=127/2}, false);   
     intake.setAutonControlFlag(true);
 
     chassis.moveToPose(4, -56, 210, 3000, {}, false);

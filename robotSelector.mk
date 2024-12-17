@@ -11,7 +11,7 @@
 # Skills-15 Robot = 2
 # Skills-24 Robot = 3
 # NOTE: Changing the robot will auto delete the previous robot's binary files
-ROBOT_BUILD := 1
+ROBOT_BUILD := 0
 
 
 ###############################################################
@@ -19,7 +19,7 @@ ROBOT_BUILD := 1
 
 # Location of each robot's working code
 DIR_COMP15 := $(SRCDIR)/comp-15
-DIR_COMP24 := $(SRCDIR)/comp-24
+DIR_COMP24 := $(SRCDIR)/comp-24 $(SRCDIR)/opening_may_crash_vscode
 DIR_SKILLS15 := $(SRCDIR)/skills-15
 DIR_SKILLS24 := $(SRCDIR)/skills-24
 
