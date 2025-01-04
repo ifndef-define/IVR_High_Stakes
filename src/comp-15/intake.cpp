@@ -107,7 +107,7 @@ void Intake::autonControl(int speed){
                 pauseCounter2 = 0;
                 intake->brake();
                 isEjecting = false;
-                detectedRing == NONE;
+                detectedRing = NONE;
             }
         }
     }
@@ -140,19 +140,25 @@ bool Intake::getAutonControlFlag(){
 void Intake::ringTask() {
     vector<int> blueRange = {100, 230};
     vector<int> redRange = {300, 30};
-
     while(true) {
         if(runColorSort){
             if(intakeColor.get_proximity() > 200) {
                 if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { 
-                    detectedRing = BLUE; 
-                    delay(60);
-                    isEjecting = true;
-                }
-                // else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]) { detectedRing = RED; }
-                else { 
+                    detectedRing = BLUE;
+                    if(colorToKeep == 0) {
+                        delay(60);
+                        isEjecting = true;
+                    } else {
+                        isEjecting = false;
+                    }
+                } else { 
                     detectedRing = RED; 
-                    isEjecting = false;
+                    if(!colorToKeep) {
+                        delay(60);
+                        isEjecting = true;
+                    } else {
+                        isEjecting = false;
+                    }
                 }
             }
             autonControl(127);

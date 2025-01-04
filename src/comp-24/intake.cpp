@@ -1,13 +1,17 @@
 #include "robots/comp-24/intake.h"
 #include "robots/comp-24/arm.h"
 
-pros::MotorGroup* Intake::intake = nullptr;
-bool Intake::isEjecting = false;
-int Intake::pauseCounter1 = 0;
-int Intake::pauseCounter2 = 0;
-bool Intake::runColorSort = false;
-bool Intake::colorToKeep = false; // 0 for red, 1 for blue
-bool Intake::autonControlFlag = false; // Run intake in autonomous
+pros::MotorGroup *Intake::intake;
+bool Intake::isEjecting;
+int Intake::pauseCounter1;
+int Intake::pauseCounter2;
+
+typedef enum {
+        NONE,
+        RED,
+        BLUE
+} RingColor;
+RingColor detectedRing = NONE;
 
 Intake::Intake(pros::MotorGroup *intakeMotor) {
     intake = intakeMotor;
@@ -64,7 +68,7 @@ void Intake::manualControl(){
                 intake->move(-127);
             }
         } else {
-            intake->move(0);
+            intake->brake();
         }
     } else {
         if (arm.getState() <= 1) {
@@ -82,21 +86,27 @@ void Intake::manualControl(){
     pullBack();
 }
 
+int avg(std::vector<double> vec){
+    int sum = 0;
+    for (int i = 0; i < vec.size(); i++){
+        sum += vec[i];
+    }
+    return sum / vec.size();
+}
+
 void Intake::autonControl(int speed){
     if(autonControlFlag){
         if (!isEjecting){
             intake->move(speed);
-        } else {    
-            if (arm.getState() <= 1) {
-                arm.setState(0);
-            }
+        } else {
             intake->move(-speed);
-            if (pauseCounter2 < 10 * (127/speed)) { // 10*15 = 150ms
+            if (pauseCounter2 < 12 * (127/speed)) { // 10*15 = 150ms
                 pauseCounter2++;
             } else {
                 pauseCounter2 = 0;
                 intake->brake();
                 isEjecting = false;
+                detectedRing = NONE;
             }
         }
     }
@@ -117,6 +127,9 @@ void Intake::toggleColorSort(){
 
 void Intake::setAutonControlFlag(bool flag){
     autonControlFlag = flag;
+    if (!flag){
+        intake->brake();
+    }
 }
 
 bool Intake::getAutonControlFlag(){
@@ -124,29 +137,33 @@ bool Intake::getAutonControlFlag(){
 }
 
 void Intake::ringTask() {
-    typedef enum {
-		NONE,
-		RED,
-		BLUE
-	} RingColor;
-	vector<int> blueRange = {115, 270};
+    vector<int> blueRange = {100, 230};
     vector<int> redRange = {300, 30};
-	RingColor detectedRing = NONE;
-
     while(true) {
         if(runColorSort){
-            if(intakeColor.get_proximity() > 170) {
-                if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { detectedRing = BLUE; }
-                else if (intakeColor.get_hue() >= redRange[0] && intakeColor.get_hue() <= redRange[1]) { detectedRing = RED; }
-                else { detectedRing = NONE; }
-                if((detectedRing == RED && colorToKeep) || (detectedRing == BLUE && !colorToKeep)) { 
-                    delay(60);
-                    isEjecting = true;
+            if(intakeColor.get_proximity() > 200) {
+                if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { 
+                    detectedRing = BLUE;
+                    if(colorToKeep == 0) {
+                        delay(60);
+                        isEjecting = true;
+                    } else {
+                        isEjecting = false;
+                    }
+                } else { 
+                    detectedRing = RED; 
+                    if(!colorToKeep) {
+                        delay(60);
+                        isEjecting = true;
+                    } else {
+                        isEjecting = false;
+                    }
                 }
             }
-            autonControl(100);
+            autonControl(127);
         }
     }
+    delay(15);
 }
 // void Intake::ringTask() {
 // 	typedef enum {
@@ -216,5 +233,5 @@ void Intake::ringTask() {
 
 //         }
 // 		pros::delay(15);
-// 	 }
+// 	}
 // }

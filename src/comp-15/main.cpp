@@ -4,7 +4,7 @@
 #include "robots/comp-15/auton.h"
 #include "common/pid.h"
 
-// const static bool isBlue = 0; // 0 for red, 1 for blue
+const static bool isBlue = 0; // 0 for red, 1 for blue
 
 /* First method to run. Should last only a few seconds max. */
 pros::Task *ringTask;
@@ -19,7 +19,7 @@ void initialize() {
 	// pros::lcd::print(0, "Comp 15 Bot");
 	chassis.calibrate(true);
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
-	intake.setColorToKeep(0);
+	intake.setColorToKeep(isBlue);
 	// ringTask = new pros::Task(Intake::ringTask);
 }
 
