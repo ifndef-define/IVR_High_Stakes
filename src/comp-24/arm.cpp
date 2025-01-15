@@ -81,12 +81,12 @@ void Arm::manualControl(){
 }
 
 bool Arm::setPosition(int pos, bool async){
-    armPID.reset();
     if (async) {
         pros::Task task([&]() { setPosition(pos, false); });
         pros::delay(10); // delay to give the task time to start
         return armPID.getState().reachedTarget;
     }
+    armPID.reset();
     while(!armPID.getState().reachedTarget){
         armMotor->move(armPID.update(pos, getNormalizedAngle()));
     }
