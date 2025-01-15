@@ -16,7 +16,7 @@ private:
 
 public:
     Arm(pros::Motor *armM, pros::Rotation *armR, double kP, double kI, double kD, double exitRange);
-    bool setPosition(int pos);
+    bool setPosition(int pos, bool async);
     double normalizeAngle(double angle);
     double getNormalizedAngle();
     void setState(int state);
