@@ -4,7 +4,7 @@
 #include "robots/comp-15/auton.h"
 #include "common/pid.h"
 
-const static bool isBlue = 0; // 0 for red, 1 for blue
+const static bool isBlue = 1; // 0 for red, 1 for blue
 
 /* First method to run. Should last only a few seconds max. */
 void initialize() {
@@ -53,7 +53,11 @@ void competition_initialize() {}
 
 /* Autonmous Method */
 void autonomous() {
-	skillsAuton();
+	// pros::Task odomTask(odom::start);
+	// pros::Task ringThread(Intake::ringTask);
+	// skillsAuton();
+	// redAuton();
+	blueAuton();
 }
 
 /* Driver Control. Runs default if not connected to field controller */
@@ -62,11 +66,37 @@ void opcontrol() {
 	// pros::Task ringThread(Intake::ringTask);
 	// pros::Task telemetry(debug);
 	// runAuton(isBlue);
-	// blueAuton();
+	blueAuton();
 	// redAuton();
 	// intake.setAutonControlFlag(false);
 	// intake.autonControl(20);
 	// intake.setAutonControlFlag(true);
+
+	// chassis.setPose(-52, 0, 90);
+    // //arm.setPosition(0);
+    // intake.setVoltage(-127);
+    // delay(250);
+    // intake.setVoltage(127);
+    // delay(750);
+
+    // chassis.moveToPose(-58.5, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
+    // // while(chassis.isInMotion())
+    // // {
+    // //     if(intakeColor.get_proximity() >= 170)
+    // //     {
+    // //         intake.brake();
+    // //     }
+    // //     else
+    // //     {
+    // //         intake.setVoltage(127);
+    // //     }
+    // // }
+    // // i_waitUntil(!chassis.isInMotion());
+    // // intake.setAutonControlFlag(true);
+    // delay(1200); //tune
+    // // intake.setAutonControlFlag(false);
+    // intake.setVoltage(0);
+
 	teleOp();
 	while(1)
 		delay(1000);

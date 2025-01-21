@@ -100,14 +100,17 @@ void Intake::autonControl(int speed){
         if (!isEjecting){
             intake->move(speed);
         } else {
-            intake->move(-127);
-        if (pauseCounter2 < 7) { // 7*15 = 105ms
-            pauseCounter2++;
-        } else {
-            pauseCounter2 = 0;
-            intake->brake();
-            isEjecting = false;
-        }
+            if (arm.getState() <= 1) {
+                arm.setState(0);
+            }
+            intake->move(-speed);
+            if (pauseCounter2 < 12*127/speed) { // 10*15 = 150ms
+                pauseCounter2++;
+            } else {
+                pauseCounter2 = 0;
+                intake->brake();
+                isEjecting = false;
+            }
         }
     }
     pullBack();
