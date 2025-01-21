@@ -28,16 +28,16 @@ Mogo Mech: G
 Controller ctrl_master(E_CONTROLLER_MASTER);
 
 //Motors
-MotorGroup rightDrive({3, 4, -1, 5}, pros::MotorGears::blue);
+MotorGroup rightDrive({3, -15, 1, 5}, pros::MotorGears::blue);
 MotorGroup leftDrive({-10, -9, 7, -8}, pros::MotorGears::blue);
-MotorGroup intakeMotor({-13, 17}, pros::MotorGears::green);
+MotorGroup intakeMotor({-13, 17, -18}, pros::MotorGears::blue);
 Motor armMotor(-14, pros::MotorGears::red);
 
 //Sensors
 // Distance intakeDist(18);
-Optical intakeColor(18);
-IMU imuLeft(20);
-IMU imuRight(11);
+Optical intakeColor(6);
+IMU imuLeft(11);
+IMU imuRight(20);
 Rotation armRot(-21);
 
 //Pneumatics
@@ -67,7 +67,7 @@ Intake intake(&intakeMotor);
 // LEMLIB Config
 const float VERT_RATIO = 0.9795955882;
 const float HORI_RATIO = 0.9915441176;
-lemlib::TrackingWheel vertical(&lxEnc, 1.36*VERT_RATIO, -1.125);
+lemlib::TrackingWheel vertical(&rxEnc, 1.36*VERT_RATIO, 1);
 lemlib::TrackingWheel horizontal(&yEnc, 1.36*HORI_RATIO, 0.375);
 
 // sensors for odometry
@@ -99,13 +99,13 @@ lemlib::ControllerSettings linearController(8, // proportional gain (kP)
 );
 
 // angular motion controller 2.45, 5.5 ///// 2.7,7
-lemlib::ControllerSettings angularController(2.45, // proportional gain (kP)
-                                             0.006, // integral gain (kI)
-                                             5.5, // derivative gain (kD)
-                                             60, // anti windup
-                                             1, // small error range, in degrees
-                                             100, // small error range timeout, in milliseconds
-                                             3, // large error range, in degrees
+lemlib::ControllerSettings angularController(0.80, // proportional gain (kP)
+                                             0.0003, // integral gain (kI)
+                                             1.9, // derivative gain (kD)
+                                             4, // anti windup
+                                             0.25, // small error range, in degrees
+                                             200, // small error range timeout, in milliseconds
+                                             0.5, // large error range, in degrees
                                              500, // large error range timeout, in milliseconds
                                              0 // maximum acceleration (slew)
 );

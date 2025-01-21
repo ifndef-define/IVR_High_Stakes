@@ -34,7 +34,7 @@ bool Arm::getIntakePullBackFlag()
 void Arm::incrementArmState()
 {
         armState++;
-        if (armState > 1)
+        if (armState > 3)
         {
             armState = 0;
         }
@@ -43,7 +43,13 @@ void Arm::incrementArmState()
 
 void Arm::decrementArmState()
 {
+    
     armState--;
+    if (armState = 2)
+    {
+        armState = 0;
+    }
+
     if (armState < 0)
     {
         armState = 1;
@@ -101,9 +107,9 @@ void Arm::manualControl(){
         // Move arm to 23000 when L2 is held, return to 0 when released
         if(!ctrl_master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             if(ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
-                if (armState != 3) {
-                    // lastArmState = armState;
-                    armState = 3;
+                if (armState != 2) {
+                    lastArmState = armState;
+                    armState = 2;
                 } 
                 else {
                     // armState = lastArmState;

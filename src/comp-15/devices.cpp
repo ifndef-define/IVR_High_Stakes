@@ -38,7 +38,7 @@ Motor armMotor(-11, pros::MotorGears::red);
 // Distance intakeDist(6);
 Optical intakeColor(6);
 IMU imuLeft(16);
-IMU imuRight(20);
+IMU imuRight(12);
 Rotation armRot(-17);
 
 //Pneumatics
@@ -54,7 +54,7 @@ adi::Pneumatics intakeLift('F', false);
 // pros::adi::Encoder X_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'C', 'D'});
 // pros::adi::Encoder R_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'E', 'F'});
 
-adi::Encoder yEnc(adi::ext_adi_port_tuple_t(19, 3, 4), true);
+adi::Encoder yEnc(adi::ext_adi_port_tuple_t(19, 3, 4));
 adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(19, 5, 6)); // 3 4
 adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(19, 1, 2)); // 5 6
 
@@ -67,12 +67,13 @@ Intake intake(&intakeMotor);
 // LEMLIB Config
 const float VERT_RATIO = 1.007352941176; //1.33225
 const float HORI_RATIO = 1.01029411765; //1.3485
-lemlib::TrackingWheel vertical(&lxEnc, 1.36*VERT_RATIO, -1.125);
+lemlib::TrackingWheel vertical(&lxEnc, 1.36*VERT_RATIO, -1);
+lemlib::TrackingWheel vertical2(&rxEnc, 1.36*VERT_RATIO, 1);
 lemlib::TrackingWheel horizontal(&yEnc, 1.36*HORI_RATIO, 0.375);
 
 // sensors for odometry
 lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
-                            nullptr, // vertical tracking wheel 2, set to nullptr as we don't have a second one
+                            nullptr, // vertical tracking wheel 2
                             &horizontal, // horizontal tracking wheel
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
                             &imuLeft // inertial sensor
@@ -83,29 +84,29 @@ lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
                               11.875, // 11.825 inch track width
                               lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
                               480, // drivetrain rpm is 480
-                              2 // horizontal drift is 2. If we had traction wheels, it would have been 8
+                              8 // horizontal drift is 2. If we had traction wheels, it would have been 8
 );
 
 // lateral motion controller
-lemlib::ControllerSettings linearController(8, // proportional gain (kP)
-                                            0.0005, // integral gain (kI)
+lemlib::ControllerSettings linearController(11, // proportional gain (kP)
+                                            0.0003, // integral gain (kI)
                                             1.4, // derivative gain (kD)
                                             60, // anti windup
                                             1, // small error range, in inches
                                             100, // small error range timeout, in milliseconds
                                             3, // large error range, in inches
                                             500, // large error range timeout, in milliseconds
-                                            20 // maximum acceleration (slew)
+                                            0 // maximum acceleration (slew)
 );
 
 // angular motion controller 2.45, 5.5 ///// 2.7,7
-lemlib::ControllerSettings angularController(2.1, // proportional gain (kP)
-                                             0.006, // integral gain (kI)
-                                             5.5, // derivative gain (kD)
-                                             60, // anti windup
-                                             1, // small error range, in degrees
+lemlib::ControllerSettings angularController(0.80, // proportional gain (kP)
+                                             0.0003, // integral gain (kI)
+                                             1.9, // derivative gain (kD)
+                                             4, // anti windup
+                                             0.25, // small error range, in degrees
                                              200, // small error range timeout, in milliseconds
-                                             3, // large error range, in degrees
+                                             0.5, // large error range, in degrees
                                              500, // large error range timeout, in milliseconds
                                              0 // maximum acceleration (slew)
 );

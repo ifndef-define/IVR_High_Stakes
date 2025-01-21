@@ -10,7 +10,8 @@ typedef enum {
         NONE,
         RED,
         BLUE
-} RingColor;
+    } RingColor;
+
 RingColor detectedRing = NONE;
 
 Intake::Intake(pros::MotorGroup *intakeMotor) {
@@ -99,15 +100,14 @@ void Intake::autonControl(int speed){
         if (!isEjecting){
             intake->move(speed);
         } else {
-            intake->move(-speed);
-            if (pauseCounter2 < 12 * (127/speed)) { // 10*15 = 150ms
-                pauseCounter2++;
-            } else {
-                pauseCounter2 = 0;
-                intake->brake();
-                isEjecting = false;
-                detectedRing = NONE;
-            }
+            intake->move(-127);
+        if (pauseCounter2 < 7) { // 7*15 = 105ms
+            pauseCounter2++;
+        } else {
+            pauseCounter2 = 0;
+            intake->brake();
+            isEjecting = false;
+        }
         }
     }
     pullBack();
@@ -145,25 +145,32 @@ void Intake::ringTask() {
                 if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { 
                     detectedRing = BLUE;
                     if(colorToKeep == 0) {
-                        delay(60);
+                        delay(50);
                         isEjecting = true;
                     } else {
                         isEjecting = false;
                     }
                 } else { 
                     detectedRing = RED; 
-                    if(!colorToKeep) {
-                        delay(60);
+                    if(colorToKeep == 1) {
+                        delay(50);
                         isEjecting = true;
                     } else {
                         isEjecting = false;
                     }
                 }
+                lcd::print(7, "Col: %s", detectedRing == BLUE ? "Blue" : "Red");
             }
             autonControl(127);
         }
     }
     delay(15);
+}
+
+void Intake::releaseIntake(bool inv){
+    intake->move(inv ? 127 : -127);
+    delay(80);
+    intake->brake();
 }
 // void Intake::ringTask() {
 // 	typedef enum {

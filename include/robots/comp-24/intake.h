@@ -23,9 +23,14 @@ public:
     static void autonControl(int speed);
     static bool getIsEjecting();
     static void setColorToKeep(bool color);
+    static bool getColorToKeep() {
+        return colorToKeep;
+    } //0 for red, 1 for blue
     static void setAutonControlFlag(bool flag);
     static bool getAutonControlFlag();
     static void toggleColorSort();
     static void ringTask();
+    // Standard spin in rev to release intake
+    static void releaseIntake(bool inv=false);
     // static void ringTaskNew();
 };

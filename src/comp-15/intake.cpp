@@ -146,20 +146,21 @@ void Intake::ringTask() {
                 if (intakeColor.get_hue() >= blueRange[0] && intakeColor.get_hue() <= blueRange[1]) { 
                     detectedRing = BLUE;
                     if(colorToKeep == 0) {
-                        delay(60);
+                        delay(50);
                         isEjecting = true;
                     } else {
                         isEjecting = false;
                     }
                 } else { 
                     detectedRing = RED; 
-                    if(!colorToKeep) {
-                        delay(60);
+                    if(colorToKeep == 1) {
+                        delay(50);
                         isEjecting = true;
                     } else {
                         isEjecting = false;
                     }
                 }
+                lcd::print(7, "Col: %s", detectedRing == BLUE ? "Blue" : "Red");
             }
             autonControl(127);
         }

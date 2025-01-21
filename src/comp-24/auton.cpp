@@ -1,9 +1,9 @@
 #include "robots/comp-24/auton.h"
-static bool isBlueAuto = 0;
-void runAuton(bool isBlue)
-{
-    isBlueAuto = isBlue;
-    if (isBlue){
+#include "string.h"
+#include <filesystem>
+
+void runAuton(bool isBlue) {
+    if(isBlue){
         blueAuton();
     }
     else

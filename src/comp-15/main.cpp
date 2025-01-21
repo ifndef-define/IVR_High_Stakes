@@ -9,9 +9,20 @@ const static bool isBlue = 0; // 0 for red, 1 for blue
 /* First method to run. Should last only a few seconds max. */
 pros::Task *ringTask;
 void initialize() {
-	pros::lcd::initialize();
-	// lv_init();
-	// ui::init();
+    pros::lcd::initialize(); // initialize brain screen
+    chassis.calibrate(); // calibrate sensors
+    // print position to brain screen
+    pros::Task screen_task([&]() {
+        while (true) {
+            // print robot location to the brain screen
+            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
+            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
+            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+			pros::lcd::print(3, "IMU Heading: %f", imuLeft.get_heading()); // heading
+            // delay to save resources
+            pros::delay(20);
+        }
+    });
 	intakeColor.set_led_pwm(100);
 	intakeColor.set_integration_time(50);
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -50,7 +61,7 @@ void autonomous() {
 	// }
 }
 
-/* Driver Control. Runs default if not connected to field controler */
+/* Driver Control. Runs default if not connected to field controller */
 void opcontrol() {
 
 	intakeLift.retract();
