@@ -316,7 +316,7 @@ void skillsAuton(){
     intake.setVoltage(-127);
     delay(250);
     intake.setVoltage(127);
-    delay(750);
+    delay(600);
 
     chassis.moveToPose(-58.5, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
     // while(chassis.isInMotion())
@@ -332,7 +332,7 @@ void skillsAuton(){
     // }
     // i_waitUntil(!chassis.isInMotion());
     // intake.setAutonControlFlag(true);
-    delay(750); //tune
+    delay(1500); //tune
     // intake.setAutonControlFlag(false);
     intake.setVoltage(0);
 
@@ -359,7 +359,7 @@ void skillsAuton(){
         delay(10);
     }          
     
-    chassis.moveToPose(-60, -63.267, 235, 2500, {.maxSpeed = 127/2}, false);
+    chassis.moveToPose(-63, -66.267, 235, 3000, {.maxSpeed = 127/2}, false);
 
     delay(400);
     chassis.moveToPose(chassis.getPose().x + 7*sqrt(2), chassis.getPose().y + 7*sqrt(2), 225, 2200, {.forwards = false}, false);
@@ -372,17 +372,19 @@ void skillsAuton(){
     chassis.moveToPose(-50, -51.5, 45, 1000);       
 
     chassis.turnToHeading(230, 1000, {}, false);   
-    chassis.moveToPose(36, -24, 235, 3000, {.forwards = false, .maxSpeed = 127/2}, true);
-    while(chassis.isInMotion())
-    {
-        if(chassis.getPose().x > 33)
-        {
-            mogoClamp.extend(); 
-        }
-    }
+    chassis.moveToPose(38, -22, 235, 3000, {.forwards = false, .maxSpeed = 127/2}, false);
+    mogoClamp.extend();
+    // while(chassis.isInMotion())
+    // {
+    //     if(chassis.getPose().x > 35)
+    //     {
+    //         mogoClamp.extend(); 
+    //     }
+    //     delay(10);
+    // }
       
-    delay(200);
-    chassis.turnToHeading(210, 1000, {}, false);   
+    delay(600);
+    chassis.turnToHeading(210, 1000, {.maxSpeed=127/2}, false);   
     intake.setAutonControlFlag(true);
 
     chassis.moveToPose(4, -56, 210, 3000, {}, false);
