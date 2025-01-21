@@ -1,4 +1,4 @@
-#include "robots/comp-15/auton.h"
+#include "robots/comp-24/auton.h"
 #include "string.h"
 #include <filesystem>
 
