@@ -53,8 +53,10 @@ void competition_initialize() {}
 
 /* Autonmous Method */
 void autonomous() {
-	redAuton();
-
+	// redAuton();
+	arm.setPosition(0);
+	delay(500);
+	arm.setPosition(60);
 }
 
 /* Driver Control. Runs default if not connected to field controler */

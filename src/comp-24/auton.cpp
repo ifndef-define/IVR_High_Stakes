@@ -51,7 +51,7 @@ ASSET(comp_white_8_txt);
 ASSET(comp_white_9_txt);
 void redAuton(){
     chassis.setPose(-40.5, 63, 90);
-    arm.setPosition(0, true);
+    arm.setPosition(0);
     uint32_t timeStart = pros::millis();
     intake.setAutonControlFlag(false);
     intakeMotor.move(0);
@@ -98,9 +98,9 @@ void redAuton(){
     chassis.tank(70, 70, false);
     delay(900);
     chassis.tank(0, 0, false);
-    arm.setPosition(50, true);
+    arm.setPosition(50);
     delay(600);
-    arm.setPosition(0, true);
+    arm.setPosition(0);
     chassis.moveToPose(-45, 5, 270, 1500, {.forwards = 0, .maxSpeed = 127, .minSpeed = 127/3}, 0);
     
     
@@ -253,7 +253,7 @@ void skillsAuton(){
 
     uint32_t timeStart = pros::millis();
     chassis.setPose(-52, 27, 90);
-    arm.setPosition(0, true);
+    arm.setPosition(0);
 
     chassis.turnToHeading(200, 1000, {.maxSpeed = 127/2}, false);
     chassis.moveToPose(-19.5, 51.5, 240, 2400, {.forwards = false, .minSpeed = 45}, false);
@@ -358,11 +358,11 @@ void skillsAuton(){
     while(true)
     {
         // arm.manualControl();
-        arm.setPosition(140, true);
+        arm.setPosition(140);
 
         if((pros::millis() - timeStart) > 59000)
         {
-            arm.setPosition(0, true);
+            arm.setPosition(0);
             // arm.manualControl();
         }
 
