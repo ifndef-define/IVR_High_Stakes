@@ -53,7 +53,8 @@ void competition_initialize() {}
 
 /* Autonmous Method */
 void autonomous() {
-	skillsAuton();
+	redAuton();
+
 }
 
 /* Driver Control. Runs default if not connected to field controler */
