@@ -50,23 +50,25 @@ ASSET(comp_white_7_txt);
 ASSET(comp_white_8_txt);
 ASSET(comp_white_9_txt);
 void redAuton(){
-    chassis.setPose(-40, 63, 90);
+    chassis.setPose(-40.5, 63, 90);
+    arm.setPosition(0, true);
     uint32_t timeStart = pros::millis();
     intake.setAutonControlFlag(false);
     intakeMotor.move(0);
     // intakeLift.extend();
     mogoRushReach.extend();
     mogoRushClamp.extend(); //reversed
-    chassis.moveToPose(-11, 60, 102, 1700, {.maxSpeed = 127,
-                                            .minSpeed = 100}, 0);
+    // chassis.moveToPose(-9, 60, 120, 1700, {.maxSpeed = 127,
+    //                                         .minSpeed = 90}, 0);
+    chassis.follow(comp_white_1_txt, 15, 5000, 1);
     i_waitUntil(!chassis.isInMotion());
-    delay(250);
+    delay(150);
     mogoRushClamp.retract();
-    chassis.moveToPose(-33, 60, 90, 1700, {.forwards = false,
+    chassis.moveToPose(-33, 64, 80, 2500, {.forwards = false,
                                             .maxSpeed = 127,
                                             .minSpeed = 80}, true);
 
-    delay(600);
+    delay(900);
     mogoRushClamp.extend();
     mogoRushReach.retract();
     i_waitUntil(!chassis.isInMotion());
@@ -74,63 +76,34 @@ void redAuton(){
                                     .maxSpeed = 127/2});
 
     // chassis.follow(comp_white_2_txt, 15, 5000, 0);
-    chassis.moveToPose(-5, 60, 275, 1000, {.forwards = false}, 0);
+    chassis.moveToPose(-4, 64, 270, 2000, {.forwards = false}, 0);
+    i_waitUntil(!chassis.isInMotion());
+    mogoRushClamp.retract();
     mogoClamp.extend();
     chassis.turnToHeading(225, 1400,{.maxSpeed = 127/2});
 
     intake.setAutonControlFlag(true);
     // chassis.moveToPose(-46, 48, 270, 3000, {.maxSpeed = 127/4}, 0);
     // chassis.moveToPose(-69, 69, 315, 1500, {}, 0);
-    chassis.follow(comp_white_4_txt, 15, 3000, 1, 1);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().x <= -56){
-            chassis.cancelMotion();
-        }
-        delay(15);
-    }
-    chassis.moveToPose(-69, 66.5, 315, 1500, {.maxSpeed = 127/2}, 0);
-    chassis.turnToHeading(315, 700, {}, 0);
+    chassis.follow(comp_white_4_txt, 15, 8000, 1, 1);
     
-    chassis.moveToPose(-51, 48, 315, 1000, {.forwards = 0, .maxSpeed = 127, .minSpeed = 127/3}, 0);
+    chassis.moveToPose(-60, 60, 315, 1500, {.forwards = 0, .maxSpeed = 127/2}, 0);
+    chassis.turnToHeading(180, 700, {}, 0);
+    
+    chassis.moveToPose(-60, 10, 180, 4000, {.forwards = 1, .maxSpeed = 127, .minSpeed = 127/3}, 0);
     // delay(100);
     
-    chassis.turnToHeading(90, 700, {.minSpeed = 127/2}, 1);
-    // chassis.follow(comp_white_5_txt, 15, 3000, 1, 1);
-    chassis.moveToPose(-2, 59, 90, 2000, {.maxSpeed = 127, .minSpeed = 127/3}, 1);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().x >= -28){
-            intakeLift.extend();
-        }
-        delay(15);
-    }
-    delay(500);
-    intakeLift.retract();
-    delay(500);
-    // chassis.turnToHeading(0, 700, {.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE}, 0);
-    chassis.swingToHeading(24, lemlib::DriveSide::RIGHT, 800, {}, 0);
-    chassis.follow(comp_white_6_txt, 15, 5000, 0, 0);
-
-    mogoClamp.retract();
+    chassis.turnToHeading(270, 2000, {.maxSpeed = 127/3}, 1);
+    i_waitUntil(!chassis.isInMotion());
+    chassis.tank(70, 70, false);
+    delay(900);
+    chassis.tank(0, 0, false);
+    arm.setPosition(50, true);
+    delay(600);
+    arm.setPosition(0, true);
+    chassis.moveToPose(-45, 5, 270, 1500, {.forwards = 0, .maxSpeed = 127, .minSpeed = 127/3}, 0);
     
     
-    // chassis.turnToHeading(118, 700, {}, 0);
-    chassis.swingToHeading(120, lemlib::DriveSide::RIGHT, 800, {.minSpeed = 127/2}, 0);
-
-    chassis.follow(comp_white_8_txt, 15, 2000, 0, 1);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().y >= 4){
-            mogoClamp.extend();
-        }
-        delay(15);
-    }
-    intake.setAutonControlFlag(true);
-    intakeMotor.move(127);
-    chassis.turnToHeading(255, 700, {.minSpeed = 127/2}, 0);
-    // chassis.moveToPose(-66, -5, 225, 1000, {.maxSpeed = 127/2}, 0);
-    // chassis.follow(comp_white_9_txt, 15, 2500, 1, 0);
-    chassis.moveToPose(-67.5, -7.5, 225, 1500, {.maxSpeed = 127, .minSpeed = 127/2}, 0);
-    chassis.moveToPose(-50, 10, 225, 1500, {.forwards = 0, .minSpeed = 127}, 0);
-
 };
 
 ASSET(mirror_comp_white_1_txt);

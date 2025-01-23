@@ -10,7 +10,7 @@ pros::Task *ringTask;
 void initialize() {
 	pros::lcd::initialize(); // initialize brain screen
 	intakeColor.set_led_pwm(100);
-	intakeColor.set_integration_time(50);
+	intakeColor.set_integration_time(20);
     chassis.calibrate(); // calibrate sensors
     // print position to brain screen
     pros::Task screen_task([&]() {
