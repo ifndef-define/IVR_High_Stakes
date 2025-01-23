@@ -36,8 +36,8 @@ Motor armMotor(-14, pros::MotorGears::red);
 //Sensors
 // Distance intakeDist(18);
 Optical intakeColor(6);
-IMU imuLeft(11);
-IMU imuRight(20);
+IMU imuLeft(20);
+// IMU imuRight(20);
 Rotation armRot(-21);
 
 //Pneumatics
@@ -53,9 +53,9 @@ adi::Pneumatics intakeLift('E', false);
 // pros::adi::Encoder X_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'C', 'D'});
 // pros::adi::Encoder R_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'E', 'F'});
 
-adi::Encoder yEnc(adi::ext_adi_port_tuple_t(16, 3, 4), true);
-adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(16, 5, 6)); // 3 4
-adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(16, 1, 2)); // 5 6
+adi::Encoder yEnc(adi::ext_adi_port_tuple_t(16, 1, 2));
+adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(16, 3, 4), true); // 3 4
+adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(16, 5, 6)); // 5 6
 
 //Chassis
 // Chassis joner(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2,
@@ -67,15 +67,16 @@ Intake intake(&intakeMotor);
 // LEMLIB Config
 const float VERT_RATIO = 0.9795955882;
 const float HORI_RATIO = 0.9915441176;
-lemlib::TrackingWheel vertical(&rxEnc, 1.36*VERT_RATIO, 1);
+lemlib::TrackingWheel vertical(&lxEnc, 1.36*VERT_RATIO, -1);
+lemlib::TrackingWheel vertical2(&rxEnc, 1.36*VERT_RATIO, 1);
 lemlib::TrackingWheel horizontal(&yEnc, 1.36*HORI_RATIO, 0.375);
 
 // sensors for odometry
-lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
+lemlib::OdomSensors sensors(&vertical2, // vertical tracking wheel
                             nullptr, // vertical tracking wheel 2, set to nullptr as we don't have a second one
                             &horizontal, // horizontal tracking wheel
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-                            &imuRight // inertial sensor
+                            &imuLeft // inertial sensor
 );
 
 lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
@@ -87,14 +88,14 @@ lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
 );
 
 // lateral motion controller
-lemlib::ControllerSettings linearController(8, // proportional gain (kP)
-                                            0.0005, // integral gain (kI)
+lemlib::ControllerSettings linearController(11, // proportional gain (kP)
+                                            0.0003, // integral gain (kI)
                                             1.4, // derivative gain (kD)
                                             60, // anti windup
                                             1, // small error range, in inches
                                             100, // small error range timeout, in milliseconds
                                             3, // large error range, in inches
-                                            600, // large error range timeout, in milliseconds
+                                            500, // large error range timeout, in milliseconds
                                             0 // maximum acceleration (slew)
 );
 

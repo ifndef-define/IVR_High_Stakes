@@ -314,7 +314,7 @@ void blueAuton() {
 
 //SKILLS ASSETS
 ASSET(skills_black_1_txt);
-//ASSET(skills_black_2_txt);
+ASSET(skills_black_2_txt);
 ASSET(skills_black_3_txt);
 ASSET(skills_black_4_txt);
 
@@ -324,13 +324,13 @@ void skillsAuton(){
 
     
     chassis.setPose(-52, 0, 90);
-    arm.setPosition(0);
+    arm.setPosition(0, 1);
     intake.setVoltage(-127);
     delay(250);
     intake.setVoltage(127);
     delay(600);
 
-    chassis.moveToPose(-58.5, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
+    chassis.moveToPose(-57.5, 0, 90, 1200, {.forwards = false, .maxSpeed = 60});
     // while(chassis.isInMotion())
     // {
     //     if(intakeColor.get_proximity() >= 170)
@@ -350,19 +350,18 @@ void skillsAuton(){
 
     chassis.moveToPose(-54, 0, 90, 500);
     chassis.turnToHeading(300, 1000);
-    chassis.moveToPose(-20, -51, 310, 2800, {.forwards = false, .maxSpeed = 127/2}, false);
-
-    mogoClamp.extend();   
-    delay(400);
+    chassis.moveToPose(-19, -46, 310, 2800, {.forwards = false, .maxSpeed = 127/2}, false);
+    mogoClamp.extend();
+    delay(300);
 
     intake.setVoltage(127);
-    chassis.follow(skills_black_1_txt, 15, 8000, true, true);    
+    chassis.follow(skills_black_1_txt, 15, 10000, true, true);    
 
     while(chassis.isInMotion()){ 
         if(chassis.getPose().x >= 0 && chassis.getPose().y >= -27){
             intake.brake();
         } 
-        else if(chassis.getPose().x >= -20 && chassis.getPose().x <= -10){
+        else if(chassis.getPose().x >= -17 && chassis.getPose().x <= -10){
             intake.brake();
         }
         else {
@@ -371,50 +370,76 @@ void skillsAuton(){
         delay(10);
     }          
     
-    chassis.moveToPose(-63, -66.267, 235, 3000, {.maxSpeed = 127/2}, false);
+    chassis.moveToPose(-57, -57, 235, 3000, {.maxSpeed = 127/2}, false);
 
     delay(400);
     chassis.moveToPose(chassis.getPose().x + 7*sqrt(2), chassis.getPose().y + 7*sqrt(2), 225, 2200, {.forwards = false}, false);
     chassis.turnToHeading(45, 1000, {}, false); 
-    chassis.moveToPose(-67, -67, 45, 1600, {.forwards = false}); 
-    i_waitUntil(!chassis.isInMotion());
+    delay(500);
     mogoClamp.retract();
+    chassis.moveToPose(-54, -54, 45, 1600, {.forwards = false}); 
+    i_waitUntil(!chassis.isInMotion());
     intake.setVoltage(0);   
     i_waitUntil(!chassis.isInMotion());
     chassis.moveToPose(-50, -51.5, 45, 1000);       
 
-    chassis.turnToHeading(230, 1000, {}, false);   
-    chassis.moveToPose(38, -22, 235, 3000, {.forwards = false, .maxSpeed = 127/2}, false);
-    mogoClamp.extend();
-    // while(chassis.isInMotion())
-    // {
-    //     if(chassis.getPose().x > 35)
-    //     {
-    //         mogoClamp.extend(); 
-    //     }
-    //     delay(10);
-    // }
-      
-    delay(600);
-    chassis.turnToHeading(210, 1000, {.maxSpeed=127/2}, false);   
+    chassis.turnToHeading(270, 1000, {}, false);   
+    chassis.moveToPose(30, -15, 240, 4000, {.forwards = false, .maxSpeed = 50}, true);
+    while(chassis.isInMotion())
+    {
+        if(chassis.getPose().x > 26)
+        {
+            mogoClamp.extend(); 
+        }
+        delay(10);
+    }
     intake.setAutonControlFlag(true);
-
-    chassis.moveToPose(4, -56, 210, 3000, {}, false);
+    delay(400);
+    chassis.turnToHeading(215, 1000, {.maxSpeed=127/2}, false);   
+    
+    chassis.moveToPose(0, -50, 215, 3000, {}, false);
     delay(500);
     chassis.turnToHeading(75, 1000, {.maxSpeed = 60}, false);  
-    chassis.moveToPose(50, -28, 45, 3000, {.maxSpeed = 60}, false);
+    chassis.moveToPose(44, -18, 45, 3000, {.maxSpeed = 60}, false);
     delay(500);
     chassis.turnToHeading(180, 1000, {}, false);  
 
-    chassis.follow(skills_black_4_txt, 15, 7000, true, false);  
+    // chassis.follow(skills_black_4_txt, 15, 8000, true, false);  
 
     i_waitUntil(!chassis.isInMotion());
     delay(400);
-    chassis.moveToPose(chassis.getPose().x - 7*sqrt(2), chassis.getPose().y + 7*sqrt(2), 135, 2200, {.forwards = false}, false);
-    intake.setAutonControlFlag(false);
+    chassis.moveToPose(44, -55, 180, 1000, {.maxSpeed = 60}, false);
+    delay(500);
+    chassis.moveToPose(44, -35, 180, 1000, {.forwards = false, .maxSpeed = 60}, false);
+    chassis.turnToHeading(135, 1000, {}, false); 
+    chassis.moveToPose(63, -54, 135, 2200, {.maxSpeed = 60}, false);
+    chassis.moveToPose(50, -41, 135, 1000, {.forwards = false, .maxSpeed = 60}, false);
+    intake.setAutonControlFlag(false); 
     intake.setVoltage(127);
-    chassis.moveToPose(chassis.getPose().x + 7*sqrt(2), chassis.getPose().y - 7*sqrt(2), 135, 2200, {}, false);
-    delay(400);
+    chassis.moveToPose(63, -54, 135, 2200, {.maxSpeed = 60}, false);
+    chassis.moveToPose(50, -41, 135, 1000, {.forwards = false, .maxSpeed = 60}, false);
+    chassis.turnToHeading(315, 1000, {}, false);  
+    delay(500);
+    mogoClamp.retract();
+    chassis.moveToPose(63, -54, 315, 1000, {.forwards = false, .maxSpeed = 60}, false);
+    intake.setVoltage(0);
+    chassis.moveToPose(50, -41, 315, 2200, {.maxSpeed = 60}, false);
+    chassis.turnToHeading(135, 1000, {}, false);  
+    chassis.moveToPose(0, 0, 135, 6000, {.forwards = false, .maxSpeed = 70});
+    while(true)
+    {
+        // arm.manualControl();
+        arm.setPosition(140, 1);
+
+        if((pros::millis() - timeStart) > 59000)
+        {
+            arm.setPosition(0, 1);
+            // arm.manualControl();
+        }
+
+        delay(10);
+    }
+    /*
     chassis.moveToPose(chassis.getPose().x - 7*sqrt(2), chassis.getPose().y + 7*sqrt(2), 135, 2200, {.forwards = false}, false);
     chassis.turnToHeading(315, 2500, {.direction = lemlib::AngularDirection::CW_CLOCKWISE}, false);  
     chassis.moveToPose(67, -67, 315, 1600, {.forwards = false}); 
@@ -430,14 +455,15 @@ void skillsAuton(){
     while(true)
     {
         // arm.manualControl();
-        arm.setPosition(140);
+        arm.setPosition(140, 1);
 
         if((pros::millis() - timeStart) > 59000)
         {
-            arm.setPosition(0);
+            arm.setPosition(0, 1);
             // arm.manualControl();
         }
 
         delay(10);
     }
+    */
 };

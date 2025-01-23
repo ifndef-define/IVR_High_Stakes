@@ -301,7 +301,7 @@ void skillsAuton(){
 
     uint32_t timeStart = pros::millis();
     chassis.setPose(-52, 27, 90);
-    arm.setPosition(0);
+    arm.setPosition(0, true);
 
     chassis.turnToHeading(200, 1000, {.maxSpeed = 127/2}, false);
     chassis.moveToPose(-19.5, 51.5, 240, 2400, {.forwards = false, .minSpeed = 45}, false);
@@ -406,11 +406,11 @@ void skillsAuton(){
     while(true)
     {
         // arm.manualControl();
-        arm.setPosition(140);
+        arm.setPosition(140, true);
 
         if((pros::millis() - timeStart) > 59000)
         {
-            arm.setPosition(0);
+            arm.setPosition(0, true);
             // arm.manualControl();
         }
 

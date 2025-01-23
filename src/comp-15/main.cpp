@@ -10,6 +10,8 @@ const static bool isBlue = 0; // 0 for red, 1 for blue
 pros::Task *ringTask;
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
+	intakeColor.set_led_pwm(100);
+	intakeColor.set_integration_time(50);
     chassis.calibrate(); // calibrate sensors
     // print position to brain screen
     pros::Task screen_task([&]() {
@@ -23,15 +25,13 @@ void initialize() {
             pros::delay(20);
         }
     });
-	intakeColor.set_led_pwm(100);
-	intakeColor.set_integration_time(50);
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
 	// pros::lcd::print(0, "Comp 15 Bot");
 	chassis.calibrate(true);
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 	intake.setColorToKeep(isBlue);
-	// ringTask = new pros::Task(Intake::ringTask);
+	ringTask = new pros::Task(Intake::ringTask);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -42,30 +42,14 @@ void competition_initialize() {}
 
 /* Autonmous Method */
 void autonomous() {
-	// if (ui::selection == ui::COLOR_BLUE) {
-		ringTask = new pros::Task(Intake::ringTask);
-	// #ifdef BLUE
-	// 	// chassis.setPose(-54, 13, 90);
-	// 	// blueAuton();
-	// #endif
-	// // } else if (ui::selection == ui::COLOR_RED) {
-	// #ifdef RED
-	// 	// ringTask = new pros::Task(Intake::ringTask);
-	// 	intake.setColorToKeep(0);
-		chassis.setPose(-54, 13, 90);
-	// #endif
-		redAuton();
-	// } else {
-		// chassis.setPose(-52, 0, 90);
-		// skillsAuton();
-	// }
+	skillsAuton();
 }
 
 /* Driver Control. Runs default if not connected to field controller */
 void opcontrol() {
 
 	intakeLift.retract();
-	arm.setPosition(0);
+	arm.setPosition(0, 1);
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 	doinker.retract();
 
