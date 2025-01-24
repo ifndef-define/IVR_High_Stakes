@@ -63,7 +63,7 @@ void redAuton(){
     mogoRushClamp.retract();
     chassis.turnToHeading(270, 1000, {.maxSpeed=100}, false);
     chassis.moveToPose(-58, -6, 270, 1000, {.maxSpeed=80}, false);
-    delay(500);
+    chassis.moveToPose(-55, -3, 270, 500, {.forwards=false, .maxSpeed=80}, false);    
     chassis.turnToHeading(125, 1000, {.maxSpeed=100}, false);
     chassis.moveToPose(-21, -50, 180, 2000, {.maxSpeed=50}, false);   
     chassis.moveToPose(-21, -67, 180, 1200, {.maxSpeed=50}, false); 
