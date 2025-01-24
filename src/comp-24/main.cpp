@@ -3,7 +3,7 @@
 #include "robots/comp-24/auton.h"
 #include "common/pid.h"
 
-const static bool isBlue = 0; // 0 for red, 1 for blue
+const static bool isBlue = 1; // 0 for red, 1 for blue
 
 /* First method to run. Should last only a few seconds max. */
 pros::Task *ringTask;
@@ -53,10 +53,7 @@ void competition_initialize() {}
 
 /* Autonmous Method */
 void autonomous() {
-	// redAuton();
-	arm.setPosition(0);
-	delay(500);
-	arm.setPosition(60);
+	redAuton();
 }
 
 /* Driver Control. Runs default if not connected to field controler */

@@ -54,9 +54,9 @@ adi::Pneumatics intakeLift('F', false);
 // pros::adi::Encoder X_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'C', 'D'});
 // pros::adi::Encoder R_ENC(pros::adi::ext_adi_port_tuple_t{SMART_PORT, 'E', 'F'});
 
-adi::Encoder yEnc(adi::ext_adi_port_tuple_t(19, 3, 4));
-adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(19, 5, 6)); // 3 4
-adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(19, 1, 2)); // 5 6
+adi::Encoder yEnc(adi::ext_adi_port_tuple_t(19, 3, 4), 0);
+adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(19, 5, 6));  // 3 4
+adi::Encoder lxEnc(adi::ext_adi_port_tuple_t(19, 1, 2),0); // 5 6
 
 // //Chassis
 // Chassis blackBot(&leftDrive, &rightDrive, &imuLeft, &rxEnc, &lxEnc,7,.0,2, 2,

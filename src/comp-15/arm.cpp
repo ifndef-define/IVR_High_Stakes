@@ -158,7 +158,7 @@ void Arm::manualControl(){
 //     return armPID.getState().reachedTarget;
 // }
 
-bool Arm::setPosition(int pos, bool async){
+bool Arm::setPosition(int pos){
     armMotor->move(armPID.update(pos, getNormalizedAngle()));
     if(armPID.getState().reachedTarget){
         return true;

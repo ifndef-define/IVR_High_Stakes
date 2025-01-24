@@ -101,7 +101,7 @@ void Intake::autonControl(int speed){
             intake->move(speed);
         } else {
             intake->move(-127);
-        if (pauseCounter2 < 7) { // 7*15 = 105ms
+        if (pauseCounter2 < 6) { // 6*15 = 90 ms
             pauseCounter2++;
         } else {
             pauseCounter2 = 0;

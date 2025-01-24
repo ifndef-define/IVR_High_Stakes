@@ -11,7 +11,7 @@
 # Skills-15 Robot = 2
 # Skills-24 Robot = 3
 # NOTE: Changing the robot will auto delete the previous robot's binary files
-ROBOT_BUILD := 1
+ROBOT_BUILD := 0
 
 
 ###############################################################

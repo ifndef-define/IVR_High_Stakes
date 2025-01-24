@@ -80,8 +80,7 @@ void Arm::manualControl(){
     }
 }
 
-void Arm::setPosition(int pos){
-    while(getNormalizedAngle() >= (pos+2) || getNormalizedAngle() <= (pos-2)){
+bool Arm::setPosition(int pos){
         armMotor->move(armPID.update(pos, getNormalizedAngle()));
-    }
+        return true;    
 }

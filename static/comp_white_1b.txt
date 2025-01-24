@@ -1,0 +1,20 @@
+40, 33, 126.964
+38.005, 33.141, 126.958
+36.011, 33.295, 126.943
+34.019, 33.469, 126.921
+32.029, 33.669, 126.891
+30.043, 33.905, 122.875
+28.065, 34.201, 118.652
+26.105, 34.599, 114.274
+24.195, 35.186, 109.724
+22.327, 35.9, 104.973
+20.396, 36.418, 100
+20, 36.5, 0
+20, 36.5, 0
+0.411, 40.535, 0
+endData
+255
+127
+200
+40, 33, 22.052, 34.202, 25.728, 35.379, 20, 36.5
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":11.932,"robotHeight":8,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"VURC 2025 - High Stakes","signature":"VURC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"j7wlJACH7j","x":40,"y":33,"lock":false,"visible":true,"heading":270,"__type":"end-point"},{"uid":"ahJoM5hs9c","x":22.052,"y":34.202,"lock":false,"visible":true,"__type":"control"},{"uid":"gTKd9RxtTk","x":25.728,"y":35.379,"lock":false,"visible":true,"__type":"control"},{"uid":"UCNEsh7Mi2","x":20,"y":36.5,"lock":false,"visible":true,"heading":280,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"Clxdr0Uxld"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":100,"to":127},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":1},"maxDecelerationRate":255},"name":"comp_white_1","uid":"T9D0ofnq27","lock":false,"visible":true}]}

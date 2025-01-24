@@ -42,14 +42,17 @@ void competition_initialize() {}
 
 /* Autonmous Method */
 void autonomous() {
-	skillsAuton();
+	redAuton();
+	// chassis.setPose(-54, 13, 90);
+	// chassis.turnToHeading(180, 1500,{},0);
+	// chassis.moveToPose(-54, 13+24, 90, 1500, {}, 0);
 }
 
 /* Driver Control. Runs default if not connected to field controller */
 void opcontrol() {
 
 	intakeLift.retract();
-	arm.setPosition(0, 1);
+	arm.setPosition(0);
 	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 	doinker.retract();
 
@@ -110,6 +113,11 @@ void opcontrol() {
 
 	teleOp();
 
-	while(1)
-		delay(100);
+	while(1){
+		pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
+        pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
+        pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+		pros::lcd::print(3, "IMU Heading: %f", imuLeft.get_heading()); // heading
+		delay(10);
+	}
 }

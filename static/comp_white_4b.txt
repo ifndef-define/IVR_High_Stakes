@@ -1,0 +1,48 @@
+5, 36, 34
+6.822, 36.825, 34
+8.642, 37.654, 34
+10.459, 38.49, 34
+12.273, 39.333, 34
+14.083, 40.184, 34
+15.888, 41.044, 34
+17.688, 41.916, 34
+19.483, 42.799, 34
+21.271, 43.695, 34
+23.052, 44.605, 34
+24.825, 45.53, 34
+26.59, 46.471, 34
+28.345, 47.43, 34
+30.09, 48.407, 34
+31.824, 49.403, 34
+33.547, 50.418, 34
+35.258, 51.454, 34
+36.956, 52.51, 34
+38.641, 53.588, 34
+40.312, 54.688, 34
+41.967, 55.809, 34
+43.608, 56.954, 34
+45.232, 58.121, 34
+46.839, 59.311, 34
+48.429, 60.523, 34
+50.002, 61.759, 34
+51.556, 63.018, 34
+53.092, 64.299, 34
+54.608, 65.603, 34
+56.106, 66.929, 34
+57.583, 68.276, 34
+59.041, 69.646, 34
+60.479, 71.036, 34
+61.897, 72.446, 34
+63.295, 73.876, 31.048
+64.673, 75.326, 26.981
+66.03, 76.795, 22.181
+67.367, 78.282, 16
+68, 79, 0
+68, 79, 0
+81.229, 94, 0
+endData
+59
+34
+200
+5, 36, 27.187, 46.014, 48.296, 56.473, 68, 79
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":12,"robotHeight":12,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"VURC 2025 - High Stakes","signature":"VURC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"xdS2GtqCeH","x":5,"y":36,"lock":false,"visible":true,"heading":50,"__type":"end-point"},{"uid":"qvwVMKubrT","x":27.186876145665575,"y":46.013825910780945,"lock":false,"visible":true,"__type":"control"},{"uid":"rgEj5i6x6I","x":48.29588042776462,"y":56.47324244695614,"lock":false,"visible":true,"__type":"control"},{"uid":"kEnuzxgtz8","x":68,"y":79,"lock":false,"visible":true,"heading":45,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"hS36887x9S"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":16,"to":34},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0.003,"to":0.016},"maxDecelerationRate":59},"name":"comp_white_4","uid":"BIi4oIF9Z4","lock":false,"visible":true}]}
