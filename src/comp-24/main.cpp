@@ -53,7 +53,11 @@ void competition_initialize() {}
 
 /* Autonmous Method */
 void autonomous() {
-	redAuton();
+	if(isBlue){
+		blueAuton();
+	} else {
+		redAuton();
+	}
 }
 
 /* Driver Control. Runs default if not connected to field controler */

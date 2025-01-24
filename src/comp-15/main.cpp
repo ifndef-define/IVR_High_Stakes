@@ -4,7 +4,7 @@
 #include "robots/comp-15/auton.h"
 #include "common/pid.h"
 
-const static bool isBlue = 0; // 0 for red, 1 for blue
+const static bool isBlue = 1; // 0 for red, 1 for blue
 
 /* First method to run. Should last only a few seconds max. */
 pros::Task *ringTask;
@@ -42,10 +42,11 @@ void competition_initialize() {}
 
 /* Autonmous Method */
 void autonomous() {
-	redAuton();
-	// chassis.setPose(-54, 13, 90);
-	// chassis.turnToHeading(180, 1500,{},0);
-	// chassis.moveToPose(-54, 13+24, 90, 1500, {}, 0);
+	if(isBlue){
+		blueAuton();
+	} else {
+		redAuton();
+	}
 }
 
 /* Driver Control. Runs default if not connected to field controller */
@@ -114,10 +115,6 @@ void opcontrol() {
 	teleOp();
 
 	while(1){
-		pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-        pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
-        pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
-		pros::lcd::print(3, "IMU Heading: %f", imuLeft.get_heading()); // heading
-		delay(10);
+		delay(100);
 	}
 }
