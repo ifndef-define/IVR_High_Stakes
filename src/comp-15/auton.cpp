@@ -52,12 +52,13 @@ void redAuton(){
     mogoRushClamp.retract();
     delay(300);
     // chassis.swingToHeading(200, lemlib::DriveSide::LEFT, 1000, {.maxSpeed=100}, false);
-    chassis.follow(comp_black_5_txt, 15, 3000, false, true);
+    chassis.follow(comp_black_5_txt, 15, 6000, false, true);
     delay(700);
     mogoRushReach.retract();
     mogoRushClamp.extend();
     i_waitUntil(!chassis.isInMotion());
     intake.setAutonControlFlag(true); 
+    intake.setVoltage(127);
     mogoClamp.extend();
     delay(500);
     mogoRushClamp.retract();
@@ -70,15 +71,15 @@ void redAuton(){
     chassis.moveToPose(-40, -27, 180, 1500, {.forwards=false, .maxSpeed=80}, false);
     i_waitUntil(!chassis.isInMotion());
     chassis.turnToHeading(225, 1000, {.maxSpeed=100}, false);
-    chassis.moveToPose(-60, -72, 225, 1500, {.maxSpeed=80}, false); 
+    chassis.moveToPose(-60, -74, 225, 1500, {.maxSpeed=80}, false); 
     chassis.moveToPose(-51, -61, 225, 700, {.forwards=false, .maxSpeed=80}, false);
-    chassis.moveToPose(-60, -72, 225, 700, {.maxSpeed=80}, false);
+    chassis.moveToPose(-60, -74, 225, 700, {.maxSpeed=80}, false);
     chassis.moveToPose(-51, -61, 225, 700, {.forwards=false, .maxSpeed=80}, false);
-    chassis.moveToPose(-60, -72, 225, 700, {.maxSpeed=80}, false);
+    chassis.moveToPose(-60, -74, 225, 700, {.maxSpeed=80}, false);
     chassis.moveToPose(-51, -61, 225, 700, {.forwards=false, .maxSpeed=80}, false);
-    chassis.moveToPose(-60, -72, 225, 700, {.maxSpeed=80}, false);
+    chassis.moveToPose(-60, -74, 225, 700, {.maxSpeed=80}, false);
     chassis.moveToPose(-51, -61, 225, 700, {.forwards=false, .maxSpeed=80}, false);    
-    chassis.moveToPose(-60, -72, 225, 700, {.maxSpeed=80}, false);
+    chassis.moveToPose(-60, -74, 225, 700, {.maxSpeed=80}, false);
     chassis.moveToPose(-48, -57, 225, 700, {.forwards=false, .maxSpeed=100}, false);
     chassis.turnToHeading(45, 1000, {.maxSpeed=100}, false);
     mogoClamp.retract();
@@ -86,9 +87,10 @@ void redAuton(){
     chassis.moveToPose(-63, -72, 225, 500, {.forwards=false, .maxSpeed=127}, false);
     delay(500);
     intake.setAutonControlFlag(false); 
+    intake.setVoltage(127);
     chassis.moveToPose(-20, -20, 20, 2000, {.maxSpeed=100}, false);
     chassis.turnToHeading(180, 1000, {.maxSpeed=100}, false);
-    chassis.moveToPose(-20, 10, 180, 2000, {.forwards=false, .maxSpeed=100}, false);
+    chassis.moveToPose(-10, 10, 180, 2000, {.forwards=false, .maxSpeed=100}, false);
 
 };
 
@@ -148,7 +150,7 @@ void blueAuton() {
     intake.setAutonControlFlag(false); 
     chassis.moveToPose(23, -20, 0, 2000, {.maxSpeed=100}, false);
     chassis.turnToHeading(180, 1000, {.maxSpeed=100}, false);
-    chassis.moveToPose(23, -7, 180, 2000, {.forwards=false, .maxSpeed=100}, false);
+    // chassis.moveToPose(23, -7, 180, 2000, {.forwards=false, .maxSpeed=100}, false);
 };
 
 //SKILLS ASSETS

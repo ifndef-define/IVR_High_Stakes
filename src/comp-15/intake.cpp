@@ -170,7 +170,7 @@ void Intake::ringTask() {
 
 void Intake::releaseIntake(bool inv){
     intake->move(inv ? 127 : -127);
-    delay(80);
+    delay(150);
     intake->brake();
 }
 
