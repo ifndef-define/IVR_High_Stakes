@@ -89,8 +89,6 @@ void redAuton(){
     chassis.moveToPose(-20, -20, 20, 2000, {.maxSpeed=100}, false);
     chassis.turnToHeading(180, 1000, {.maxSpeed=100}, false);
     chassis.moveToPose(-20, 10, 180, 2000, {.forwards=false, .maxSpeed=100}, false);
-    arm.setPosition(25);
-    mogoClamp.extend();
 
 };
 
@@ -133,13 +131,13 @@ void blueAuton() {
     chassis.turnToHeading(135, 1000, {.maxSpeed=100}, false);
     arm.setPosition(0);
     chassis.moveToPose(66, -58, 135, 1500, {.maxSpeed=60}, false); 
-    chassis.moveToPose(60, -52, 135, 700, {.forwards=false, .maxSpeed=80}, false);
+    chassis.moveToPose(58, -50, 135, 700, {.forwards=false, .maxSpeed=80}, false);
     chassis.moveToPose(66, -58, 135, 700, {.maxSpeed=80}, false);
-    chassis.moveToPose(60, -52, 135, 700, {.forwards=false, .maxSpeed=80}, false);
+    chassis.moveToPose(58, -50, 135, 700, {.forwards=false, .maxSpeed=80}, false);
     chassis.moveToPose(66, -58, 135, 700, {.maxSpeed=80}, false);
-    chassis.moveToPose(60, -52, 135, 700, {.forwards=false, .maxSpeed=80}, false);
+    chassis.moveToPose(58, -50, 135, 700, {.forwards=false, .maxSpeed=80}, false);
     chassis.moveToPose(66, -58, 135, 700, {.maxSpeed=80}, false);
-    chassis.moveToPose(60, -52, 135, 700, {.forwards=false, .maxSpeed=80}, false);    
+    chassis.moveToPose(58, -50, 135, 700, {.forwards=false, .maxSpeed=80}, false);    
     chassis.moveToPose(66, -58, 135, 700, {.maxSpeed=80}, false);
     chassis.moveToPose(55, -48, 135, 700, {.forwards=false, .maxSpeed=100}, false);
     chassis.turnToHeading(315, 1000, {.maxSpeed=100}, false);
@@ -151,13 +149,6 @@ void blueAuton() {
     chassis.moveToPose(23, -20, 0, 2000, {.maxSpeed=100}, false);
     chassis.turnToHeading(180, 1000, {.maxSpeed=100}, false);
     chassis.moveToPose(23, -7, 180, 2000, {.forwards=false, .maxSpeed=100}, false);
-    mogoClamp.extend();
-    chassis.turnToHeading(135, 1000, {.maxSpeed=100}, false);
-
-    while(1){
-        arm.setPosition(50);
-        delay(10);
-    }
 };
 
 //SKILLS ASSETS

@@ -7,7 +7,7 @@ private:
     pros::Rotation *armRot;
     int armState;
     // int targetPosition[3] = {0, 1600, 14000};
-    int targetPosition[4] = {0, 13, 120, 150};
+    int targetPosition[4] = {0, 15, 120, 150};
     bool intakePullBackFlag;
     bool armFlag;
     double armAngle;
