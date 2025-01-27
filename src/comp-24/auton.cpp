@@ -5,9 +5,7 @@
 void runAuton(bool isBlue) {
     if(isBlue){
         blueAuton();
-    }
-    else
-    {
+    } else {
         redAuton();
     }
 };
@@ -50,7 +48,7 @@ ASSET(comp_white_7_txt);
 ASSET(comp_white_8_txt);
 ASSET(comp_white_9_txt);
 void redAuton(){
-    chassis.setPose(-40, 63, 90);
+    chassis.setPose(-40, 66, 90);
     arm.setPosition(0);
     uint32_t timeStart = pros::millis();
     intake.setAutonControlFlag(false);
@@ -60,7 +58,7 @@ void redAuton(){
     // chassis.moveToPose(-9, 60, 120, 1700, {.maxSpeed = 127,
     //                                         .minSpeed = 90}, 0);
     chassis.follow(comp_white_1_txt, 15, 3000, 1);
-    delay(400);
+    delay(250);
     mogoRushReach.extend();
     i_waitUntil(!chassis.isInMotion());
     delay(150);
@@ -69,7 +67,7 @@ void redAuton(){
                                             .maxSpeed = 127,
                                             .minSpeed = 80}, true);
 
-    delay(1000);
+    delay(1200);
     mogoRushClamp.extend();
     i_waitUntil(!chassis.isInMotion());
     chassis.turnToHeading(270, 1500,{.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE,
@@ -79,11 +77,11 @@ void redAuton(){
     intake.releaseIntake();
 
     // chassis.follow(comp_white_2_txt, 15, 5000, 0);
-    chassis.moveToPose(-6, 66, 270, 2000, {.forwards = false, .minSpeed = 127/3}, 0);
+    chassis.moveToPose(-6, 61, 270, 2000, {.forwards = false, .minSpeed = 127/3}, 0);
     i_waitUntil(!chassis.isInMotion());
     mogoRushClamp.retract();
     mogoClamp.extend();
-    chassis.swingToHeading(230, lemlib::DriveSide::RIGHT, 1300, {.maxSpeed = 127/2}, 0);
+    chassis.swingToHeading(300, lemlib::DriveSide::LEFT, 1300, {.maxSpeed = 127/2}, 0);
 
     intake.setAutonControlFlag(true);
     // chassis.moveToPose(-46, 48, 270, 3000, {.maxSpeed = 127/4}, 0);
@@ -110,18 +108,23 @@ void redAuton(){
 		delay(15);
 	}
     chassis.tank(-70, -70, false);
-    delay(500);
+    delay(800);
     arm.setPosition(0);
     delay(1000);
     chassis.tank(0, 0, false);
     intake.setAutonControlFlag(false);
+    chassis.tank(-70, -40, false);
+    delay(1000);
+    chassis.tank(0 , 0, false);
+
+    
 };
 
 ASSET(comp_white_1b_txt);
 ASSET(comp_white_4b_txt);
 
 void blueAuton(){
-    chassis.setPose(40, 32, 270);
+    chassis.setPose(41, 32, 270);
     arm.setPosition(0);
     uint32_t timeStart = pros::millis();
     intake.setAutonControlFlag(false);
@@ -134,7 +137,7 @@ void blueAuton(){
     delay(250);
     mogoRushReach.extend();
     i_waitUntil(!chassis.isInMotion());
-    delay(150);
+    delay(50);
     mogoRushClamp.retract();
     chassis.moveToPose(33, 32, 260, 2500, {.forwards = false,
                                             .maxSpeed = 127,
@@ -150,7 +153,7 @@ void blueAuton(){
     mogoRushReach.retract();
 
     // chassis.follow(comp_white_2_txt, 15, 5000, 0);
-    chassis.moveToPose(4, 48, 130, 3000, {.forwards = false, .minSpeed = 127/3}, 0);
+    chassis.moveToPose(7, 48, 130, 3000, {.forwards = false, .minSpeed = 127/3}, 0);
     i_waitUntil(!chassis.isInMotion());
     mogoRushClamp.retract();
     mogoClamp.extend();
@@ -164,9 +167,9 @@ void blueAuton(){
     chassis.moveToPose(36, 60, 45, 2500, {.maxSpeed = 127/4}, 0);
     chassis.moveToPose(24, 48, 45, 800, {.forwards = 0}, 0);
     chassis.turnToHeading(90, 800,{.minSpeed = 127/3}, true);
-    chassis.moveToPose(48, 48, 90, 2000, {.minSpeed = 127/3}, 0);
+    chassis.moveToPose(48, 48, 90, 2000, {.maxSpeed = 127/2}, 0);
     chassis.turnToHeading(45, 1500,{.maxSpeed = 127/3}, true);
-    chassis.moveToPose(70, 73, 45, 2000, {.minSpeed = 80}, 0);
+    chassis.moveToPose(68.5, 70.5, 45, 2000, {.minSpeed = 80}, 0);
     
     chassis.moveToPose(52, 52, 45, 1500, {.forwards = 0, .maxSpeed = 127/2}, 0);
     chassis.turnToHeading(180, 1200, {.maxSpeed = 127/3}, 0);
@@ -193,8 +196,9 @@ void blueAuton(){
     delay(1000);
     chassis.tank(0, 0, false);
     intake.setAutonControlFlag(false);
-    chassis.turnToHeading(270, 1000, {}, 1);
-    chassis.moveToPose(12, 0, 270, 2000, {}, 1);
+    chassis.turnToHeading(0, 800, {}, 0);
+    chassis.moveToPose(12, 0, 270, 2000, {}, 0);
+    chassis.moveToPose(0, 0, 180, 2000, {}, 0);
 }
 
 //SKILLS ASSETS
@@ -216,7 +220,7 @@ ASSET(skills_white_5_txt);
 void skillsAuton(){
 
     uint32_t timeStart = pros::millis();
-    chassis.setPose(-52, 27, 90);
+    chassis.setPose(-75, 27, 90);
     arm.setPosition(0);
 
     chassis.turnToHeading(200, 1000, {.maxSpeed = 127/2}, false);
@@ -242,7 +246,7 @@ void skillsAuton(){
         delay(10);
     }
    
-    chassis.moveToPose(-66, 78, 320, 3300, {.maxSpeed = 127/2}, false);
+    chassis.moveToPose(-66, 80, 320, 3300, {.maxSpeed = 127/2}, false);
     
     delay(800);
     intake.setVoltage(100);
@@ -256,7 +260,7 @@ void skillsAuton(){
     chassis.moveToPose(-48, 54.5, 135, 1000);       
 
     chassis.turnToHeading(230, 1000, {}, false);   
-    chassis.moveToPose(35, 30, 310, 3000, {.forwards = false}, false);
+    chassis.moveToPose(35, 30, 310, 3000, {.forwards = false, .minSpeed = 50}, false);
     mogoClamp.extend();   
     delay(200); 
     intake.setAutonControlFlag(true);

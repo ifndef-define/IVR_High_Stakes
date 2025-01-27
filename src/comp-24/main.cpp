@@ -3,7 +3,7 @@
 #include "robots/comp-24/auton.h"
 #include "common/pid.h"
 
-const static bool isBlue = 1; // 0 for red, 1 for blue
+const static bool isBlue = 1; // 0 for red, 1 for blue, 2 for skills
 
 /* First method to run. Should last only a few seconds max. */
 pros::Task *ringTask;
@@ -35,14 +35,8 @@ void initialize() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 	leftDrive.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE);
 	rightDrive.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE);
-	// chassis.setPose(-50, 30, 270);
-	// chassis.setPose(-54, 13, 90); //53.5, 61, 90
 
-	pros::Task ringThread(Intake::ringTask);
-	// armMotor.move(10);
-	// delay(200);
-	// armRot.reset();
-	// armMotor.brake();
+	ringTask = new pros::Task(Intake::ringTask);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -53,39 +47,16 @@ void competition_initialize() {}
 
 /* Autonmous Method */
 void autonomous() {
-	if(isBlue){
-		blueAuton();
-	} else {
-		redAuton();
-	}
+	runAuton(isBlue);
+	// skillsAuton();
 }
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
-
-	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-	// if (ringTask != nullptr) {
+	armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+	// if (ringTask == nullptr) {
 	// 	ringTask->suspend();
 	// }
-
-	// pros::Task ringTControler([&]{
-	// 	do {
-	// 		if (ui::COLOR_GREEN) {
-	// 			if (ringTask != nullptr) {
-	// 				ringTask->suspend();
-	// 			}
-	// 		} else {
-	// 			if (ringTask == nullptr) {
-	// 				ringTask = new pros::Task(Intake::ringTask);
-	// 			}
-	// 		}
-
-	// 		delay(30);
-	// 	} while (!pros::competition::is_connected());
-	// });
-
-
-
-
 	teleOp();
 }
