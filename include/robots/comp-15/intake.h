@@ -13,6 +13,7 @@ private:
   pros::adi::Pneumatics lift;
 
 public:
+  Intake();
   /**
    * @brief Lifts up the gate
    */
@@ -48,6 +49,7 @@ private:
   pros::Optical sensor;
 
 public:
+  ColorDetector();
   /**
    * @brief Gets the color in the intake
    *
@@ -69,6 +71,7 @@ private:
   bool filterColor;
 
 public:
+  IntakeManager();
   /**
    * @brief Gets whether or not to filter the colors
    *
