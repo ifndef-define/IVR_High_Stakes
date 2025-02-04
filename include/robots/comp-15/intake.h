@@ -1,3 +1,5 @@
+#pragma once
+#include "common/includeList.h"
 #include "robots/comp-15/devices.h"
 
 /**
@@ -8,7 +10,7 @@
 class Intake {
 private:
   pros::MotorGroup intakeMotor;
-  pros::Peumatic gate;
+  pros::adi::Pneumatics lift;
 
 public:
   /**
@@ -32,7 +34,9 @@ public:
   void stopIntake();
 };
 
+namespace Ring {
 enum class Color { BLUE, RED };
+};
 
 /**
  * @class ColorDetector
@@ -49,7 +53,7 @@ public:
    *
    * @return The color in the take
    */
-  Color getColor() const;
+  Ring::Color getColor() const;
 };
 
 /**
