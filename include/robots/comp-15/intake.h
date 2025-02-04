@@ -36,7 +36,7 @@ public:
 };
 
 namespace Ring {
-enum class Color { BLUE, RED };
+enum class Color { BLUE, RED, NONE };
 };
 
 /**
@@ -68,22 +68,31 @@ private:
   Intake intake;
   ColorDetector detector;
 
-  bool filterColor;
+  bool eject;
+  Ring::Color filter;
+
+  double intakeSpeed;
 
 public:
   IntakeManager();
+
+  double getIntakeSpeed() const;
+  void setIntakeSpeed(double speed);
+
+  void startIntake();
+  void stopIntake();
   /**
-   * @brief Gets whether or not to filter the colors
+   * @brief Gets the type that is kept in filter
    *
-   * @return Whether or not colors are being filtered
+   * @return The color to be kept in a filter, NONE is no filter
    */
-  bool getFilterColor() const;
+  Ring::Color getFilterColor() const;
   /**
    * @brief Sets whether or not the colors are being filtered
    *
-   * @param filterColor Whether or not colors should be filtered
+   * @param filterColor What color to keep
    */
-  void setFilterColor(bool filterColor);
+  void setFilterColor(Ring::Color filterColor);
 
   /**
    * @brief Gets whether or not should eject
