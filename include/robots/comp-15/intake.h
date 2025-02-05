@@ -24,6 +24,11 @@ public:
   void lowerGate();
 
   /**
+   * @brief Toggles the gate
+   */
+  void toggleGate();
+
+  /**
    * @brief Start the intake
    *
    * @param speed The speed of the intake [0, 1]
@@ -46,16 +51,16 @@ enum class Color { BLUE, RED, NONE };
  */
 class ColorDetector {
 private:
-  pros::Optical color;
+  pros::Optical colorSensor;
 
 public:
-  ColorDetector(): color(6) {};
+  ColorDetector(): colorSensor(6) {};
   /**
    * @brief Gets the color in the intake
    *
    * @return The color in the take
    */
-  Ring::Color getColor() const;
+  Ring::Color getColor();
 };
 
 /**
