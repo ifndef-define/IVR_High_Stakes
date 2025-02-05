@@ -13,7 +13,7 @@ private:
   pros::adi::Pneumatics lift;
 
 public:
-  Intake();
+  Intake(): intakeMotor({-14, 20}, pros::MotorGearset::green), lift('F', false) {};
   /**
    * @brief Lifts up the gate
    */
@@ -46,10 +46,10 @@ enum class Color { BLUE, RED, NONE };
  */
 class ColorDetector {
 private:
-  pros::Optical sensor;
+  pros::Optical color;
 
 public:
-  ColorDetector();
+  ColorDetector(): color(6) {};
   /**
    * @brief Gets the color in the intake
    *
