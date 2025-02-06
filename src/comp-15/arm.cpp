@@ -1,26 +1,19 @@
-#include "robots/comp-15/Arm.h"
+#include "robots/comp-15/arm.h"
 
-Arm::Arm() {
-    armMotor = new pros::Motor(3);
-    armRot = new pros::Rotation(-17);
-}
-
-void Arm::moveToState(Arm::armState_t newState){
+void Arm::update(){
     
 }
 
-void Arm::nextState(){
-    
-}
+void Arm::setState(armState_t newState) { armState = newState; }
 
-void Arm::prevState(){
+void Arm::nextState(){ armState = (armState_t)((armState + 1) % NUM_STATES); }
 
-}
+void Arm::prevState(){ armState = (armState_t)((armState + NUM_STATES - 1) % NUM_STATES); }
 
-double Arm::getPosition(){
-
+double Arm::getAngle(){
+    return armRot.get_position()*100;
 }
 
 Arm::armState_t Arm::getState(){
-
+    return armState;
 }

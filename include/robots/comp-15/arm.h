@@ -2,28 +2,42 @@
 #include "common/includeList.h"
 
 /**
- * @brief The arm for scoring rings
+ * @brief The arm for scoring rings on wall stake
  * 
  */
-class Arm{
+class Arm {
     private:
-        pros::Motor* armMotor;
-        pros::Rotation* armRot;
+        pros::Motor armMotor;
+        pros::Rotation armRot;
 
-        typedef enum {
-            DOWN = 123,
-            READY = 123,
-            SCORE = 123
-        } armState_t;
+        enum armState_t {
+            DOWN = 0,   // index 0
+            READY = 1,  // index 1
+            SCORE = 2,  // index 2
+            NUM_STATES = 3 // count of states
+        };
+        armState_t armState = DOWN;
+        static constexpr double armStateAngles[NUM_STATES] = { 
+            0,   // Angle for DOWN
+            25,  // Angle for READY 
+            145   // Angle for SCORE
+        };
+
     public:
-        Arm();
+        Arm(): armMotor(3), armRot(-17) {};
 
         /**
-         * @brief Updates arm to new state
+         * @brief Updates arm position using PID
          * 
-         * @param newState The new state to move to
          */
-        void moveToState(armState_t newState);
+        void update();
+        
+        /**
+         * @brief Set the arm to a specific state
+         * 
+         * @param newState The state to set the arm to
+         */
+        void setState(armState_t newState);
         
         /**
          * @brief Moves arm to next state
@@ -36,15 +50,15 @@ class Arm{
          * 
          */
         void prevState();
-        
+
         /**
-         * @brief Moves arm to a specific position
+         * @brief Returns the current arm state position in degrees
          *
          */
-        double getPosition();
+        double getAngle();
         
         /**
-         * @brief Moves arm to a specific position
+         * @brief Returns the current arm state
          * 
          */
         armState_t getState();

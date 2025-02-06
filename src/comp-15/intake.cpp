@@ -8,10 +8,10 @@ void Intake::liftGate() { lift.retract(); }
 
 void Intake::lowerGate() { lift.extend(); }
 
-void Intake::toggleGate() { lift.set_value(!lift.is_extended()); }
+void Intake::toggleGate() { lift.toggle(); }
 
 Ring::Color ColorDetector::getColor() {
-  if(colorSensor.get_hue() <= 270 && colorSensor.get_hue() >= 180) { return Ring::Color::BLUE; } 
+  if((colorSensor.get_hue() <= 270) && (colorSensor.get_hue() >= 180)) { return Ring::Color::BLUE; } 
   else { return Ring::Color::RED; }
 }
 
