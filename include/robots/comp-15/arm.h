@@ -64,4 +64,5 @@ class Arm {
          * 
          */
         armState_t getState();
+
 };
