@@ -11,8 +11,17 @@ void Intake::lowerGate(){ lift.extend(); }
 void Intake::toggleGate(){ lift.toggle(); }
 
 Ring::Color ColorDetector::getColor() {
-  if((colorSensor.get_hue() <= 270) && (colorSensor.get_hue() >= 180)) { return Ring::Color::BLUE; } 
-  else { return Ring::Color::RED; }
+  double hue = colorSensor.get_hue();
+  double prox = colorSensor.get_proximity();
+  if(prox > 220){
+    if((hue <= 270) && (hue >= 180)) { 
+      return Ring::Color::BLUE;
+    } 
+    if((hue >= 350) && (hue <= 15)) {
+      return Ring::Color::RED; 
+    }
+  }
+  return Ring::Color::NONE;
 }
 
 IntakeManager::IntakeManager() {
