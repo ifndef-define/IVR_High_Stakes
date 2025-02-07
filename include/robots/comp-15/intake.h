@@ -13,7 +13,7 @@ private:
   pros::adi::Pneumatics lift;
 
 public:
-  Intake();
+  Intake(): intakeMotor({-14, 20}, pros::MotorGearset::green), lift('F', false) {};
   /**
    * @brief Lifts up the gate
    */
@@ -22,6 +22,11 @@ public:
    * @brief Sets the gate back down
    */
   void lowerGate();
+
+  /**
+   * @brief Toggles the gate
+   */
+  void toggleGate();
 
   /**
    * @brief Start the intake
@@ -36,7 +41,7 @@ public:
 };
 
 namespace Ring {
-enum class Color { BLUE, RED };
+enum class Color { BLUE, RED, NONE };
 };
 
 /**
@@ -46,16 +51,16 @@ enum class Color { BLUE, RED };
  */
 class ColorDetector {
 private:
-  pros::Optical sensor;
+  pros::Optical colorSensor;
 
 public:
-  ColorDetector();
+  ColorDetector(): colorSensor(6) {};
   /**
    * @brief Gets the color in the intake
    *
    * @return The color in the take
    */
-  Ring::Color getColor() const;
+  Ring::Color getColor();
 };
 
 /**
@@ -68,22 +73,31 @@ private:
   Intake intake;
   ColorDetector detector;
 
-  bool filterColor;
+  bool eject;
+  Ring::Color filter;
+
+  double intakeSpeed;
 
 public:
   IntakeManager();
+
+  double getIntakeSpeed() const;
+  void setIntakeSpeed(double speed);
+
+  void startIntake();
+  void stopIntake();
   /**
-   * @brief Gets whether or not to filter the colors
+   * @brief Gets the type that is kept in filter
    *
-   * @return Whether or not colors are being filtered
+   * @return The color to be kept in a filter, NONE is no filter
    */
-  bool getFilterColor() const;
+  Ring::Color getFilterColor() const;
   /**
    * @brief Sets whether or not the colors are being filtered
    *
-   * @param filterColor Whether or not colors should be filtered
+   * @param filterColor What color to keep
    */
-  void setFilterColor(bool filterColor);
+  void setFilterColor(Ring::Color filterColor);
 
   /**
    * @brief Gets whether or not should eject
