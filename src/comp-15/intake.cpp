@@ -1,14 +1,14 @@
 #include "robots/comp-15/intake.h"
 
-void Intake::startIntake(double speed) { intakeMotor.move(speed * 127); }
+void Intake::startIntake(double speed){ intakeMotor.move(speed * 127); }
 
-void Intake::stopIntake() { intakeMotor.brake(); }
+void Intake::stopIntake(){ intakeMotor.brake(); }
 
-void Intake::liftGate() { lift.retract(); }
+void Intake::liftGate(){ lift.retract(); }
 
-void Intake::lowerGate() { lift.extend(); }
+void Intake::lowerGate(){ lift.extend(); }
 
-void Intake::toggleGate() { lift.toggle(); }
+void Intake::toggleGate(){ lift.toggle(); }
 
 Ring::Color ColorDetector::getColor() {
   if((colorSensor.get_hue() <= 270) && (colorSensor.get_hue() >= 180)) { return Ring::Color::BLUE; } 
@@ -36,5 +36,5 @@ void IntakeManager::setFilterColor(Ring::Color filterColor) { filter = filterCol
 bool IntakeManager::getShouldEject() const { return eject; }
 
 void IntakeManager::update() {
-  
+
 }

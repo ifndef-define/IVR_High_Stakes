@@ -103,6 +103,10 @@ namespace convert {
     return radians * (180 / M_PI);
   }
 
+  static double normalizeAngle(double angle) {
+    return (angle/100 - (std::floor((angle/100 + 180.0)/360.0))*360.0);
+  }
+
   // Convert inches to meters
   [[deprecated("Prefer to calculate in inches/feet only")]]
   static double inToM(double inches) {
