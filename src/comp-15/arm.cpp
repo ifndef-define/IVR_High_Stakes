@@ -1,6 +1,6 @@
 #include "robots/comp-15/arm.h"
 
-void Arm::update(){ armMotor.move(armPID.update(armStateAngles[armState])); }
+void Arm::update(){ armMotor.move(armPID.update(armStateAngles[armState])-getAngle()); }
 
 void Arm::setState(armState_t newState){ armState = newState; }
 
