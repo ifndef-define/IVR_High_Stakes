@@ -7,23 +7,31 @@
  */
 class Arm{
     private:
-        pros::Motor* armMotor;
-        pros::Rotation* armRot;
+        pros::Motor armMotor;
+        pros::Rotation armRot;
 
         typedef enum {
-            DOWN = 123,
+            DOWN = 0,
             READY = 123,
             SCORE = 123
         } armState_t;
+        armState_t armState;
+
+        struct armGains {
+            double kP = 0;
+            double kI = 0;
+            double kD = 0;
+        };
+
     public:
-        Arm();
+        Arm(): armMotor(-11), armRot(-17), armState(DOWN) {}
 
         /**
          * @brief Updates arm to new state
          * 
          * @param newState The new state to move to
          */
-        void moveToState(armState_t newState);
+        void update(armState_t newState);
         
         /**
          * @brief Moves arm to next state
@@ -36,6 +44,13 @@ class Arm{
          * 
          */
         void prevState();
+
+        /**
+         * @brief Moves arm using motor power
+         * 
+            * @param speed The power to move the arm [0, 1]
+         */
+        void armPower(double speed);
         
         /**
          * @brief Moves arm to a specific position
@@ -48,4 +63,5 @@ class Arm{
          * 
          */
         armState_t getState();
+
 };
