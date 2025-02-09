@@ -14,17 +14,19 @@ class Arm {
             DOWN = 0,   // index 0
             READY = 1,  // index 1
             SCORE = 2,  // index 2
-            NUM_STATES = 3 // count of states
+            NUM_ARM_STATES = 3 // count of states
         };
         armState_t armState = DOWN;
-        static constexpr double armStateAngles[NUM_STATES] = { 
+        static constexpr double armStateAngles[NUM_ARM_STATES] = { 
             0,   // Angle for DOWN
             25,  // Angle for READY 
             145   // Angle for SCORE
         };
 
+        lemlib::PID armPID;
+
     public:
-        Arm(): armMotor({3,4}, MotorGears::red), armRot(-17) {};
+        Arm(float kP, float kI, float kD): armMotor(3), armRot(-17), armPID(kP, kI, kD, 0, false){};
 
         /**
          * @brief Updates arm position using PID
