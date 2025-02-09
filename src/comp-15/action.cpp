@@ -16,32 +16,18 @@ void Action::runSubsystemFSM() {
         } else {
             currentState = ActionState::IDLE;
         }
+        // Run state control
+        stateControl();
         
         // Update arm with new state
         arm.update();
         
-        // Run state control
-        stateControl();
 }
 
 void Action::stateControl() {
     switch(currentState) {
         case ActionState::IDLE:
-            if (controller->get_digital(controller_digital_e_t::E_CONTROLLER_DIGITAL_R1)) {
-                intakeManager.setIntakeSpeed(1);
-            } else if (controller->get_digital(controller_digital_e_t::E_CONTROLLER_DIGITAL_R2)) {
-                intakeManager.setIntakeSpeed(-1);
-            } else {
-                intakeManager.setIntakeSpeed(0);
-            }
-
-            if (controller->get_digital(controller_digital_e_t::E_CONTROLLER_DIGITAL_L1)) {
-                arm.nextState();
-            } else if (controller->get_digital(controller_digital_e_t::E_CONTROLLER_DIGITAL_L2)) {
-                arm.prevState();
-            }
             break;
-            
         case ActionState::SORTING:
             if(int(arm.getState()) > int(Arm::State::READY)){
                 arm.setState(Arm::State::SCORE); // position SCORE to avoid prevent intake collision
@@ -52,3 +38,41 @@ void Action::stateControl() {
             break;
     }
 }
+
+bool Action::isOverride(){ return override; }
+
+void Action::setOverride(bool override){ this->override = override; }
+
+void Action::setIntakeSpeed(double speed) {
+    if(currentState!=ActionState::SORTING)
+        intakeManager.setIntakeSpeed(speed);
+        if(speed>0)
+            intakeManager.startIntake();
+        else
+            intakeManager.stopIntake();
+}
+
+void Action::nextArmState() {
+    arm.nextState();
+}
+
+void Action::prevArmState() {
+    arm.prevState();
+}
+
+void Action::setArmState(Arm::State newState) {
+    arm.setState(newState);
+}
+
+void Action::setArmSpeed(int speed) {
+    arm.setSpeed(speed);
+}
+
+void Action::setRingColor(Ring::Color ringToKeep) {
+    intakeManager.setFilterColor(ringToKeep);
+}
+
+ActionState Action::getState() {
+    return currentState;
+}
+

@@ -22,6 +22,8 @@ class Arm {
 
         lemlib::PID armPID;
 
+        bool override = false;
+
     public:
         Arm(float kP, float kI, float kD);
 
@@ -30,6 +32,18 @@ class Arm {
          * 
          */
         void update();
+
+        /**
+         * @brief Move to the next state
+         * 
+         */
+        void nextState();
+
+        /**
+         * @brief Move to the previous state
+         * 
+         */
+        void prevState();
         
         /**
          * @brief Set the arm to a specific state
@@ -37,6 +51,13 @@ class Arm {
          * @param newState The state to set the arm to
          */
         void setState(State newState);
+
+        /**
+         * @brief Set speed of arm
+         * 
+         * @param power Speed to move arm [0,1]
+         */
+        void setSpeed(int speed);
         
         /**
          * @brief Returns the current arm state position in degrees

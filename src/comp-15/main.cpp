@@ -7,8 +7,11 @@
  *
  * Sets our autonomous routine to the blue side.
  */
+
+Ring::Color ringToKeep = Ring::Color::RED;
 void on_center_button() {
 	pros::lcd::set_text(1, "Blue");
+	ringToKeep = Ring::Color::BLUE;
 }
 
 /**
@@ -18,6 +21,7 @@ void on_center_button() {
  */
 void on_left_button() {
 	pros::lcd::set_text(1, "Red");
+	ringToKeep = Ring::Color::RED;
 }
 
 /**
@@ -27,6 +31,7 @@ void on_left_button() {
  */
 void on_right_button() {
 	pros::lcd::set_text(1, "Skills");
+	ringToKeep = Ring::Color::RED;
 }
 
 /**
@@ -72,9 +77,11 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+	auton();
+}
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
-	driverctrl();
+	teleOp();
 }

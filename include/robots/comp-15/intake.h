@@ -72,7 +72,6 @@ private:
   Ring::Color filter;
 
   double intakeSpeed;
-
   double counter;
 
 public:
