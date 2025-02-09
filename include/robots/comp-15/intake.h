@@ -41,7 +41,7 @@ public:
 };
 
 namespace Ring {
-enum class Color { BLUE, RED, NONE };
+  enum class Color { BLUE, RED, NONE };
 };
 
 /**
@@ -78,6 +78,8 @@ private:
 
   double intakeSpeed;
 
+  double counter;
+
 public:
   IntakeManager();
 
@@ -86,6 +88,8 @@ public:
 
   void startIntake();
   void stopIntake();
+
+  void ejectDisc();
   /**
    * @brief Gets the type that is kept in filter
    *
@@ -104,7 +108,7 @@ public:
    *
    * @return Whether or not should eject
    */
-  bool getShouldEject() const;
+  bool getEject();
 
   /**
    * @brief Updates the system

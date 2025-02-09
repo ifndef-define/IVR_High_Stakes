@@ -13,7 +13,7 @@ void Intake::toggleGate(){ lift.toggle(); }
 Ring::Color ColorDetector::getColor() {
   double hue = colorSensor.get_hue();
   double prox = colorSensor.get_proximity();
-  if(prox > 220){
+  if(prox >= 220){
     if((hue <= 270) && (hue >= 180)) { 
       return Ring::Color::BLUE;
     } 
@@ -24,10 +24,11 @@ Ring::Color ColorDetector::getColor() {
   return Ring::Color::NONE;
 }
 
-IntakeManager::IntakeManager() {
+IntakeManager::IntakeManager() : detector() {
   filter = Ring::Color::NONE;
   eject = false;
   intakeSpeed = 1;
+  counter = 12; //12 * 10 = 120ms
 }
 
 double IntakeManager::getIntakeSpeed() const { return intakeSpeed; }
@@ -42,8 +43,22 @@ Ring::Color IntakeManager::getFilterColor() const { return filter; }
 
 void IntakeManager::setFilterColor(Ring::Color filterColor) { filter = filterColor; }
 
-bool IntakeManager::getShouldEject() const { return eject; }
+bool IntakeManager::getEject() { return eject; }
+
+void IntakeManager::ejectDisc(){
+  intake.startIntake(intakeSpeed);
+  if(counter > 0){
+    counter--;
+  } else {
+    intake.stopIntake();
+    counter = 12;
+  }
+}
 
 void IntakeManager::update() {
-
+    // Check the current ring color from the detector
+    if(filter != Ring::Color::NONE) {
+      Ring::Color ringColor = detector.getColor();
+      eject = ((ringColor != filter) && (ringColor != Ring::Color::NONE));
+    }
 }

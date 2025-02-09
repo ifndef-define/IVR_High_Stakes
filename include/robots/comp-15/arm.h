@@ -1,23 +1,20 @@
 #pragma once
 #include "common/includeList.h"
 
-/**
- * @brief The arm for scoring rings on wall stake
- * 
- */
 class Arm {
+    public:
+        enum class State {
+            DOWN,   // index 0
+            READY,  // index 1
+            SCORE,  // index 2
+            NUM_ARM_STATES = 3 // count of states
+        };
     private:
         pros::Motor armMotor;
         pros::Rotation armRot;
 
-        enum armState_t {
-            DOWN = 0,   // index 0
-            READY = 1,  // index 1
-            SCORE = 2,  // index 2
-            NUM_ARM_STATES = 3 // count of states
-        };
-        armState_t armState = DOWN;
-        static constexpr double armStateAngles[NUM_ARM_STATES] = { 
+        State curArmState = State::DOWN;
+        static constexpr double armStateAngles[int(State::NUM_ARM_STATES)] = { 
             0,   // Angle for DOWN
             25,  // Angle for READY 
             145   // Angle for SCORE
@@ -26,6 +23,7 @@ class Arm {
         lemlib::PID armPID;
 
     public:
+
         Arm(float kP, float kI, float kD): armMotor(3), armRot(-17), armPID(kP, kI, kD, 0, false){};
 
         /**
@@ -39,7 +37,7 @@ class Arm {
          * 
          * @param newState The state to set the arm to
          */
-        void setState(armState_t newState);
+        void setState(State newState);
         
         /**
          * @brief Moves arm to next state
@@ -63,6 +61,5 @@ class Arm {
          * @brief Returns the current arm state
          * 
          */
-        armState_t getState();
-
+        State getState();
 };
