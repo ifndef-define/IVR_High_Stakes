@@ -15,18 +15,13 @@ private:
 public:
   Intake(): intakeMotor({-14, 20}, pros::MotorGearset::green), lift('F', false) {};
   /**
-   * @brief Lifts up the gate
+   * @brief Lifts up the Intake
    */
-  void liftGate();
+  void liftIntake();
   /**
-   * @brief Sets the gate back down
+   * @brief Sets the Intake back down
    */
-  void lowerGate();
-
-  /**
-   * @brief Toggles the gate
-   */
-  void toggleGate();
+  void lowerIntake();
 
   /**
    * @brief Start the intake

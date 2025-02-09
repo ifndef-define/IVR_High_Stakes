@@ -18,4 +18,6 @@ void competition_initialize() {}
 void autonomous() {}
 
 /* Driver Control. Runs default if not connected to field controler */
-void opcontrol() {}
+void opcontrol() {
+	driverctrl();
+}

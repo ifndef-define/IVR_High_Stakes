@@ -7,7 +7,7 @@
  */
 class Arm {
     private:
-        pros::Motor armMotor;
+        pros::MotorGroup armMotor;
         pros::Rotation armRot;
 
         enum armState_t {
@@ -24,7 +24,7 @@ class Arm {
         };
 
     public:
-        Arm(): armMotor(3), armRot(-17) {};
+        Arm(): armMotor({3,4}, MotorGears::red), armRot(-17) {};
 
         /**
          * @brief Updates arm position using PID
@@ -39,18 +39,6 @@ class Arm {
          */
         void setState(armState_t newState);
         
-        /**
-         * @brief Moves arm to next state
-         * 
-         */
-        void nextState();
-        
-        /**
-         * @brief Moves arm to previous state
-         * 
-         */
-        void prevState();
-
         /**
          * @brief Returns the current arm state position in degrees
          *
