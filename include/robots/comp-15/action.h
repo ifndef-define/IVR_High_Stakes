@@ -12,11 +12,10 @@ class Action {
         ActionState currentState;
         IntakeManager intakeManager;
         Arm arm;
-        Controller *controller;
         bool isAuton;
         bool override = false;
     public:
-        Action(bool isAuton, Ring::Color ringToKeep, Controller &controller);
+        Action(bool isAuton, Ring::Color ringToKeep);
         void runSubsystemFSM();
         void stateControl();
         /**
@@ -71,6 +70,13 @@ class Action {
          * @param newState The state to set the arm to
          */
         void setArmState(Arm::State newState);
+
+        /**
+         * @brief Get the Arm State object
+         * 
+         * @return Arm::State 
+         */
+        Arm::State getArmState();
 
         /**
         * @brief Get the State object

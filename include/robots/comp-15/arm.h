@@ -10,13 +10,13 @@ class Arm {
             NUM_ARM_STATES = 3 // count of states
         };
     private:
-        pros::MotorGroup armMotor;
+        pros::Motor armMotor;
         pros::Rotation armRot;
 
         State curArmState = State::DOWN;
         static constexpr double armStateAngles[int(State::NUM_ARM_STATES)] = { 
-            0,   // Angle for DOWN
-            25,  // Angle for READY 
+            25,   // Angle for DOWN
+            70,  // Angle for READY 
             145   // Angle for SCORE
         };
 
@@ -25,7 +25,7 @@ class Arm {
         bool override = false;
 
     public:
-        Arm(float kP, float kI, float kD);
+        Arm(float kP, float kI, float kD): armMotor(-11, pros::MotorGears::red), armRot(-17), armPID(kP, kI, kD) {};
 
         /**
          * @brief Updates arm position using PID

@@ -10,7 +10,7 @@ struct driverProfile {
 
     pros::controller_digital_e_t backpackCycleStageUp;
     pros::controller_digital_e_t backpackCycleStageDown;
-    bool incrementBackpack = false;
+    bool incrementBackpack;
 
     pros::controller_digital_e_t mogoClampToggle;
     pros::controller_digital_e_t doinkerToggle;
@@ -22,21 +22,21 @@ driverProfile JesusPrimary = {
 
     .intakeIn = pros::E_CONTROLLER_DIGITAL_R1,
     .intakeOut = pros::E_CONTROLLER_DIGITAL_R2,
-    .shift = pros::E_CONTROLLER_DIGITAL_DOWN,
+    .shift = pros::E_CONTROLLER_DIGITAL_RIGHT,
 
     .backpackCycleStageUp = pros::E_CONTROLLER_DIGITAL_L1,
     .backpackCycleStageDown = pros::E_CONTROLLER_DIGITAL_L2,
-    .incrementBackpack = true,
+    .incrementBackpack = false,
 
     .mogoClampToggle = pros::E_CONTROLLER_DIGITAL_Y,
     .doinkerToggle = pros::E_CONTROLLER_DIGITAL_X
 };
 
 const driverProfile &currentProfile = JesusPrimary;
-Action actions(0, Ring::Color::RED, ctrler);
 
 void teleOp(Ring::Color ringToKeep) {
     int pow, turn;
+    Action actions(0, ringToKeep);
 
     while(1) {
         // Drive Control
@@ -52,6 +52,7 @@ void teleOp(Ring::Color ringToKeep) {
         // Intake/Arm Control
         actions.setOverride(ctrler.get_digital(currentProfile.shift));
         if(actions.getState() != ActionState::SORTING || actions.isOverride()){
+            //Intake
             if(ctrler.get_digital(currentProfile.intakeIn)) {
                 actions.setIntakeSpeed(1);
             } else if(ctrler.get_digital(currentProfile.intakeOut)) {
@@ -59,23 +60,24 @@ void teleOp(Ring::Color ringToKeep) {
             } else {
                 actions.setIntakeSpeed(0);
             }
-
-            if(currentProfile.incrementBackpack) {
-                if(ctrler.get_digital(currentProfile.shift)){
-                    if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
-                        actions.setArmSpeed(1);
-                    } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
-                        actions.setArmSpeed(-1);
-                    } else {
-                        actions.setArmSpeed(0);
-                    }
-                }
-                if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
-                    actions.nextArmState();
-                } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
-                    actions.prevArmState();
-                }
-            } else {
+            // Arm
+            // if(currentProfile.incrementBackpack) {
+            //     if(ctrler.get_digital(currentProfile.shift)){
+            //         if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
+            //             actions.setArmSpeed(1);
+            //         } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
+            //             actions.setArmSpeed(-1);
+            //         } else {
+            //             actions.setArmSpeed(0);
+            //         }
+            //     } else {
+            //         if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
+            //             actions.nextArmState();
+            //         } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
+            //             actions.prevArmState();
+            //         }
+            //     }
+            // } else {
                 if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
                     actions.setArmState(Arm::State::SCORE);
                 } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
@@ -83,10 +85,8 @@ void teleOp(Ring::Color ringToKeep) {
                 } else {
                     actions.setArmState(Arm::State::DOWN);
                 }
-            }
-
+            // }
         }
-
         pros::delay(10);
     }
 }

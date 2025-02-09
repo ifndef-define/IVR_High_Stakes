@@ -1,4 +1,4 @@
 #pragma once
 #include "robots/comp-15/includeList.h"
 
-void auton();
+void auton(Ring::Color ringToKeep);

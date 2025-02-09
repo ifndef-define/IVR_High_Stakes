@@ -78,10 +78,10 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	auton();
+	auton(ringToKeep);
 }
 
 /* Driver Control. Runs default if not connected to field controler */
 void opcontrol() {
-	teleOp();
+	teleOp(ringToKeep);
 }

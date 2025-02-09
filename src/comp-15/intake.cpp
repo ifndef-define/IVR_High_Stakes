@@ -26,7 +26,7 @@ IntakeManager::IntakeManager() : detector() {
   filter = Ring::Color::NONE;
   eject = false;
   intakeSpeed = 1;
-  counter = 12; //12 * 10 = 120ms
+  counter = 13; //13 * 10 = 130ms
 }
 
 double IntakeManager::getIntakeSpeed() const { return intakeSpeed; }
@@ -49,7 +49,7 @@ void IntakeManager::ejectDisc(){
     counter--;
   } else {
     intake.stopIntake();
-    counter = 12;
+    counter = 13;
   }
 }
 
