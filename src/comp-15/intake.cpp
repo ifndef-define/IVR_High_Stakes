@@ -4,11 +4,9 @@ void Intake::startIntake(double speed){ intakeMotor.move(speed * 127); }
 
 void Intake::stopIntake(){ intakeMotor.brake(); }
 
-void Intake::liftGate(){ lift.retract(); }
+void Intake::liftIntake() { lift.retract(); }
 
-void Intake::lowerGate(){ lift.extend(); }
-
-void Intake::toggleGate(){ lift.toggle(); }
+void Intake::lowerIntake() { lift.extend(); }
 
 Ring::Color ColorDetector::getColor() {
   double hue = colorSensor.get_hue();

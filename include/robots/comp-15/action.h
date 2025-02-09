@@ -13,8 +13,9 @@ class Action {
         IntakeManager intakeManager;
         Arm arm;
         Controller *controller;
+        bool isAuton;
     public:
-        Action(Ring::Color ringToKeep, Controller &controller);
+        Action(bool isAuton, Ring::Color ringToKeep, Controller &controller);
         void runSubsystemFSM();
         void stateControl();
 };

@@ -1,8 +1,9 @@
 #include "robots/comp-15/action.h"
 
-Action::Action(Ring::Color ringToKeep, Controller &controller): currentState(ActionState::IDLE), intakeManager(), arm(0.1, 0, 0){ 
+Action::Action(bool isAuton, Ring::Color ringToKeep, Controller &controller): currentState(ActionState::IDLE), intakeManager(), arm(0.1, 0, 0){ 
     intakeManager.setFilterColor(ringToKeep);
     this->controller = &controller;
+    this->isAuton = isAuton;
 }
 
 void Action::runSubsystemFSM() {
@@ -18,6 +19,8 @@ void Action::runSubsystemFSM() {
         
         // Update arm with new state
         arm.update();
+        
+        // Run state control
         stateControl();
 }
 

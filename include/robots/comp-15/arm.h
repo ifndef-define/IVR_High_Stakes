@@ -10,7 +10,7 @@ class Arm {
             NUM_ARM_STATES = 3 // count of states
         };
     private:
-        pros::Motor armMotor;
+        pros::MotorGroup armMotor;
         pros::Rotation armRot;
 
         State curArmState = State::DOWN;
@@ -23,8 +23,7 @@ class Arm {
         lemlib::PID armPID;
 
     public:
-
-        Arm(float kP, float kI, float kD): armMotor(3), armRot(-17), armPID(kP, kI, kD, 0, false){};
+        Arm(float kP, float kI, float kD);
 
         /**
          * @brief Updates arm position using PID
@@ -39,18 +38,6 @@ class Arm {
          */
         void setState(State newState);
         
-        /**
-         * @brief Moves arm to next state
-         * 
-         */
-        void nextState();
-        
-        /**
-         * @brief Moves arm to previous state
-         * 
-         */
-        void prevState();
-
         /**
          * @brief Returns the current arm state position in degrees
          *
