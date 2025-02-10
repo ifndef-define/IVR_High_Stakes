@@ -1,6 +1,6 @@
 #include "robots/comp-15/action.h"
 
-Action::Action(bool isAuton, Ring::Color ringToKeep): arm(.5, 0, 0), currentState(ActionState::IDLE), intakeManager(){ 
+Action::Action(bool isAuton, Ring::Color ringToKeep): arm(.0001, 0, 0), currentState(ActionState::IDLE), intakeManager(){ 
     intakeManager.setFilterColor(ringToKeep);
     this->isAuton = isAuton;
 }
@@ -28,7 +28,7 @@ void Action::stateControl() {
             break;
         case ActionState::SORTING:
             if(!override){
-                if(int(arm.getState()) > int(Arm::State::READY)){
+                if((int)(arm.getState()) > (int)(Arm::State::READY)){
                     arm.setState(Arm::State::SCORE); // position SCORE to avoid prevent intake collision
                 } else {
                     arm.setState(Arm::State::DOWN);  // For example, position DOWN to avoid intake

@@ -3,10 +3,10 @@
 
 class Arm {
     public:
-        enum class State {
-            DOWN,   // index 0
-            READY,  // index 1
-            SCORE,  // index 2
+        enum class State : int {
+            DOWN = 0,   // index 0
+            READY = 1,  // index 1
+            SCORE = 2,  // index 2
             NUM_ARM_STATES = 3 // count of states
         };
     private:
@@ -14,9 +14,9 @@ class Arm {
         pros::Rotation armRot;
 
         State curArmState = State::DOWN;
-        static constexpr double armStateAngles[int(State::NUM_ARM_STATES)] = { 
-            25,   // Angle for DOWN
-            70,  // Angle for READY 
+        static constexpr double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
+            0,   // Angle for DOWN
+            25,  // Angle for READY 
             145   // Angle for SCORE
         };
 

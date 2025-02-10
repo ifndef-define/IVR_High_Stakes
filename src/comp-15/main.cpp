@@ -8,7 +8,7 @@
  * Sets our autonomous routine to the blue side.
  */
 
-Ring::Color ringToKeep = Ring::Color::RED;
+Ring::Color ringToKeep = Ring::Color::BLUE;
 void on_center_button() {
 	pros::lcd::set_text(1, "Blue");
 	ringToKeep = Ring::Color::BLUE;

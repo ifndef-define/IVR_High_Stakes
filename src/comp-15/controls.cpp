@@ -61,23 +61,23 @@ void teleOp(Ring::Color ringToKeep) {
                 actions.setIntakeSpeed(0);
             }
             // Arm
-            // if(currentProfile.incrementBackpack) {
-            //     if(ctrler.get_digital(currentProfile.shift)){
-            //         if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
-            //             actions.setArmSpeed(1);
-            //         } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
-            //             actions.setArmSpeed(-1);
-            //         } else {
-            //             actions.setArmSpeed(0);
-            //         }
-            //     } else {
-            //         if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
-            //             actions.nextArmState();
-            //         } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
-            //             actions.prevArmState();
-            //         }
-            //     }
-            // } else {
+            if(currentProfile.incrementBackpack) {
+                if(ctrler.get_digital(currentProfile.shift)){
+                    if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
+                        actions.setArmSpeed(1);
+                    } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
+                        actions.setArmSpeed(-1);
+                    } else {
+                        actions.setArmSpeed(0);
+                    }
+                } else {
+                    if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
+                        actions.nextArmState();
+                    } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
+                        actions.prevArmState();
+                    }
+                }
+            } else {
                 if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
                     actions.setArmState(Arm::State::SCORE);
                 } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
@@ -85,7 +85,7 @@ void teleOp(Ring::Color ringToKeep) {
                 } else {
                     actions.setArmState(Arm::State::DOWN);
                 }
-            // }
+            }
         }
         pros::delay(10);
     }
