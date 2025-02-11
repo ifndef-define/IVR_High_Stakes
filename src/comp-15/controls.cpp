@@ -51,8 +51,8 @@ void teleOp(Ring::Color ringToKeep) {
 
         // Intake/Arm Control
         actions.setOverride(ctrler.get_digital(currentProfile.shift));
-        if(actions.getState() != ActionState::SORTING || actions.isOverride()){
-            //Intake
+        if(actions.getState() != ActionState::SORTING || actions.getOverride()){
+            /*    INTAKE    */
             if(ctrler.get_digital(currentProfile.intakeIn)) {
                 actions.setIntakeSpeed(1);
             } else if(ctrler.get_digital(currentProfile.intakeOut)) {
@@ -60,23 +60,22 @@ void teleOp(Ring::Color ringToKeep) {
             } else {
                 actions.setIntakeSpeed(0);
             }
-            // Arm
-            if(currentProfile.incrementBackpack) {
-                if(ctrler.get_digital(currentProfile.shift)){
-                    if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
-                        actions.setArmSpeed(1);
-                    } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
-                        actions.setArmSpeed(-1);
-                    } else {
-                        actions.setArmSpeed(0);
-                    }
+
+            /*    ARM    */
+            if(actions.getOverride()){
+                if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
+                    actions.setArmSpeed(1);
+                } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
+                    actions.setArmSpeed(-1);
                 } else {
+                    actions.setArmSpeed(0);
+                }
+            } else if(currentProfile.incrementBackpack) {
                     if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
                         actions.nextArmState();
                     } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
                         actions.prevArmState();
                     }
-                }
             } else {
                 if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
                     actions.setArmState(Arm::State::SCORE);

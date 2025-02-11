@@ -13,14 +13,14 @@ class Arm {
         pros::Motor armMotor;
         pros::Rotation armRot;
 
+        lemlib::PID armPID;
+
         State curArmState = State::DOWN;
         static constexpr double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             0,   // Angle for DOWN
             25,  // Angle for READY 
             145   // Angle for SCORE
         };
-
-        lemlib::PID armPID;
 
         bool override = false;
 

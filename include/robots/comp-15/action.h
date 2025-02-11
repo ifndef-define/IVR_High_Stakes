@@ -4,7 +4,7 @@
 
 enum class ActionState {
     IDLE, // Robot is doing normal actions
-    SORTING,   // Intake is sorting rings by color
+    SORTING   // Intake is sorting rings by color
 };
 
 class Action {
@@ -28,7 +28,7 @@ class Action {
          * @brief Returns if the arm is in an override state
          *
          */
-        bool isOverride();
+        bool getOverride();
 
         /**
          * @brief Sets the speed of the intake

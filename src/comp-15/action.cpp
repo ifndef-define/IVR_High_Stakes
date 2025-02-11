@@ -39,7 +39,7 @@ void Action::stateControl() {
     }
 }
 
-bool Action::isOverride(){ return override; }
+bool Action::getOverride(){ return override; }
 
 void Action::setOverride(bool override){ this->override = override; }
 
