@@ -17,5 +17,5 @@ void Arm::setSpeed(int speed){
     armMotor.move(speed*127); 
 }
 
-double Arm::getAngle(){ return armRot.get_position()*100; }
+double Arm::getAngle(){ return armRot.get_position()/100; }
 Arm::State Arm::getState(){ return curArmState; }

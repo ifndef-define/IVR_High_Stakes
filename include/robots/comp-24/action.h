@@ -1,6 +1,6 @@
 #pragma once
 #include "common/includeList.h"
-#include "robots/comp-15/includeList.h"
+#include "robots/comp-24/includeList.h"
 
 enum class ActionState {
     IDLE, // Robot is doing normal actions
@@ -77,6 +77,13 @@ class Action {
          * @return Arm::State 
          */
         Arm::State getArmState();
+
+        /**
+         * @brief Get the Arm Angle
+         * 
+         * @return double 
+         */
+        double getArmAngle();
 
         /**
         * @brief Get the State object

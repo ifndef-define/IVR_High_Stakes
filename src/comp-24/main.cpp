@@ -2,37 +2,38 @@
 #include "robots/comp-24/auton.h"
 #include "robots/comp-24/controls.h"
 
-/**
- * A callback function for LLEMU's center button.
- *
- * Sets our autonomous routine to the blue side.
- */
-
 Ring::Color ringToKeep = Ring::Color::BLUE;
-void on_center_button() {
-	pros::lcd::set_text(1, "Blue");
-	ringToKeep = Ring::Color::BLUE;
-}
 
-/**
- * A callback function for LLEMU's center button.
- *
- * Sets our autonomous routine to the red side.
- */
-void on_left_button() {
-	pros::lcd::set_text(1, "Red");
-	ringToKeep = Ring::Color::RED;
-}
+// /**
+//  * A callback function for LLEMU's center button.
+//  *
+//  * Sets our autonomous routine to the blue side.
+//  */
 
-/**
- * A callback function for LLEMU's center button.
- *
- * Sets our autonomous routine to the skills.
- */
-void on_right_button() {
-	pros::lcd::set_text(1, "Skills");
-	ringToKeep = Ring::Color::RED;
-}
+// void on_center_button() {
+// 	pros::lcd::set_text(1, "Blue");
+// 	ringToKeep = Ring::Color::BLUE;
+// }
+
+// /**
+//  * A callback function for LLEMU's center button.
+//  *
+//  * Sets our autonomous routine to the red side.
+//  */
+// void on_left_button() {
+// 	pros::lcd::set_text(1, "Red");
+// 	ringToKeep = Ring::Color::RED;
+// }
+
+// /**
+//  * A callback function for LLEMU's center button.
+//  *
+//  * Sets our autonomous routine to the skills.
+//  */
+// void on_right_button() {
+// 	pros::lcd::set_text(1, "Skills");
+// 	ringToKeep = Ring::Color::RED;
+// }
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -43,9 +44,9 @@ void on_right_button() {
 void initialize() {
 	pros::lcd::initialize();
 	
-	pros::lcd::register_btn1_cb(on_center_button);
-	pros::lcd::register_btn1_cb(on_left_button);
-	pros::lcd::register_btn1_cb(on_right_button);
+	// pros::lcd::register_btn0_cb(on_center_button);
+	// pros::lcd::register_btn1_cb(on_left_button);
+	// pros::lcd::register_btn2_cb(on_right_button);
 }
 
 /**

@@ -1,5 +1,5 @@
 #include "robots/comp-24/devices.h"
-#include "robots/comp-24/includeList.h"
+
 
 pros::Controller ctrler(pros::E_CONTROLLER_MASTER);
 
@@ -18,5 +18,7 @@ pros::Controller ctrler(pros::E_CONTROLLER_MASTER);
 
 // Backpack -11
 
-pros::MotorGroup leftDrive({-9, -8, 10, -7}, pros::MotorGearset::blue);
-pros::MotorGroup rightDrive({3, 4, -1, 2}, pros::MotorGearset::blue);
+MotorGroup rightDrive({3, -15, 1, 5}, pros::MotorGears::blue);
+MotorGroup leftDrive({-10, -9, 7, -8}, pros::MotorGears::blue);
+
+PneumaticsGroup pneumatics;

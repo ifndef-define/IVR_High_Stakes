@@ -13,7 +13,7 @@ private:
   pros::adi::Pneumatics lift;
 
 public:
-  Intake(): intakeMotor({-14, 20}, pros::MotorGearset::green), lift('F', false) {};
+  Intake(): intakeMotor({-13, 17, -18}, pros::MotorGears::blue), lift('E', false) {};
   /**
    * @brief Lifts up the Intake
    */

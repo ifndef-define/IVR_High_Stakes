@@ -16,16 +16,16 @@ class Arm {
         lemlib::PID armPID;
 
         State curArmState = State::DOWN;
-        static constexpr double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
+        const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             0,   // Angle for DOWN
-            25,  // Angle for READY 
-            145   // Angle for SCORE
+            18,  // Angle for READY 
+            100   // Angle for SCORE
         };
 
         bool override = false;
 
     public:
-        Arm(float kP, float kI, float kD): armMotor(-11, pros::MotorGears::red), armRot(-17), armPID(kP, kI, kD) {};
+        Arm(float kP, float kI, float kD): armMotor(-14, pros::MotorGears::red), armRot(-21), armPID(kP, kI, kD, 10, 0) {};
 
         /**
          * @brief Updates arm position using PID

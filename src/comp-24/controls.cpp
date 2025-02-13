@@ -14,6 +14,7 @@ struct driverProfile {
 
     pros::controller_digital_e_t mogoClampToggle;
     pros::controller_digital_e_t doinkerToggle;
+    pros::controller_digital_e_t mogoRushCycle;
 };
 
 driverProfile JesusPrimary = {
@@ -29,7 +30,8 @@ driverProfile JesusPrimary = {
     .incrementBackpack = false,
 
     .mogoClampToggle = pros::E_CONTROLLER_DIGITAL_Y,
-    .doinkerToggle = pros::E_CONTROLLER_DIGITAL_X
+    .doinkerToggle = pros::E_CONTROLLER_DIGITAL_X,
+    .mogoRushCycle = pros::E_CONTROLLER_DIGITAL_B
 };
 
 const driverProfile &currentProfile = JesusPrimary;
@@ -86,6 +88,28 @@ void teleOp(Ring::Color ringToKeep) {
                 }
             }
         }
+
+        /*    Pneumatics    */
+        if(ctrler.get_digital_new_press(currentProfile.mogoClampToggle)) {
+            pneumatics.mogoClamp.toggle();
+        }
+
+        if(ctrler.get_digital_new_press(currentProfile.doinkerToggle)) {
+            pneumatics.doinker.toggle();
+        }
+
+        if(ctrler.get_digital_new_press(currentProfile.mogoRushCycle)) {
+            if(!pneumatics.mogoRushArm.is_extended() && !pneumatics.mogoRushClamp.is_extended()){
+                pneumatics.mogoRushArm.extend();
+                pneumatics.mogoRushClamp.extend();
+            } else if(pneumatics.mogoRushArm.is_extended() && pneumatics.mogoRushClamp.is_extended()){
+                pneumatics.mogoRushClamp.retract();
+            } else if(pneumatics.mogoRushArm.is_extended() && !pneumatics.mogoRushClamp.is_extended()){
+                pneumatics.mogoRushArm.retract();
+            }
+        }
+
+        pros::lcd::print(0, "%f", actions.getArmAngle());
         pros::delay(10);
     }
 }

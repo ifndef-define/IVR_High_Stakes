@@ -1,6 +1,6 @@
 #include "robots/comp-24/action.h"
 
-Action::Action(bool isAuton, Ring::Color ringToKeep): arm(.0001, 0, 0), currentState(ActionState::IDLE), intakeManager(){ 
+Action::Action(bool isAuton, Ring::Color ringToKeep): arm(3.2, 0.1, 0), currentState(ActionState::IDLE), intakeManager(){ 
     intakeManager.setFilterColor(ringToKeep);
     this->isAuton = isAuton;
 }
@@ -69,6 +69,10 @@ void Action::setArmState(Arm::State newState) {
 
 Arm::State Action::getArmState() {
     return arm.getState();
+}
+
+double Action::getArmAngle() {
+    return arm.getAngle();
 }
 
 void Action::setArmSpeed(int speed) {
