@@ -54,7 +54,9 @@ void teleOp(Ring::Color ringToKeep) {
         // Intake/Arm Control
         actions.setOverride(ctrler.get_digital(currentProfile.shift));
         if(actions.getState() != ActionState::SORTING || actions.getOverride()){
+            //////////////////
             /*    INTAKE    */
+            //////////////////
             if(ctrler.get_digital(currentProfile.intakeIn)) {
                 actions.setIntakeSpeed(1);
             } else if(ctrler.get_digital(currentProfile.intakeOut)) {
@@ -62,8 +64,9 @@ void teleOp(Ring::Color ringToKeep) {
             } else {
                 actions.setIntakeSpeed(0);
             }
-
+            ///////////////
             /*    ARM    */
+            ///////////////
             if(actions.getOverride()){
                 if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
                     actions.setArmSpeed(1);
@@ -79,7 +82,9 @@ void teleOp(Ring::Color ringToKeep) {
                         actions.prevArmState();
                     }
             } else {
-                if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
+                if(ctrler.get_digital(currentProfile.backpackCycleStageUp) && ctrler.get_digital(currentProfile.backpackCycleStageDown)){
+                    actions.setArmState(Arm::State::DESCORE);
+                } else if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
                     actions.setArmState(Arm::State::SCORE);
                 } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
                     actions.setArmState(Arm::State::READY);
@@ -88,8 +93,9 @@ void teleOp(Ring::Color ringToKeep) {
                 }
             }
         }
-
+        //////////////////////
         /*    Pneumatics    */
+        //////////////////////
         if(ctrler.get_digital_new_press(currentProfile.mogoClampToggle)) {
             pneumatics.mogoClamp.toggle();
         }
@@ -108,7 +114,7 @@ void teleOp(Ring::Color ringToKeep) {
                 pneumatics.mogoRushArm.retract();
             }
         }
-
+        //Print out data for 
         pros::lcd::print(0, "%f", actions.getArmAngle());
         pros::delay(10);
     }

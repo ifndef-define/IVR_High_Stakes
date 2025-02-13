@@ -7,25 +7,28 @@ class Arm {
             DOWN = 0,   // index 0
             READY = 1,  // index 1
             SCORE = 2,  // index 2
-            NUM_ARM_STATES = 3 // count of states
+            DESCORE = 3,  // index 3
+            NUM_ARM_STATES = 4 // count of states
         };
     private:
         pros::Motor armMotor;
         pros::Rotation armRot;
 
-        lemlib::PID armPID;
+        lemlib::PID small;
+        lemlib::PID large;
 
         State curArmState = State::DOWN;
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
-            0,   // Angle for DOWN
-            18,  // Angle for READY 
-            100   // Angle for SCORE
+            1,   // Angle for DOWN
+            15,  // Angle for READY 
+            110,   // Angle for SCORE
+            140  // Angle for DESCORE
         };
 
         bool override = false;
 
     public:
-        Arm(float kP, float kI, float kD): armMotor(-14, pros::MotorGears::red), armRot(-21), armPID(kP, kI, kD, 10, 0) {};
+        Arm(float kP, float kI, float kD, float kP2, float kI2, float kD2): armMotor(-14, pros::MotorGears::red), armRot(-21), large(kP, kI, kD, 0, 0), small(kP2, kI2, kD2, 0, 0) {};
 
         /**
          * @brief Updates arm position using PID

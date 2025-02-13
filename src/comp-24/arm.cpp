@@ -2,7 +2,12 @@
 
 void Arm::update(){
     if(!override){ 
-        armMotor.move(armPID.update(armStateAngles[int(curArmState)]-getAngle())); 
+        double error = armStateAngles[(int)curArmState] - getAngle();
+        if(abs(error) < 20){
+            armMotor.move(small.update(error));
+        } else {
+            armMotor.move(large.update(error));
+        }
     }
 }
 
