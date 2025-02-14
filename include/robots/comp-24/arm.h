@@ -14,6 +14,7 @@ class Arm {
         pros::Motor armMotor;
         pros::Rotation armRot;
 
+        float error = 0;
         lemlib::PID small;
         lemlib::PID large;
 
