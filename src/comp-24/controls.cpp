@@ -116,6 +116,7 @@ void teleOp(Ring::Color ringToKeep) {
         }
         //Print out data for 
         pros::lcd::print(0, "%f", actions.getArmAngle());
+        pros::lcd::print(1, "%d", actions.pullbackFlag);
         pros::delay(10);
     }
 }

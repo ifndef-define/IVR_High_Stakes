@@ -4,36 +4,24 @@
 
 Ring::Color ringToKeep = Ring::Color::BLUE;
 
-// /**
-//  * A callback function for LLEMU's center button.
-//  *
-//  * Sets our autonomous routine to the blue side.
-//  */
+/**
+ * A callback function for LLEMU's center button.
+ *
+ * Sets our autonomous routine to the blue side.
+ */
 
-// void on_center_button() {
-// 	pros::lcd::set_text(1, "Blue");
-// 	ringToKeep = Ring::Color::BLUE;
-// }
-
-// /**
-//  * A callback function for LLEMU's center button.
-//  *
-//  * Sets our autonomous routine to the red side.
-//  */
-// void on_left_button() {
-// 	pros::lcd::set_text(1, "Red");
-// 	ringToKeep = Ring::Color::RED;
-// }
-
-// /**
-//  * A callback function for LLEMU's center button.
-//  *
-//  * Sets our autonomous routine to the skills.
-//  */
-// void on_right_button() {
-// 	pros::lcd::set_text(1, "Skills");
-// 	ringToKeep = Ring::Color::RED;
-// }
+void on_center_button() {
+	switch(ringToKeep){
+		case Ring::Color::BLUE:
+			pros::lcd::set_text(0, "Red");
+			ringToKeep = Ring::Color::RED;
+			break;
+		case Ring::Color::RED:
+			pros::lcd::set_text(0, "Blue");
+			ringToKeep = Ring::Color::BLUE;
+			break;
+	}
+}
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.

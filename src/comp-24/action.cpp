@@ -1,6 +1,6 @@
 #include "robots/comp-24/action.h"
 
-Action::Action(bool isAuton, Ring::Color ringToKeep): arm(3.2,0,0, 4.8,0,0), currentState(ActionState::IDLE), intakeManager(){ 
+Action::Action(bool isAuton, Ring::Color ringToKeep): arm(3.2,0,0, 3.85,0,0), currentState(ActionState::IDLE), intakeManager(){ 
     intakeManager.setFilterColor(ringToKeep);
     this->isAuton = isAuton;
 }
@@ -12,6 +12,9 @@ void Action::runSubsystemFSM() {
         // Branch based on intakeManager's decision (e.g. eject set true if wrong color)
         if (intakeManager.getEject()) {
             currentState = ActionState::SORTING;
+        }else if((arm.getState() == Arm::State::SCORE && lastArmState == Arm::State::READY) || pullbackFlag){
+            currentState = ActionState::PULLBACK;
+            pullbackFlag = true;
         } else {
             currentState = ActionState::IDLE;
         }
@@ -20,6 +23,7 @@ void Action::runSubsystemFSM() {
         
         // Update arm with new state
         arm.update();
+        lastArmState = arm.getState();
 }
 
 void Action::stateControl() {
@@ -34,6 +38,18 @@ void Action::stateControl() {
                     arm.setState(Arm::State::DOWN);  // For example, position DOWN to avoid intake
                 }
                 intakeManager.ejectDisc();
+            }
+            break;
+        case ActionState::PULLBACK:
+            intakeManager.setIntakeSpeed(-1);
+            intakeManager.startIntake();
+            if (pauseCounter < 7){ // 7*15 = 105ms
+                pauseCounter++;
+            } else {
+                pauseCounter = 0;
+                intakeManager.stopIntake();
+                intakeManager.setIntakeSpeed(1);
+                pullbackFlag = false;
             }
             break;
     }
