@@ -12,7 +12,7 @@ void Action::runSubsystemFSM() {
     // Branch based on intakeManager's decision (e.g. eject set true if wrong color)
     if ((intakeManager.getEject() && getRunColorSort()) || getEjectFlag()) {
         currentState = ActionState::SORTING;
-    } else if((arm.getState() >= Arm::State::SCORE && lastArmState <= Arm::State::READY) || getPullbackFlag()){
+    } else if((arm.getAngle() > 17 && arm.getAngle() < 20) || getPullbackFlag()){
         currentState = ActionState::PULLBACK;
     } else {
         currentState = ActionState::IDLE;
@@ -35,7 +35,7 @@ void Action::stateControl() {
             if(!override){
                 setEjectFlag(true);
                 if((int)(arm.getState()) > (int)(Arm::State::READY)){
-                    arm.setState(Arm::State::SCORE); // position SCORE to avoid prevent intake collision
+                    // arm.setState(Arm::State::SCORE); // position SCORE to avoid prevent intake collision
                 } else {
                     arm.setState(Arm::State::DOWN);  // For example, position DOWN to avoid intake
                 }

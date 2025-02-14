@@ -1,10 +1,10 @@
-#include "robots/comp-24/pnuematics.h"
+#include "robots/comp-24/pneumatics.h"
 
 PneumaticsGroup::PneumaticsGroup(): 
-    mogoRushArm('F', false), 
-    mogoRushClamp('C', false), 
-    mogoClamp('H', false), 
-    doinker('G', false) {}
+    mogoRushArm('A', false), 
+    mogoRushClamp('B', false), 
+    mogoClamp('G', false), 
+    doinker('H', false) {}
     
 
 // No other methods, just a grouping class

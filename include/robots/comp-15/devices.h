@@ -4,7 +4,7 @@
 
 #include "common/includeList.h"
 #include "lemlib/api.hpp"
-#include "pnuematics.h"
+#include "pneumatics.h"
 #include "action.h"
 
 class Action;

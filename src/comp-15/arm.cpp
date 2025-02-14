@@ -1,4 +1,7 @@
 #include "robots/comp-15/arm.h"
+Arm::Arm(float kP, float kI, float kD, float kP2, float kI2, float kD2) : armMotor(-11, pros::MotorGears::red), armRot(-17), large(kP, kI, kD, 0, 0), small(kP2, kI2, kD2, 0, 0) {
+    armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+}
 
 void Arm::update(){
     if(!override){ 

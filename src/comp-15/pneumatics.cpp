@@ -1,4 +1,4 @@
-#include "robots/comp-15/pnuematics.h"
+#include "robots/comp-15/pneumatics.h"
 
 PneumaticsGroup::PneumaticsGroup(): 
     mogoRushArm('A', false), 

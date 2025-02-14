@@ -6,9 +6,9 @@ class Arm {
         enum class State : int {
             DOWN = 0,   // index 0
             READY = 1,  // index 1
-            SCORE = 2,  // index 2
-            DESCORE = 3,  // index 3
-            NUM_ARM_STATES = 4 // count of states
+            // SCORE = 2,  // index 2
+            // DESCORE = 3,  // index 3
+            NUM_ARM_STATES = 2 // count of states
         };
     private:
         pros::Motor armMotor;
@@ -21,15 +21,15 @@ class Arm {
         State curArmState = State::DOWN;
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             1,   // Angle for DOWN
-            13.5,  // Angle for READY 
-            110,   // Angle for SCORE
-            140  // Angle for DESCORE
+            12.5,  // Angle for READY 
+            // 110,   // Angle for SCORE
+            // 140  // Angle for DESCORE
         };
 
         bool override = false;
 
     public:
-        Arm(float kP, float kI, float kD, float kP2, float kI2, float kD2): armMotor(-11, pros::MotorGears::red), armRot(-17), large(kP, kI, kD, 0, 0), small(kP2, kI2, kD2, 0, 0) {};
+        Arm(float kP, float kI, float kD, float kP2, float kI2, float kD2);
 
         /**
          * @brief Updates arm position using PID

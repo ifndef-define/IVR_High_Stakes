@@ -27,11 +27,11 @@ driverProfile JesusPrimary = {
 
     .backpackCycleStageUp = pros::E_CONTROLLER_DIGITAL_L1,
     .backpackCycleStageDown = pros::E_CONTROLLER_DIGITAL_L2,
-    .incrementBackpack = false,
+    .incrementBackpack = true,
 
     .mogoClampToggle = pros::E_CONTROLLER_DIGITAL_Y,
-    .doinkerToggle = pros::E_CONTROLLER_DIGITAL_X,
-    .mogoRushCycle = pros::E_CONTROLLER_DIGITAL_B
+    .doinkerToggle = pros::E_CONTROLLER_DIGITAL_B,
+    .mogoRushCycle = pros::E_CONTROLLER_DIGITAL_A
 };
 
 const driverProfile &currentProfile = JesusPrimary;
@@ -76,17 +76,13 @@ void teleOp(Ring::Color ringToKeep) {
                     actions.setArmSpeed(0);
                 }
             } else if(currentProfile.incrementBackpack) {
-                    if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
+                    if(ctrler.get_digital_new_press(currentProfile.backpackCycleStageUp)) {
                         actions.nextArmState();
-                    } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
+                    } else if(ctrler.get_digital_new_press(currentProfile.backpackCycleStageDown)) {
                         actions.prevArmState();
                     }
             } else {
-                if(ctrler.get_digital(currentProfile.backpackCycleStageUp) && ctrler.get_digital(currentProfile.backpackCycleStageDown)){
-                    actions.setArmState(Arm::State::DESCORE);
-                } else if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
-                    actions.setArmState(Arm::State::SCORE);
-                } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
+                if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
                     actions.setArmState(Arm::State::READY);
                 } else {
                     actions.setArmState(Arm::State::DOWN);
@@ -115,8 +111,9 @@ void teleOp(Ring::Color ringToKeep) {
             }
         }
         //Print out data for 
-        pros::lcd::print(0, "%f", actions.getArmAngle());
-        pros::lcd::print(1, "%d", actions.getPullbackFlag());
+        pros::lcd::print(1, "%f", actions.getArmAngle());
+        pros::lcd::print(2, "%d", actions.getPullbackFlag());
+        pros::lcd::print(3, "%d", int(actions.getState()));
         pros::delay(10);
     }
 }
