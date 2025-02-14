@@ -4,7 +4,8 @@
 
 enum class ActionState {
     IDLE, // Robot is doing normal actions
-    SORTING   // Intake is sorting rings by color
+    SORTING,   // Intake is sorting rings by color
+    PULLBACK // Intake is pulling back to avoid hook-ring collision
 };
 
 class Action {
@@ -14,6 +15,8 @@ class Action {
         Arm arm;
         bool isAuton;
         bool override = false;
+        Arm::State lastArmState = Arm::State::DOWN;
+        int pauseCounter = 0;
     public:
         Action(bool isAuton, Ring::Color ringToKeep);
         void runSubsystemFSM();
@@ -51,6 +54,10 @@ class Action {
         void setRingColor(Ring::Color ringToKeep);
 
         /**
+         * @brief Toggle the color sorting
+         * 
+         */
+        void setRunColorSort(bool colorSort);
          
         /**
          * @brief Move to the next state
@@ -79,10 +86,24 @@ class Action {
         Arm::State getArmState();
 
         /**
+         * @brief Get the Arm Angle
+         * 
+         * @return double 
+         */
+        double getArmAngle();
+
+        /**
         * @brief Get the State object
         * 
         * @return ActionState 
         */
-       ActionState getState();
-};
+        ActionState getState();
 
+        /**
+         * @brief Get the Pullback Flag bool
+         * 
+         * @return true 
+         * @return false 
+         */
+        bool getPullbackFlag();
+};

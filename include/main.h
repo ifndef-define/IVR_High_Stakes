@@ -15,6 +15,8 @@
 #ifndef _PROS_MAIN_H_
 #define _PROS_MAIN_H_
 
+#pragma GCC diagnostic ignored "-Wdeprecated-enum-enum-conversion"
+
 /**
  * Add PROS header files here;
  * NOTE: There shouldn't be anything else here

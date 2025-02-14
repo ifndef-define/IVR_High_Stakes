@@ -1,6 +1,6 @@
 #include "robots/comp-15/action.h"
 
-Action::Action(bool isAuton, Ring::Color ringToKeep): arm(.0001, 0, 0), currentState(ActionState::IDLE), intakeManager(){ 
+Action::Action(bool isAuton, Ring::Color ringToKeep): arm(3.2,0,0, 3.85,0,0), currentState(ActionState::IDLE), intakeManager(){ 
     intakeManager.setFilterColor(ringToKeep);
     this->isAuton = isAuton;
 }
@@ -10,16 +10,21 @@ void Action::runSubsystemFSM() {
         intakeManager.update();
         
         // Branch based on intakeManager's decision (e.g. eject set true if wrong color)
-        if (intakeManager.getEject()) {
+        if (intakeManager.getEject() && intakeManager.getColorSort()) {
             currentState = ActionState::SORTING;
+        }else if((arm.getState() == Arm::State::SCORE && lastArmState == Arm::State::READY) || intakeManager.getPullbackFlag()){
+            currentState = ActionState::PULLBACK;
+            intakeManager.setPullbackFlag(true);
         } else {
             currentState = ActionState::IDLE;
+            intakeManager.setPullbackFlag(false);
         }
         // Run state control
         stateControl();
         
         // Update arm with new state
         arm.update();
+        lastArmState = arm.getState();
 }
 
 void Action::stateControl() {
@@ -34,6 +39,18 @@ void Action::stateControl() {
                     arm.setState(Arm::State::DOWN);  // For example, position DOWN to avoid intake
                 }
                 intakeManager.ejectDisc();
+            }
+            break;
+        case ActionState::PULLBACK:
+            intakeManager.setIntakeSpeed(-1);
+            intakeManager.startIntake();
+            if (pauseCounter < 7){ // 7*15 = 105ms
+                pauseCounter++;
+            } else {
+                pauseCounter = 0;
+                intakeManager.stopIntake();
+                intakeManager.setIntakeSpeed(1);
+                intakeManager.setPullbackFlag(false);
             }
             break;
     }
@@ -71,8 +88,16 @@ Arm::State Action::getArmState() {
     return arm.getState();
 }
 
+double Action::getArmAngle() {
+    return arm.getAngle();
+}
+
 void Action::setArmSpeed(int speed) {
     arm.setSpeed(speed);
+}
+
+void Action::setRunColorSort(bool colorSort){
+    intakeManager.setColorSort(colorSort);
 }
 
 void Action::setRingColor(Ring::Color ringToKeep) {
@@ -81,4 +106,8 @@ void Action::setRingColor(Ring::Color ringToKeep) {
 
 ActionState Action::getState() {
     return currentState;
+}
+
+bool Action::getPullbackFlag(){
+    return intakeManager.getPullbackFlag();
 }

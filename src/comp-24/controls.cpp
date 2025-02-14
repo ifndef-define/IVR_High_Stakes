@@ -38,7 +38,7 @@ const driverProfile &currentProfile = JesusPrimary;
 
 void teleOp(Ring::Color ringToKeep) {
     int pow, turn;
-    Action actions(0, ringToKeep);
+    actions.setRingColor(ringToKeep);
 
     while(1) {
         // Drive Control
@@ -116,7 +116,7 @@ void teleOp(Ring::Color ringToKeep) {
         }
         //Print out data for 
         pros::lcd::print(0, "%f", actions.getArmAngle());
-        pros::lcd::print(1, "%d", actions.pullbackFlag);
+        pros::lcd::print(1, "%d", actions.getPullbackFlag());
         pros::delay(10);
     }
 }

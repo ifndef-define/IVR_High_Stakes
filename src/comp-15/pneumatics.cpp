@@ -1,8 +1,10 @@
 #include "robots/comp-15/pnuematics.h"
 
 PneumaticsGroup::PneumaticsGroup(): 
-    mogoRushArm('G', false), 
-    mogoRushClamp('H', false), 
-    mogoClamp('I', false) {}
+    mogoRushArm('A', false), 
+    mogoRushClamp('B', false), 
+    mogoClamp('G', false), 
+    doinker('H', false) {}
+    
 
 // No other methods, just a grouping class

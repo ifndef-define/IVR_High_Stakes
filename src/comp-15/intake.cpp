@@ -10,17 +10,18 @@ void Intake::lowerIntake() { lift.extend(); }
 
 Ring::Color ColorDetector::getColor() {
   double hue = colorSensor.get_hue();
-  double prox = colorSensor.get_proximity();
-  if(prox >= 220){
-    if((hue <= 270) && (hue >= 180)) { 
+  if(colorSensor.get_proximity() >= 220){
+    if((hue <= 280) && (hue >= 160)) { 
       return Ring::Color::BLUE;
     } 
-    if((hue >= 350) && (hue <= 15)) {
+    if((hue >= 340) && (hue <= 20)) {
       return Ring::Color::RED; 
     }
   }
   return Ring::Color::NONE;
 }
+
+void ColorDetector::setLED(int num) { colorSensor.set_led_pwm(num); }
 
 IntakeManager::IntakeManager() : detector() {
   filter = Ring::Color::NONE;
@@ -40,6 +41,16 @@ void IntakeManager::stopIntake() { intake.stopIntake(); }
 Ring::Color IntakeManager::getFilterColor() const { return filter; }
 
 void IntakeManager::setFilterColor(Ring::Color filterColor) { filter = filterColor; }
+
+void IntakeManager::setLED(int num){ detector.setLED(num); }
+
+void IntakeManager::setPullbackFlag(bool flag) { pullbackFlag = flag; }
+
+bool IntakeManager::getPullbackFlag() { return pullbackFlag; }
+
+void IntakeManager::setColorSort(bool colorSort) { runColorSort=colorSort; }
+
+bool IntakeManager::getColorSort() { return runColorSort; }
 
 bool IntakeManager::getEject() { return eject; }
 

@@ -12,6 +12,7 @@ class PneumaticsGroup {
         pros::adi::Pneumatics mogoRushArm;
         pros::adi::Pneumatics mogoRushClamp;
         pros::adi::Pneumatics mogoClamp;
+        pros::adi::Pneumatics doinker;
         PneumaticsGroup();
 };
 

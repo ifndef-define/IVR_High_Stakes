@@ -1,6 +1,6 @@
 #pragma once
 #include "common/includeList.h"
-#include "robots/comp-24/includeList.h"
+#include "robots/comp-15/includeList.h"
 
 enum class ActionState {
     IDLE, // Robot is doing normal actions
@@ -18,7 +18,6 @@ class Action {
         Arm::State lastArmState = Arm::State::DOWN;
         int pauseCounter = 0;
     public:
-        bool pullbackFlag = false;
         Action(bool isAuton, Ring::Color ringToKeep);
         void runSubsystemFSM();
         void stateControl();
@@ -55,6 +54,10 @@ class Action {
         void setRingColor(Ring::Color ringToKeep);
 
         /**
+         * @brief Toggle the color sorting
+         * 
+         */
+        void setRunColorSort(bool colorSort);
          
         /**
          * @brief Move to the next state
@@ -94,6 +97,13 @@ class Action {
         * 
         * @return ActionState 
         */
-       ActionState getState();
-};
+        ActionState getState();
 
+        /**
+         * @brief Get the Pullback Flag bool
+         * 
+         * @return true 
+         * @return false 
+         */
+        bool getPullbackFlag();
+};

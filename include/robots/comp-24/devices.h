@@ -5,6 +5,10 @@
 #include "common/includeList.h"
 #include "lemlib/api.hpp"
 #include "pnuematics.h"
+#include "action.h"
+
+class Action;
+extern Action actions;
 
 // Add all robot device externs here //
 extern pros::Controller ctrler;
@@ -17,7 +21,6 @@ extern IMU imu;
 
 extern pros::adi::Encoder yEnc;
 extern pros::adi::Encoder rxEnc;
-extern pros::adi::Encoder lxEnc;
 
 // LEMLIB Config //
 extern lemlib::TrackingWheel horizontal;

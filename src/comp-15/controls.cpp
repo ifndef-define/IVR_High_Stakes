@@ -14,6 +14,7 @@ struct driverProfile {
 
     pros::controller_digital_e_t mogoClampToggle;
     pros::controller_digital_e_t doinkerToggle;
+    pros::controller_digital_e_t mogoRushCycle;
 };
 
 driverProfile JesusPrimary = {
@@ -29,14 +30,15 @@ driverProfile JesusPrimary = {
     .incrementBackpack = false,
 
     .mogoClampToggle = pros::E_CONTROLLER_DIGITAL_Y,
-    .doinkerToggle = pros::E_CONTROLLER_DIGITAL_X
+    .doinkerToggle = pros::E_CONTROLLER_DIGITAL_X,
+    .mogoRushCycle = pros::E_CONTROLLER_DIGITAL_B
 };
 
 const driverProfile &currentProfile = JesusPrimary;
 
 void teleOp(Ring::Color ringToKeep) {
     int pow, turn;
-    Action actions(0, ringToKeep);
+    actions.setRingColor(ringToKeep);
 
     while(1) {
         // Drive Control
@@ -52,7 +54,9 @@ void teleOp(Ring::Color ringToKeep) {
         // Intake/Arm Control
         actions.setOverride(ctrler.get_digital(currentProfile.shift));
         if(actions.getState() != ActionState::SORTING || actions.getOverride()){
+            //////////////////
             /*    INTAKE    */
+            //////////////////
             if(ctrler.get_digital(currentProfile.intakeIn)) {
                 actions.setIntakeSpeed(1);
             } else if(ctrler.get_digital(currentProfile.intakeOut)) {
@@ -60,8 +64,9 @@ void teleOp(Ring::Color ringToKeep) {
             } else {
                 actions.setIntakeSpeed(0);
             }
-
+            ///////////////
             /*    ARM    */
+            ///////////////
             if(actions.getOverride()){
                 if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
                     actions.setArmSpeed(1);
@@ -77,7 +82,9 @@ void teleOp(Ring::Color ringToKeep) {
                         actions.prevArmState();
                     }
             } else {
-                if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
+                if(ctrler.get_digital(currentProfile.backpackCycleStageUp) && ctrler.get_digital(currentProfile.backpackCycleStageDown)){
+                    actions.setArmState(Arm::State::DESCORE);
+                } else if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
                     actions.setArmState(Arm::State::SCORE);
                 } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
                     actions.setArmState(Arm::State::READY);
@@ -86,6 +93,30 @@ void teleOp(Ring::Color ringToKeep) {
                 }
             }
         }
+        //////////////////////
+        /*    Pneumatics    */
+        //////////////////////
+        if(ctrler.get_digital_new_press(currentProfile.mogoClampToggle)) {
+            pneumatics.mogoClamp.toggle();
+        }
+
+        if(ctrler.get_digital_new_press(currentProfile.doinkerToggle)) {
+            pneumatics.doinker.toggle();
+        }
+
+        if(ctrler.get_digital_new_press(currentProfile.mogoRushCycle)) {
+            if(!pneumatics.mogoRushArm.is_extended() && !pneumatics.mogoRushClamp.is_extended()){
+                pneumatics.mogoRushArm.extend();
+                pneumatics.mogoRushClamp.extend();
+            } else if(pneumatics.mogoRushArm.is_extended() && pneumatics.mogoRushClamp.is_extended()){
+                pneumatics.mogoRushClamp.retract();
+            } else if(pneumatics.mogoRushArm.is_extended() && !pneumatics.mogoRushClamp.is_extended()){
+                pneumatics.mogoRushArm.retract();
+            }
+        }
+        //Print out data for 
+        pros::lcd::print(0, "%f", actions.getArmAngle());
+        pros::lcd::print(1, "%d", actions.getPullbackFlag());
         pros::delay(10);
     }
 }

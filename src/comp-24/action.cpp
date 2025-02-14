@@ -10,13 +10,14 @@ void Action::runSubsystemFSM() {
         intakeManager.update();
         
         // Branch based on intakeManager's decision (e.g. eject set true if wrong color)
-        if (intakeManager.getEject()) {
+        if (intakeManager.getEject() && intakeManager.getColorSort()) {
             currentState = ActionState::SORTING;
-        }else if((arm.getState() == Arm::State::SCORE && lastArmState == Arm::State::READY) || pullbackFlag){
+        }else if((arm.getState() == Arm::State::SCORE && lastArmState == Arm::State::READY) || intakeManager.getPullbackFlag()){
             currentState = ActionState::PULLBACK;
-            pullbackFlag = true;
+            intakeManager.setPullbackFlag(true);
         } else {
             currentState = ActionState::IDLE;
+            intakeManager.setPullbackFlag(false);
         }
         // Run state control
         stateControl();
@@ -49,7 +50,7 @@ void Action::stateControl() {
                 pauseCounter = 0;
                 intakeManager.stopIntake();
                 intakeManager.setIntakeSpeed(1);
-                pullbackFlag = false;
+                intakeManager.setPullbackFlag(false);
             }
             break;
     }
@@ -95,10 +96,18 @@ void Action::setArmSpeed(int speed) {
     arm.setSpeed(speed);
 }
 
+void Action::setRunColorSort(bool colorSort){
+    intakeManager.setColorSort(colorSort);
+}
+
 void Action::setRingColor(Ring::Color ringToKeep) {
     intakeManager.setFilterColor(ringToKeep);
 }
 
 ActionState Action::getState() {
     return currentState;
+}
+
+bool Action::getPullbackFlag(){
+    return intakeManager.getPullbackFlag();
 }

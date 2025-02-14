@@ -1,6 +1,5 @@
 #pragma once
 
 // Add all robot header files here //
-#include "arm.h"
-#include "intake.h"
-#include "action.h"
+#include "robots/comp-15/arm.h"
+#include "robots/comp-15/intake.h"

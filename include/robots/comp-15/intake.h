@@ -1,6 +1,5 @@
 #pragma once
 #include "common/includeList.h"
-#include "robots/comp-15/devices.h"
 
 /**
  * @class Intake
@@ -13,7 +12,7 @@ private:
   pros::adi::Pneumatics lift;
 
 public:
-  Intake(): intakeMotor({-14, 20}, pros::MotorGearset::green), lift('F', false) {};
+  Intake(): intakeMotor({-13, 17, -18}, pros::MotorGears::blue), lift('E', false) {};
   /**
    * @brief Lifts up the Intake
    */
@@ -56,6 +55,8 @@ public:
    * @return The color in the take
    */
   Ring::Color getColor();
+  void setLED(int num);
+  void setIntegrationTime(int time);
 };
 
 /**
@@ -73,6 +74,8 @@ private:
 
   double intakeSpeed;
   double counter;
+  bool pullbackFlag = false;
+  bool runColorSort = true;
 
 public:
   IntakeManager();
@@ -83,6 +86,9 @@ public:
   void startIntake();
   void stopIntake();
 
+  void setPullbackFlag(bool flag);
+  bool getPullbackFlag();
+
   void ejectDisc();
   /**
    * @brief Gets the type that is kept in filter
@@ -90,6 +96,7 @@ public:
    * @return The color to be kept in a filter, NONE is no filter
    */
   Ring::Color getFilterColor() const;
+
   /**
    * @brief Sets whether or not the colors are being filtered
    *
@@ -98,11 +105,32 @@ public:
   void setFilterColor(Ring::Color filterColor);
 
   /**
+   * @brief Toggles color sorting
+   *
+   * @param colorSort Whether or not to sort colors
+   */
+  void setColorSort(bool colorSort);
+
+  /**
+   * @brief Sets the LED for the color sensor
+   *
+   * @param num The number of the LED
+   */
+  void setLED(int num);
+
+  /**
    * @brief Gets whether or not should eject
    *
    * @return Whether or not should eject
    */
   bool getEject();
+
+  /**
+   * @brief Gets whether or not to sort colors
+   *
+   * @return Whether or not to sort colors
+   */
+  bool getColorSort();
 
   /**
    * @brief Updates the system

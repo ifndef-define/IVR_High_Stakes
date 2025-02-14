@@ -22,6 +22,8 @@ MotorGroup leftDrive({-10, -9, 7, -8}, pros::MotorGears::blue);
 
 PneumaticsGroup pneumatics;
 
+Action actions(0, Ring::Color::NONE);
+
 IMU imu(20);
 adi::Encoder yEnc(adi::ext_adi_port_tuple_t(16, 1, 2));
 adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(16, 3, 4), true); // 3 4
