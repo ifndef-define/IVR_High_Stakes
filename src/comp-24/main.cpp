@@ -31,10 +31,7 @@ void on_center_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
-	
-	// pros::lcd::register_btn0_cb(on_center_button);
-	// pros::lcd::register_btn1_cb(on_left_button);
-	// pros::lcd::register_btn2_cb(on_right_button);
+	pros::lcd::register_btn1_cb(on_center_button);
 }
 
 /**
