@@ -21,7 +21,6 @@ Ring::Color ColorDetector::getColor() {
   return Ring::Color::NONE;
 }
 
-void ColorDetector::setLED(int num) { colorSensor.set_led_pwm(num); }
 
 IntakeManager::IntakeManager() : detector() {
   filter = Ring::Color::NONE;
@@ -38,9 +37,9 @@ void IntakeManager::startIntake() { intake.startIntake(intakeSpeed); }
 
 void IntakeManager::stopIntake() { intake.stopIntake(); }
 
-Ring::Color IntakeManager::getFilterColor() const { return filter; }
-
 void IntakeManager::setFilterColor(Ring::Color filterColor) { filter = filterColor; }
+
+Ring::Color IntakeManager::getFilterColor() const { return filter; }
 
 void IntakeManager::setLED(int num){ detector.setLED(num); }
 

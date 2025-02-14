@@ -8,26 +8,29 @@ void Intake::liftIntake() { lift.retract(); }
 
 void Intake::lowerIntake() { lift.extend(); }
 
+ColorDetector::ColorDetector() : colorSensor(6) {
+  colorSensor.set_led_pwm(100);
+  colorSensor.set_integration_time(20);
+}
+
 Ring::Color ColorDetector::getColor() {
   double hue = colorSensor.get_hue();
-  if(colorSensor.get_proximity() >= 220){
-    if((hue <= 280) && (hue >= 160)) { 
+  if(colorSensor.get_proximity() >= 230){
+    if((hue <= 280) && (hue >= 200)) { 
       return Ring::Color::BLUE;
     } 
-    if((hue >= 340) && (hue <= 20)) {
+    if((hue >= 330) || (hue <= 30)) {
       return Ring::Color::RED; 
     }
   }
   return Ring::Color::NONE;
 }
 
-void ColorDetector::setLED(int num) { colorSensor.set_led_pwm(num); }
-
 IntakeManager::IntakeManager() : detector() {
   filter = Ring::Color::NONE;
   eject = false;
   intakeSpeed = 1;
-  counter = 13; //13 * 10 = 130ms
+  curRing = detector.getColor();
 }
 
 double IntakeManager::getIntakeSpeed() const { return intakeSpeed; }
@@ -42,32 +45,16 @@ Ring::Color IntakeManager::getFilterColor() const { return filter; }
 
 void IntakeManager::setFilterColor(Ring::Color filterColor) { filter = filterColor; }
 
-void IntakeManager::setLED(int num){ detector.setLED(num); }
-
-void IntakeManager::setPullbackFlag(bool flag) { pullbackFlag = flag; }
-
-bool IntakeManager::getPullbackFlag() { return pullbackFlag; }
-
-void IntakeManager::setColorSort(bool colorSort) { runColorSort=colorSort; }
-
-bool IntakeManager::getColorSort() { return runColorSort; }
-
 bool IntakeManager::getEject() { return eject; }
 
-void IntakeManager::ejectDisc(){
-  intake.startIntake(intakeSpeed);
-  if(counter > 0){
-    counter--;
-  } else {
-    intake.stopIntake();
-    counter = 13;
-  }
-}
+
 
 void IntakeManager::update() {
     // Check the current ring color from the detector
     if(filter != Ring::Color::NONE) {
-      Ring::Color ringColor = detector.getColor();
-      eject = ((ringColor != filter) && (ringColor != Ring::Color::NONE));
+      curRing = detector.getColor();
+      eject = ((curRing != filter) && (curRing != Ring::Color::NONE));
+      pros::lcd::set_text(5, "Ring Color: " + std::to_string((int)curRing));
+      pros::lcd::print(6, "eject: %d", eject);
     }
 }

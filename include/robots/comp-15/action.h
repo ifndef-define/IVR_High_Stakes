@@ -16,11 +16,19 @@ class Action {
         bool isAuton;
         bool override = false;
         Arm::State lastArmState = Arm::State::DOWN;
+
         int pauseCounter = 0;
+        int ejectCounter = 23;
+        bool pullbackFlag = false;
+        bool ejectFlag = false;
+        bool runColorSort = true;
     public:
         Action(bool isAuton, Ring::Color ringToKeep);
         void runSubsystemFSM();
         void stateControl();
+
+        void ejectDisc();
+
         /**
          * @brief Sets arm to override state
          *
@@ -79,6 +87,21 @@ class Action {
         void setArmState(Arm::State newState);
 
         /**
+         * @brief Get the Pullback Flag bool
+         * 
+         * @return bool 
+         */
+        void setPullbackFlag(bool flag);
+
+
+        /**
+         * @brief Set the Eject Flag bool
+         * 
+         * @param flag 
+         */
+        void setEjectFlag(bool flag);
+
+        /**
          * @brief Get the Arm State object
          * 
          * @return Arm::State 
@@ -106,4 +129,20 @@ class Action {
          * @return false 
          */
         bool getPullbackFlag();
+
+        /**
+         * @brief Get the Eject Flag bool
+         * 
+         * @return true 
+         * @return false 
+         */
+        bool getEjectFlag();
+
+        /**
+         * @brief Get the Run Color Sort object
+         * 
+         * @return true 
+         * @return false 
+         */
+        bool getRunColorSort();
 };
