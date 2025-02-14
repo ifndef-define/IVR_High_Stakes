@@ -27,6 +27,7 @@ class Action {
         void runSubsystemFSM();
         void stateControl();
 
+        void releaseIntake(bool inv=false);
         void ejectDisc();
 
         /**

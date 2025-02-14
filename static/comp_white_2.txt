@@ -1,0 +1,35 @@
+-33, 60, 81.256
+-31.017, 60.26, 81.256
+-29.028, 60.469, 78.931
+-27.034, 60.615, 75.153
+-25.035, 60.678, 68.031
+-23.037, 60.637, 60.072
+-21.045, 60.461, 50.884
+-19.081, 60.095, 39.624
+-17.187, 59.462, 26.938
+-15.458, 58.47, 2.474
+-14.054, 57.059, 0
+-13.133, 55.293, 10.775
+-12.701, 53.345, 45.189
+-12.634, 51.347, 54.244
+-12.809, 49.356, 67.834
+-13.135, 47.383, 76.963
+-13.556, 45.428, 83.437
+-14.039, 43.487, 86.103
+-14.55, 41.554, 86.442
+-15.067, 39.622, 80.326
+-15.565, 37.685, 73.704
+-16.024, 35.738, 66.425
+-16.407, 33.775, 58.244
+-16.687, 31.796, 48.71
+-16.811, 29.8, 36.784
+-16.703, 27.805, 18.273
+-16.614, 27.156, 0
+-16.614, 27.156, 0
+-13.904, 7.341, 0
+endData
+255
+90
+200
+-33, 60, 1.759, 65.108, -19.024, 40.71, -16.614, 27.156
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":11.932,"robotHeight":8,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"VURC 2025 - High Stakes","signature":"VURC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"WRPdUDmPPF","x":-33,"y":60,"lock":false,"visible":true,"heading":270,"__type":"end-point"},{"uid":"fvjz8dA5x5","x":1.7590177658378217,"y":65.10775346977796,"lock":false,"visible":true,"__type":"control"},{"uid":"FMQvuqzdEx","x":-19.023897618204924,"y":40.71041801894518,"lock":false,"visible":true,"__type":"control"},{"uid":"syA2kupYxa","x":-16.614284240344894,"y":27.156342768482517,"lock":false,"visible":true,"heading":345,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"TkTUjyaVhg"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":0,"to":90},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.058},"maxDecelerationRate":255},"name":"comp_white_2","uid":"mNwbV3vH3i","lock":false,"visible":true}]}

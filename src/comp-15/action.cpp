@@ -72,6 +72,13 @@ void Action::setIntakeSpeed(double speed) {
     }
 }
 
+void Action::releaseIntake(bool inv){
+    intakeManager.setIntakeSpeed(inv ? 1 : -1);
+    intakeManager.startIntake();
+    delay(80);  
+    intakeManager.stopIntake();
+}
+
 void Action::ejectDisc(){
     if(ejectCounter >= 12){
         ejectCounter--;
