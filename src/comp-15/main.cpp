@@ -2,7 +2,7 @@
 #include "robots/comp-15/auton.h"
 #include "robots/comp-15/controls.h"
 
-Ring::Color ringToKeep = Ring::Color::RED;
+Ring::Color ringToKeep = Ring::Color::BLUE;
 
 /**
  * A callback function for LLEMU's center button.
@@ -65,5 +65,6 @@ void autonomous() {
 }
 
 void opcontrol() {
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	teleOp(ringToKeep);
 }

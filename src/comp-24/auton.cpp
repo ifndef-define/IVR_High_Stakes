@@ -63,13 +63,17 @@ void blueAuton(){
     actions.releaseIntake();
 
     // chassis.follow(comp_white_2_txt, 15, 5000, 0);
-    chassis.moveToPose(-10, -29.3, 270, 2000, {.forwards = false, .minSpeed = 127/3}, 0);
+
+    // chassis.moveToPose(-6, -30, 270, 2000, {.forwards = false, .minSpeed = 127/3}, 0);
+    chassis.follow(comp_white_2_txt, 15, 2000, 0, 0);
     i_waitUntil(!chassis.isInMotion());
     pneumatics.mogoRushClamp.retract();
     pneumatics.mogoClamp.extend();
     actions.setIntakeSpeed(1);
     chassis.turnToHeading(0, 1000, {.maxSpeed = 127/2}, 0);
-    actions.setArmState(Arm::State::DESCORE);
+    chassis.tank(20,20,false);
+    delay(500);
+    chassis.tank(0,0,false);
     // chassis.swingToHeading(200, lemlib::DriveSide::LEFT, 1300, {.maxSpeed = 127/2}, 0);
 
     // actions.setIntakeSpeed(1);

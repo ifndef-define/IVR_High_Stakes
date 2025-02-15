@@ -2,7 +2,7 @@
 #include "robots/comp-24/auton.h"
 #include "robots/comp-24/controls.h"
 
-Ring::Color ringToKeep = Ring::Color::RED;
+Ring::Color ringToKeep = Ring::Color::BLUE;
 
 /**
  * A callback function for LLEMU's center button.
