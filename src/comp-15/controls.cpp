@@ -39,6 +39,10 @@ const driverProfile &currentProfile = JesusPrimary;
 void teleOp(Ring::Color ringToKeep) {
     int pow, turn;
     actions.setRingColor(ringToKeep);
+    actions.setAutonControlFlag(false);
+    pneumatics.mogoRushArm.retract();
+    pneumatics.mogoRushClamp.retract();
+    actions.setRunColorSort(false);
 
     while(1) {
         // Drive Control
@@ -49,7 +53,7 @@ void teleOp(Ring::Color ringToKeep) {
         rightDrive.move(pow - turn);
         
         // Sorting Control
-        actions.runSubsystemFSM();
+        // actions.runSubsystemFSM();
 
         // Intake/Arm Control
         actions.setOverride(ctrler.get_digital(currentProfile.shift));
@@ -100,16 +104,16 @@ void teleOp(Ring::Color ringToKeep) {
             pneumatics.doinker.toggle();
         }
 
-        if(ctrler.get_digital_new_press(currentProfile.mogoRushCycle)) {
-            if(!pneumatics.mogoRushArm.is_extended() && !pneumatics.mogoRushClamp.is_extended()){
-                pneumatics.mogoRushArm.extend();
-                pneumatics.mogoRushClamp.extend();
-            } else if(pneumatics.mogoRushArm.is_extended() && pneumatics.mogoRushClamp.is_extended()){
-                pneumatics.mogoRushClamp.retract();
-            } else if(pneumatics.mogoRushArm.is_extended() && !pneumatics.mogoRushClamp.is_extended()){
-                pneumatics.mogoRushArm.retract();
-            }
-        }
+        // if(ctrler.get_digital_new_press(currentProfile.mogoRushCycle)) {
+        //     if(!pneumatics.mogoRushArm.is_extended() && !pneumatics.mogoRushClamp.is_extended()){
+        //         pneumatics.mogoRushArm.extend();
+        //         pneumatics.mogoRushClamp.extend();
+        //     } else if(pneumatics.mogoRushArm.is_extended() && pneumatics.mogoRushClamp.is_extended()){
+        //         pneumatics.mogoRushClamp.retract();
+        //     } else if(pneumatics.mogoRushArm.is_extended() && !pneumatics.mogoRushClamp.is_extended()){
+        //         pneumatics.mogoRushArm.retract();
+        //     }
+        // }
         //Print out data for 
         pros::lcd::print(1, "%f", actions.getArmAngle());
         pros::lcd::print(2, "%d", actions.getPullbackFlag());

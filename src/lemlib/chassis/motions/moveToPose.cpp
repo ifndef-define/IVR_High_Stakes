@@ -153,8 +153,10 @@ void lemlib::Chassis::moveToPose(float x, float y, float theta, int timeout, Mov
     }
 
     // stop the drivetrain
-    drivetrain.leftMotors->move(0);
-    drivetrain.rightMotors->move(0);
+    // drivetrain.leftMotors->move(0);
+    // drivetrain.rightMotors->move(0);
+    drivetrain.leftMotors->brake();
+    drivetrain.rightMotors->brake();
     // set distTraveled to -1 to indicate that the function has finished
     distTraveled = -1;
     this->endMotion();
