@@ -27,7 +27,7 @@ driverProfile JesusPrimary = {
 
     .backpackCycleStageUp = pros::E_CONTROLLER_DIGITAL_L1,
     .backpackCycleStageDown = pros::E_CONTROLLER_DIGITAL_L2,
-    .incrementBackpack = true,
+    .incrementBackpack = false,
 
     .mogoClampToggle = pros::E_CONTROLLER_DIGITAL_Y,
     .doinkerToggle = pros::E_CONTROLLER_DIGITAL_B,
@@ -82,7 +82,11 @@ void teleOp(Ring::Color ringToKeep) {
                         actions.prevArmState();
                     }
             } else {
-                if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
+                if(ctrler.get_digital(currentProfile.backpackCycleStageUp) && ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
+                    actions.setArmState(Arm::State::DESCORE);
+                } else if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
+                    actions.setArmState(Arm::State::SCORE);
+                } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
                     actions.setArmState(Arm::State::READY);
                 } else {
                     actions.setArmState(Arm::State::DOWN);

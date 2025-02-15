@@ -22,11 +22,15 @@ class Action {
         bool pullbackFlag = false;
         bool ejectFlag = false;
         bool runColorSort = true;
+        bool autoResumeFlag = false;
     public:
         Action(bool isAuton, Ring::Color ringToKeep);
         void runSubsystemFSM();
         void stateControl();
 
+        void setAutonControlFlag(bool flag);
+
+        void releaseIntake(bool inv=false);
         void ejectDisc();
 
         /**
@@ -92,7 +96,6 @@ class Action {
          * @return bool 
          */
         void setPullbackFlag(bool flag);
-
 
         /**
          * @brief Set the Eject Flag bool

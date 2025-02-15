@@ -1,6 +1,6 @@
 #include "robots/comp-24/action.h"
 
-Action::Action(bool isAuton, Ring::Color ringToKeep): arm(3.2,0,0, 3.85,0,0), currentState(ActionState::IDLE), intakeManager(){ 
+Action::Action(bool isAuton, Ring::Color ringToKeep): arm(3.2,0,0, 4.7,0,0), currentState(ActionState::IDLE), intakeManager(){ 
     intakeManager.setFilterColor(ringToKeep);
     this->isAuton = isAuton;
 }
@@ -12,7 +12,7 @@ void Action::runSubsystemFSM() {
     // Branch based on intakeManager's decision (e.g. eject set true if wrong color)
     if ((intakeManager.getEject() && getRunColorSort()) || getEjectFlag()) {
         currentState = ActionState::SORTING;
-    } else if((arm.getAngle() > 17 && arm.getAngle() < 20) || getPullbackFlag()){
+    } else if((arm.getAngle() > 14 && arm.getAngle() < 17) || getPullbackFlag()){
         currentState = ActionState::PULLBACK;
     } else {
         currentState = ActionState::IDLE;
@@ -72,6 +72,13 @@ void Action::setIntakeSpeed(double speed) {
     }
 }
 
+void Action::releaseIntake(bool inv){
+    intakeManager.setIntakeSpeed(inv ? 1 : -1);
+    intakeManager.startIntake();
+    delay(80);  
+    intakeManager.stopIntake();
+}
+
 void Action::ejectDisc(){
     if(ejectCounter >= 12){
         ejectCounter--;
@@ -81,10 +88,17 @@ void Action::ejectDisc(){
         ejectCounter--;
     } else {
         ejectCounter = 17;
-        intakeManager.stopIntake();
+        if (this->autoResumeFlag){
+            intakeManager.setIntakeSpeed(1);
+            intakeManager.startIntake();
+        } else {
+            intakeManager.stopIntake();
+        }
         setEjectFlag(false);
     }
 }
+
+void Action::setAutonControlFlag(bool flag){ autoResumeFlag = flag; }
 
 void Action::nextArmState() {
     arm.nextState();

@@ -13,6 +13,7 @@ class PneumaticsGroup {
         pros::adi::Pneumatics mogoRushClamp;
         pros::adi::Pneumatics mogoClamp;
         pros::adi::Pneumatics doinker;
+        pros::adi::Pneumatics intakeLift;
         PneumaticsGroup();
 };
 
