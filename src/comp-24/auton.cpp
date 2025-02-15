@@ -2,13 +2,6 @@
 
 void auton(Ring::Color ringToKeep) {
     //Add auton code here
-    pros::Task autoRingSort{[&]{
-        while(true){
-            actions.setAutonControlFlag(true);
-            actions.runSubsystemFSM();
-            delay(10);
-        }
-    }};
     if(ringToKeep == Ring::Color::RED) {
         redAuton();
     } else {
@@ -30,206 +23,71 @@ ASSET(comp_white_6_txt);
 ASSET(comp_white_8_txt);
 
 void redAuton(){
-    actions.setRunColorSort(true);
-    chassis.setPose(-53.5, 61, 101);
-    uint32_t timeStart = pros::millis();
-    actions.setIntakeSpeed(0);
-    pneumatics.intakeLift.extend();
-    pneumatics.mogoRushArm.extend();
-    pneumatics.mogoRushClamp.extend(); //reversed
-    chassis.follow(comp_white_1_txt, 15, 1500, 1, 0);
-
-    pneumatics.mogoRushClamp.retract();
-    chassis.moveToPose(-44, 60, 90, 1700, {.forwards = false,
-                                            .maxSpeed = 127,
-                                            .minSpeed = 127}, 0);
-
-    chassis.tank(0, 0, 0);
-    delay(500);
-
-    chassis.turnToHeading(270, 1400,{.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE,
-                                    .maxSpeed = 127/2});
-    while(chassis.isInMotion()){
-        if(chassis.getPose().theta <= 80){
-            pneumatics.mogoRushClamp.extend();
-            pneumatics.mogoRushArm.retract();
-        }
-        delay(15);
-    }
-    delay(250);
-
-    chassis.follow(comp_white_2_txt, 15, 5000, 0);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().y <= 50){
-            pneumatics.mogoClamp.extend();
-        }
-        delay(15);
-    }
-
-    chassis.moveToPose(-22, 36, 345, 3000, {.maxSpeed = 127/2}, 1);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().y >= 28){
-            actions.setIntakeSpeed(1);
-        }
-        delay(15);
-    }
-
-    pneumatics.intakeLift.retract();
-    delay(400);
-    chassis.swingToHeading(315, lemlib::DriveSide::RIGHT, 800, {}, 0);
-    actions.setIntakeSpeed(1);
-    // chassis.moveToPose(-46, 48, 270, 3000, {.maxSpeed = 127/4}, 0);
-    // chassis.moveToPose(-69, 69, 315, 1500, {}, 0);
-    chassis.follow(comp_white_4_txt, 15, 3000, 1, 1);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().x <= -56){
-            chassis.cancelMotion();
-        }
-        delay(15);
-    }
-    chassis.moveToPose(-69, 66.5, 315, 1500, {.maxSpeed = 127/2}, 0);
-    chassis.turnToHeading(315, 700, {}, 0);
-    
-    chassis.moveToPose(-51, 48, 315, 1000, {.forwards = 0, .maxSpeed = 127, .minSpeed = 127/3}, 0);
-    // delay(100);
-    
-    chassis.turnToHeading(90, 700, {.minSpeed = 127/2}, 1);
-    // chassis.follow(comp_white_5_txt, 15, 3000, 1, 1);
-    chassis.moveToPose(-2, 59, 90, 2000, {.maxSpeed = 127, .minSpeed = 127/3}, 1);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().x >= -28){
-            pneumatics.intakeLift.extend();
-        }
-        delay(15);
-    }
-    delay(500);
-    pneumatics.intakeLift.retract();
-    delay(500);
-    // chassis.turnToHeading(0, 700, {.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE}, 0);
-    chassis.swingToHeading(24, lemlib::DriveSide::RIGHT, 800, {}, 0);
-    chassis.follow(comp_white_6_txt, 15, 5000, 0, 0);
-
-    pneumatics.mogoClamp.retract();
-    
-    
-    // chassis.turnToHeading(118, 700, {}, 0);
-    chassis.swingToHeading(120, lemlib::DriveSide::RIGHT, 800, {.minSpeed = 127/2}, 0);
-
-    chassis.follow(comp_white_8_txt, 15, 2000, 0, 1);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().y >= 4){
-            pneumatics.mogoClamp.extend();
-        }
-        delay(15);
-    }
-    actions.setIntakeSpeed(1);
-    chassis.turnToHeading(255, 700, {.minSpeed = 127/2}, 0);
-    // chassis.moveToPose(-66, -5, 225, 1000, {.maxSpeed = 127/2}, 0);
-    // chassis.follow(comp_white_9_txt, 15, 2500, 1, 0);
-    chassis.moveToPose(-67.5, -7.5, 225, 1500, {.maxSpeed = 127, .minSpeed = 127/2}, 0);
-    chassis.moveToPose(-50, 10, 225, 1500, {.forwards = 0, .minSpeed = 127}, 0);
+    blueAuton();
 };
 
 ASSET(mirror_comp_white_1_txt);
 void blueAuton(){
     chassis.setPose(-45.5, -29.3, 100);
-    uint32_t timeStart = pros::millis();
     actions.setIntakeSpeed(0);
     pneumatics.intakeLift.extend();
     pneumatics.mogoRushArm.extend();
-    pneumatics.mogoRushClamp.extend(); //reversed
-    chassis.follow(comp_white_1_txt, 15, 1500, 2, 0);
-    pneumatics.mogoRushClamp.retract();
-    chassis.moveToPose(-45.5, -29.3, 150, 8000, {.forwards = false,
-        .maxSpeed = 127,
-        .minSpeed = 127}, 0);
-        
-    chassis.tank(0, 0, 0);
-    delay(500);
-    
-    chassis.turnToHeading(270, 1400,{.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE,
-        .maxSpeed = 127/2});
+    pneumatics.mogoRushClamp.extend();
+    chassis.follow(comp_white_1_txt, 15, 1500, 1, 0);
     while(chassis.isInMotion()){
-        if(chassis.getPose().theta <= 80){
-            pneumatics.mogoRushClamp.extend();
-            pneumatics.mogoRushArm.retract();
-        }
-            delay(15);
-    }
-    delay(250);
-                    
-    /*
-    chassis.follow(comp_white_2_txt, 15, 5000, 0);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().y <= 50){
-            pneumatics.mogoClamp.extend();
-            }
-            delay(15);
-            }
-                            
-    chassis.moveToPose(-22, 36, 345, 3000, {.maxSpeed = 127/2}, 1);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().y >= 28){
-            actions.setIntakeSpeed(1);
-        }
-        delay(15);
-    }
-    
-    pneumatics.intakeLift.retract();
-    delay(400);
-    chassis.swingToHeading(315, lemlib::DriveSide::RIGHT, 800, {}, 0);
-    actions.setIntakeSpeed(1);
-    // chassis.moveToPose(-46, 48, 270, 3000, {.maxSpeed = 127/4}, 0);
-    // chassis.moveToPose(-69, 69, 315, 1500, {}, 0);
-    chassis.follow(comp_white_4_txt, 15, 3000, 1, 1);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().x <= -56){
+        if(chassis.getPose().x >= -22){
+            delay(50);
+            pneumatics.mogoRushClamp.retract();
             chassis.cancelMotion();
         }
         delay(15);
     }
-    
-    // TO POSITIVE CORNER
-    chassis.moveToPose(-69, 66.5, 315, 1500, {.maxSpeed = 127/2}, 0);
-    chassis.turnToHeading(315, 700, {}, 0);
-    
-    // SIFT
-    float dist = 3;
-    int n = 4;
-    int timeout = 750;
-    lemlib::Pose start2 = chassis.getPose();
-    for(int i = 0; i < n; i++) {
-        
-    chassis.moveToPose(start2.x+(dist*1.414), start2.y-(dist*1.414), 
-    315, timeout, {.forwards=false, .maxSpeed=30}, false);
-    
-    if(i < n-1){
-        chassis.moveToPose(start2.x, start2.y, 
-        315, timeout, {.maxSpeed=60}, false);
+    pneumatics.mogoRushClamp.retract();
+    chassis.moveToPose(-45.5, -29.3, 150, 8000, {.forwards = false,
+        .maxSpeed = 127,
+        .minSpeed = 127}, 0);
+    chassis.tank(0, 0, 0);
+    delay(500);
+    pneumatics.mogoRushClamp.extend();
+    chassis.turnToHeading(270, 1400,{.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE,
+        .maxSpeed = 127/2});
+    while(chassis.isInMotion()){
+        if(chassis.getPose().theta <= 80){
+            pneumatics.mogoRushArm.retract();
+            pneumatics.mogoRushClamp.extend();
+        }
+            delay(15);
     }
-}
-// END SIFT
-chassis.moveToPose(-51, 48, 315, 1000, {.forwards = 0, .maxSpeed = 127, .minSpeed = 127/3}, 0);
+    delay(250);
+    pneumatics.mogoRushClamp.extend();
+    actions.releaseIntake();
 
-chassis.turnToHeading(90, 700, {.minSpeed = 127/2}, 1);
-// chassis.follow(comp_white_5_txt, 15, 3000, 1, 1);
-chassis.moveToPose(-2, 59, 90, 2000, {.maxSpeed = 127, .minSpeed = 127/3}, 1);
-while(chassis.isInMotion()){
-    if(chassis.getPose().x >= -28){
-        pneumatics.intakeLift.extend();
-    }
-    delay(15);
-}
-delay(500);
-pneumatics.intakeLift.retract();
-delay(500);
-chassis.follow(mirror_comp_white_1_txt, 15, 2200, 0,0);
-pneumatics.mogoClamp.retract();
-chassis.moveToPose(-12.5, 60, 90, 1500, {.minSpeed = 127/2}, 0);
-// chassis.turnToHeading(0, 700, {.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE}, 0);
-// chassis.swingToHeading(24, lemlib::DriveSide::RIGHT, 800, {}, 0);
-*/
+    // chassis.follow(comp_white_2_txt, 15, 5000, 0);
+    chassis.moveToPose(-10, -29.3, 270, 2000, {.forwards = false, .minSpeed = 127/3}, 0);
+    i_waitUntil(!chassis.isInMotion());
+    pneumatics.mogoRushClamp.retract();
+    pneumatics.mogoClamp.extend();
+    actions.setIntakeSpeed(1);
+    chassis.turnToHeading(0, 1000, {.maxSpeed = 127/2}, 0);
+    actions.setArmState(Arm::State::DESCORE);
+    // chassis.swingToHeading(200, lemlib::DriveSide::LEFT, 1300, {.maxSpeed = 127/2}, 0);
 
+    // actions.setIntakeSpeed(1);
+    // chassis.follow(comp_white_4_txt, 15, 8000, 1, 0);
+    
+    // chassis.moveToPose(-55, -55, 315, 1500, {.forwards = 0, .maxSpeed = 127/2}, 0);
+    // chassis.turnToHeading(180, 1200, {.maxSpeed = 127/3}, 0);
+    // actions.setIntakeSpeed(1);
+    // chassis.moveToPose(-60, -72, 225, 1500, {.maxSpeed=80}, false); 
+    // chassis.moveToPose(-51, -61, 225, 700, {.forwards=false, .maxSpeed=80}, false);
+    // chassis.moveToPose(-60, -72, 225, 700, {.maxSpeed=80}, false);
+    // chassis.moveToPose(-51, -61, 225, 700, {.forwards=false, .maxSpeed=80}, false);
+    // chassis.moveToPose(-60, -72, 225, 700, {.maxSpeed=80}, false);
+    // chassis.moveToPose(-51, -61, 225, 700, {.forwards=false, .maxSpeed=80}, false);
+    // chassis.moveToPose(-60, -72, 225, 700, {.maxSpeed=80}, false);
+    // chassis.moveToPose(-51, -61, 225, 700, {.forwards=false, .maxSpeed=80}, false);    
+    // chassis.moveToPose(-60, -72, 225, 700, {.maxSpeed=80}, false);
+    // chassis.moveToPose(-48, -57, 225, 700, {.forwards=false, .maxSpeed=100}, false);
 }
 
 // //SKILLS ASSETS

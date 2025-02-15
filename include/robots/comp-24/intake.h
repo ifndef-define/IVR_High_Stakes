@@ -9,10 +9,9 @@
 class Intake {
 private:
   pros::MotorGroup intakeMotor;
-  pros::adi::Pneumatics lift;
 
 public:
-  Intake(): intakeMotor({-13, 17, -18}, pros::MotorGears::blue), lift('E', false) {};
+  Intake();
   /**
    * @brief Lifts up the Intake
    */

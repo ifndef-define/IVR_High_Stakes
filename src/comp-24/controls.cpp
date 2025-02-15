@@ -39,6 +39,7 @@ const driverProfile &currentProfile = JesusPrimary;
 void teleOp(Ring::Color ringToKeep) {
     int pow, turn;
     actions.setRingColor(ringToKeep);
+    actions.setArmState(Arm::State::DOWN);
 
     while(1) {
         // Drive Control
@@ -47,9 +48,6 @@ void teleOp(Ring::Color ringToKeep) {
 
         leftDrive.move(pow + turn);
         rightDrive.move(pow - turn);
-        
-        // Sorting Control
-        actions.runSubsystemFSM();
 
         // Intake/Arm Control
         actions.setOverride(ctrler.get_digital(currentProfile.shift));
@@ -68,13 +66,13 @@ void teleOp(Ring::Color ringToKeep) {
             /*    ARM    */
             ///////////////
             if(actions.getOverride()){
-                if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
-                    actions.setArmSpeed(1);
-                } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
-                    actions.setArmSpeed(-1);
-                } else {
-                    actions.setArmSpeed(0);
-                }
+                // if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
+                //     actions.setArmSpeed(1);
+                // } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
+                //     actions.setArmSpeed(-1);
+                // } else {
+                //     actions.setArmSpeed(0);
+                // }
             } else if(currentProfile.incrementBackpack) {
                     if(ctrler.get_digital_new_press(currentProfile.backpackCycleStageUp)) {
                         actions.nextArmState();
