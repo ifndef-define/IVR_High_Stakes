@@ -3,3 +3,7 @@
 #include "robots/comp-24/devices.h"
 
 void auton(Ring::Color ringToKeep);
+
+void redAuton();
+void blueAuton();
+void skillsAuton();

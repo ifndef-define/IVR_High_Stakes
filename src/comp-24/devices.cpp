@@ -28,16 +28,15 @@ IMU imu(20);
 adi::Encoder yEnc(adi::ext_adi_port_tuple_t(16, 1, 2));
 adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(16, 3, 4), true); // 3 4
 
-// Lemlib Config
+// LEMLIB Config
 const float VERT_RATIO = 0.9795955882;
 const float HORI_RATIO = 0.9915441176;
-// lemlib::TrackingWheel vertical(&lxEnc, 1.36*VERT_RATIO, -1);
-lemlib::TrackingWheel vertical2(&rxEnc, 1.36*VERT_RATIO, 1);
+lemlib::TrackingWheel vertical(&rxEnc, 1.36*VERT_RATIO, 1);
 lemlib::TrackingWheel horizontal(&yEnc, 1.36*HORI_RATIO, 0.375);
 
 // sensors for odometry
-lemlib::OdomSensors sensors(&vertical2, // vertical tracking wheel
-                            nullptr, // vertical tracking wheel 2, set to nullptr as we don't have a second one
+lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
+                            nullptr, // vertical tracking wheel 2
                             &horizontal, // horizontal tracking wheel
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
                             &imu // inertial sensor
@@ -45,10 +44,10 @@ lemlib::OdomSensors sensors(&vertical2, // vertical tracking wheel
 
 lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
                               &rightDrive, // right motor group
-                              11.825, // 11.825 inch track width
+                              11.875, // 11.825 inch track width
                               lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
                               480, // drivetrain rpm is 480
-                              2 // horizontal drift is 2. If we had traction wheels, it would have been 8
+                              8 // horizontal drift is 2. If we had traction wheels, it would have been 8
 );
 
 // lateral motion controller
@@ -86,3 +85,6 @@ lemlib::ExpoDriveCurve steerCurve(3, // joystick deadband out of 127
                                   10, // minimum output where drivetrain will move out of 127
                                   1.019 // expo curve gain
 );
+
+// create the chassis
+lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);

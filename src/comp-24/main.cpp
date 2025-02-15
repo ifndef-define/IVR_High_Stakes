@@ -2,7 +2,7 @@
 #include "robots/comp-24/auton.h"
 #include "robots/comp-24/controls.h"
 
-Ring::Color ringToKeep = Ring::Color::RED;
+Ring::Color ringToKeep = Ring::Color::BLUE;
 
 /**
  * A callback function for LLEMU's center button.
@@ -32,7 +32,8 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::register_btn1_cb(on_center_button);
-	imu.reset();
+	chassis.calibrate();
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 }
 
 void disabled() {}
@@ -40,9 +41,19 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-	auton(ringToKeep);
+	// auton(ringToKeep);
 }
 
 void opcontrol() {
-	teleOp(ringToKeep);
+    while (true) {
+        if(ctrler.get_digital_new_press(BUTTON_UP)) {
+            auton(ringToKeep);
+            break;
+        } else if (ctrler.get_digital_new_press(BUTTON_LEFT)) {
+			chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+            teleOp(ringToKeep);
+            break;
+        }
+        delay(20);
+    }
 }
