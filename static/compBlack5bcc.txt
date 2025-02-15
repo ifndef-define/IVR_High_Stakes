@@ -1,0 +1,37 @@
+15.554, -11.781, 58.576
+17.406, -12.536, 58.576
+19.265, -13.273, 58.259
+21.138, -13.975, 58.259
+23.029, -14.626, 57.856
+24.933, -15.236, 57.342
+26.854, -15.794, 56.683
+28.792, -16.286, 55.841
+30.751, -16.687, 55.841
+32.729, -16.987, 54.766
+34.721, -17.152, 51.735
+36.72, -17.139, 49.73
+38.705, -16.909, 47.46
+40.627, -16.375, 42.93
+42.409, -15.48, 40.631
+43.931, -14.19, 42.147
+45.106, -12.576, 46.024
+45.936, -10.759, 48.105
+46.475, -8.834, 51.74
+46.803, -6.863, 54.47
+46.983, -4.871, 56.475
+47.057, -2.873, 57.296
+47.057, -0.873, 54.219
+47.022, 1.127, 49.312
+46.976, 3.126, 43.86
+46.955, 5.126, 37.626
+47, 7.125, 30.129
+47.178, 9.116, 20
+47.477, 10.659, 0
+47.477, 10.659, 0
+51.286, 30.293, 0
+endData
+127
+60
+200
+15.554, -11.781, 56.596, -29.148, 44.588, 0.015, 47.477, 10.659
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":11.932,"robotHeight":8,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"VURC 2025 - High Stakes","signature":"VURC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"5jLPjKCojd","x":15.554,"y":-11.781,"lock":false,"visible":true,"heading":280,"__type":"end-point"},{"uid":"zcOYwVPovm","x":56.59602753550002,"y":-29.148135965002908,"lock":false,"visible":true,"__type":"control"},{"uid":"08xqyCF0W9","x":44.587574973407534,"y":0.01524882865027314,"lock":false,"visible":true,"__type":"control"},{"uid":"wT25V70a8j","x":47.47722800263487,"y":10.658931226543048,"lock":false,"visible":true,"heading":0,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"NAd1gqlvCQ"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":60},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"Path","uid":"YlexTK684b","lock":false,"visible":true}]}

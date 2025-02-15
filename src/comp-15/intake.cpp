@@ -16,7 +16,7 @@ ColorDetector::ColorDetector() : colorSensor(6) {
 Ring::Color ColorDetector::getColor() {
   double hue = colorSensor.get_hue();
   if(colorSensor.get_proximity() >= 230){
-    if((hue <= 280) && (hue >= 200)) { 
+    if((hue <= 280) && (hue >= 175)) { 
       return Ring::Color::BLUE;
     } 
     if((hue >= 330) || (hue <= 30)) {

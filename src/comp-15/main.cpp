@@ -32,7 +32,28 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::register_btn1_cb(on_center_button);
-	imu.reset();
+	chassis.calibrate(true);
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
+
+	pros::Task screen_task([&]() {
+        while (true) {
+            // print robot location to the brain screen
+            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
+            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
+            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+			pros::lcd::print(3, "IMU Heading: %f", imu.get_heading()); // heading
+            // delay to save resources
+            pros::delay(20);
+        }
+    });
+
+	pros::Task autoRingSort{[&]{
+        // while(pros::competition::is_autonomous()){
+        while(true) {
+            actions.runSubsystemFSM();
+            delay(10);
+        }
+    }};
 }
 
 void disabled() {}

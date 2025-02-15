@@ -25,14 +25,14 @@ PneumaticsGroup pneumatics;
 Action actions(0, Ring::Color::NONE);
 
 IMU imu(16);
-adi::Encoder yEnc(adi::ext_adi_port_tuple_t(19, 3, 4), 0);
-adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(19, 5, 6));  // 3 4
+adi::Encoder yEnc(adi::ext_adi_port_tuple_t(19, 1, 2));
+adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(19, 3, 4), true);  // 3 4
 
 // LEMLIB Config
 const float VERT_RATIO = 1.007352941176; //1.33225
 const float HORI_RATIO = 1.01029411765; //1.3485
-lemlib::TrackingWheel vertical(&rxEnc, 1.36*VERT_RATIO, 1);
-lemlib::TrackingWheel horizontal(&yEnc, 1.36*HORI_RATIO, 0.375);
+lemlib::TrackingWheel vertical(&yEnc, 1.36*VERT_RATIO, 1);
+lemlib::TrackingWheel horizontal(&rxEnc, 1.36*HORI_RATIO, 0.375);
 
 // sensors for odometry
 lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel

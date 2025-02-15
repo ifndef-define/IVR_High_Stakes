@@ -61,6 +61,8 @@ bool Action::getOverride(){ return override; }
 
 void Action::setOverride(bool override){ this->override = override; }
 
+void Action::setAutonControlFlag(bool flag){ autoResumeFlag = flag; }
+
 void Action::setIntakeSpeed(double speed) {
     if(currentState!=ActionState::SORTING || override){
         intakeManager.setIntakeSpeed(speed);
@@ -75,7 +77,7 @@ void Action::setIntakeSpeed(double speed) {
 void Action::releaseIntake(bool inv){
     intakeManager.setIntakeSpeed(inv ? 1 : -1);
     intakeManager.startIntake();
-    delay(80);  
+    delay(100);  
     intakeManager.stopIntake();
 }
 
@@ -88,7 +90,12 @@ void Action::ejectDisc(){
         ejectCounter--;
     } else {
         ejectCounter = 17;
-        intakeManager.stopIntake();
+        if (this->autoResumeFlag){
+            intakeManager.setIntakeSpeed(1);
+            intakeManager.startIntake();
+        } else {
+            intakeManager.stopIntake();
+        }
         setEjectFlag(false);
     }
 }

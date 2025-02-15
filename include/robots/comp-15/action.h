@@ -22,6 +22,7 @@ class Action {
         bool pullbackFlag = false;
         bool ejectFlag = false;
         bool runColorSort = true;
+        bool autoResumeFlag = false;
     public:
         Action(bool isAuton, Ring::Color ringToKeep);
         void runSubsystemFSM();
@@ -36,6 +37,14 @@ class Action {
          */
         void setOverride(bool override);
 
+
+        /**
+         * @brief Enables auto resume for the intake during auton
+         *
+         * @param flag The flag to set
+         */
+        void setAutonControlFlag(bool flag);
+
         /**
          * @brief Returns if the arm is in an override state
          *
@@ -46,6 +55,8 @@ class Action {
          * @brief Sets the speed of the intake
          *
          * @param speed The speed of the intake [0, 1]
+         * @param autonResume If the intake should automatically resume during auton after 
+         *  a ring is ejected
          */
         void setIntakeSpeed(double speed);
 
