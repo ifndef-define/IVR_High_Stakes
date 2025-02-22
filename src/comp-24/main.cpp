@@ -35,6 +35,7 @@ void initialize() {
 	pros::Task autoRingSort{[&]{
         actions.setAutonControlFlag(true);
         while(true){
+			lcd::print(0, "x: %f, y: %f, theta: %f", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
             actions.runSubsystemFSM();
             delay(10);
         }
@@ -48,7 +49,9 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-	auton(ringToKeep);
+	chassis.setPose(0, 0, 0);
+    chassis.turnToHeading(180, 100000, {}, 0);
+	// auton(ringToKeep);
 }
 
 void opcontrol() {
