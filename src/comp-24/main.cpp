@@ -7,7 +7,7 @@ Ring::Color ringToKeep = Ring::Color::BLUE;
 /**
  * A callback function for LLEMU's center button.
  *
- * Sets our autonomous routine to the blue side.
+ * Switches the autonomous routine color.
  */
 
 void on_center_button() {
@@ -41,7 +41,6 @@ void initialize() {
         }
     }};
 	chassis.calibrate();
-	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 }
 
 void disabled() {}
@@ -49,6 +48,7 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 	chassis.setPose(0, 0, 0);
     chassis.turnToHeading(180, 100000, {}, 0);
 	// auton(ringToKeep);

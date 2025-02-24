@@ -1,5 +1,12 @@
 #include "robots/comp-24/action.h"
 
+/**
+ * @brief Constructs an Action object
+ * @param isAuton Whether this is running in autonomous mode
+ * @param ringToKeep The color to keep in the filter
+ * 
+ * Sets the initial state of the arm to DOWN and the initial state of the Action to IDLE.
+ */
 Action::Action(bool isAuton, Ring::Color ringToKeep): arm(3.2,0,0, 4.7,0,0), currentState(ActionState::IDLE), intakeManager(){ 
     intakeManager.setFilterColor(ringToKeep);
     this->isAuton = isAuton;
@@ -12,7 +19,7 @@ void Action::runSubsystemFSM() {
     // Branch based on intakeManager's decision (e.g. eject set true if wrong color)
     if ((intakeManager.getEject() && getRunColorSort()) || getEjectFlag()) {
         currentState = ActionState::SORTING;
-    } else if((arm.getAngle() > 14 && arm.getAngle() < 17) || getPullbackFlag()){
+    } else if((arm.getAngle() > 14 && arm.getAngle() < 16) || getPullbackFlag()){
         currentState = ActionState::PULLBACK;
     } else {
         currentState = ActionState::IDLE;
@@ -25,13 +32,25 @@ void Action::runSubsystemFSM() {
     arm.update();
 }
 
+/**
+ * @brief Updates the state of the Action class based on the currentState
+ * 
+ * @details
+ * This function will run the appropriate code based on the currentState.
+ * If the currentState is ActionState::IDLE, it will set ejectFlag and pullbackFlag to false.
+ * If the currentState is ActionState::SORTING, it will check if the override is on. If it's not, 
+ * it will set ejectFlag to true and change the arm's state to DOWN or SCORE depending on its current state. 
+ * It will then eject the disc.
+ * If the currentState is ActionState::PULLBACK, it will set ejectFlag to true and set the intake speed to -1, 
+ * then start the intake. It will then pause for 105ms and then stop the intake and set pullbackFlag to false.
+ */
 void Action::stateControl() {
     switch(currentState) {
         case ActionState::IDLE:
             setEjectFlag(false);
             setPullbackFlag(false);
             break;
-        case ActionState::SORTING:
+        case ActionState::SORTING: // Intake is sorting rings by color
             if(!override){
                 setEjectFlag(true);
                 if((int)(arm.getState()) > (int)(Arm::State::READY)){
@@ -42,11 +61,11 @@ void Action::stateControl() {
                 ejectDisc();
             }
             break;
-        case ActionState::PULLBACK:
+        case ActionState::PULLBACK: // Intake is pulling back to avoid hook-ring collision
             setEjectFlag(true);
             intakeManager.setIntakeSpeed(-1);
             intakeManager.startIntake();
-            if (pauseCounter < 10){ // 7*15 = 105ms
+            if (pauseCounter < 10){ // 10*10 = 100 ms
                 pauseCounter++;
             } else {
                 pauseCounter = 0;
