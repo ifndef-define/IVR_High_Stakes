@@ -19,7 +19,7 @@ void Action::runSubsystemFSM() {
     // Branch based on intakeManager's decision (e.g. eject set true if wrong color)
     if ((intakeManager.getEject() && getRunColorSort()) || getEjectFlag()) {
         currentState = ActionState::SORTING;
-    } else if((arm.getAngle() > 14 && arm.getAngle() < 16) || getPullbackFlag()){
+    } else if((arm.getAngle() > 17 && arm.getAngle() < 20) || getPullbackFlag()){
         currentState = ActionState::PULLBACK;
     } else {
         currentState = ActionState::IDLE;
@@ -32,25 +32,13 @@ void Action::runSubsystemFSM() {
     arm.update();
 }
 
-/**
- * @brief Updates the state of the Action class based on the currentState
- * 
- * @details
- * This function will run the appropriate code based on the currentState.
- * If the currentState is ActionState::IDLE, it will set ejectFlag and pullbackFlag to false.
- * If the currentState is ActionState::SORTING, it will check if the override is on. If it's not, 
- * it will set ejectFlag to true and change the arm's state to DOWN or SCORE depending on its current state. 
- * It will then eject the disc.
- * If the currentState is ActionState::PULLBACK, it will set ejectFlag to true and set the intake speed to -1, 
- * then start the intake. It will then pause for 105ms and then stop the intake and set pullbackFlag to false.
- */
 void Action::stateControl() {
     switch(currentState) {
         case ActionState::IDLE:
             setEjectFlag(false);
             setPullbackFlag(false);
             break;
-        case ActionState::SORTING: // Intake is sorting rings by color
+        case ActionState::SORTING:
             if(!override){
                 setEjectFlag(true);
                 if((int)(arm.getState()) > (int)(Arm::State::READY)){
@@ -61,11 +49,11 @@ void Action::stateControl() {
                 ejectDisc();
             }
             break;
-        case ActionState::PULLBACK: // Intake is pulling back to avoid hook-ring collision
+        case ActionState::PULLBACK:
             setEjectFlag(true);
             intakeManager.setIntakeSpeed(-1);
             intakeManager.startIntake();
-            if (pauseCounter < 10){ // 10*10 = 100 ms
+            if (pauseCounter < 10){ // 7*15 = 105ms
                 pauseCounter++;
             } else {
                 pauseCounter = 0;
@@ -79,6 +67,8 @@ void Action::stateControl() {
 bool Action::getOverride(){ return override; }
 
 void Action::setOverride(bool override){ this->override = override; }
+
+void Action::setAutonControlFlag(bool flag){ autoResumeFlag = flag; }
 
 void Action::setIntakeSpeed(double speed) {
     if(currentState!=ActionState::SORTING || override){
@@ -94,7 +84,7 @@ void Action::setIntakeSpeed(double speed) {
 void Action::releaseIntake(bool inv){
     intakeManager.setIntakeSpeed(inv ? 1 : -1);
     intakeManager.startIntake();
-    delay(80);  
+    delay(100);  
     intakeManager.stopIntake();
 }
 
@@ -116,8 +106,6 @@ void Action::ejectDisc(){
         setEjectFlag(false);
     }
 }
-
-void Action::setAutonControlFlag(bool flag){ autoResumeFlag = flag; }
 
 void Action::nextArmState() {
     arm.nextState();

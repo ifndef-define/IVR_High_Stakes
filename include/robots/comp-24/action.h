@@ -28,8 +28,6 @@ class Action {
         void runSubsystemFSM();
         void stateControl();
 
-        void setAutonControlFlag(bool flag);
-
         void releaseIntake(bool inv=false);
         void ejectDisc();
 
@@ -38,6 +36,14 @@ class Action {
          *
          */
         void setOverride(bool override);
+
+
+        /**
+         * @brief Enables auto resume for the intake during auton
+         *
+         * @param flag The flag to set
+         */
+        void setAutonControlFlag(bool flag);
 
         /**
          * @brief Returns if the arm is in an override state
@@ -49,6 +55,8 @@ class Action {
          * @brief Sets the speed of the intake
          *
          * @param speed The speed of the intake [0, 1]
+         * @param autonResume If the intake should automatically resume during auton after 
+         *  a ring is ejected
          */
         void setIntakeSpeed(double speed);
 
@@ -96,6 +104,7 @@ class Action {
          * @return bool 
          */
         void setPullbackFlag(bool flag);
+
 
         /**
          * @brief Set the Eject Flag bool
