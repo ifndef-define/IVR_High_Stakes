@@ -24,7 +24,7 @@ PneumaticsGroup pneumatics;
 
 Action actions(0, Ring::Color::NONE);
 
-IMU imu(8);
+pros::IMU imu(8);
 pros::adi::Encoder xEnc(1, 2, false);
 pros::adi::Encoder yEnc(3, 4, true);
 
