@@ -1,59 +1,56 @@
 #pragma once
 #include "pros/imu.hpp"
+#include "common/kalman_filter.h"
 #include <cmath>
+#include <functional>
 
 /**
  * @class DualIMU
  * @brief Dual sensor fusion for a pair of pros::IMU to reduce drift.
- *
- * This class updates an internal fused value using readings from two IMUs.
- * If the two readings differ less than driftThreshold, the fused reading is
- * simply the average. Otherwise the reading closer to the previous fused value
- * is used.
  */
 class DualIMU {
 private:
     pros::IMU imu1;
     pros::IMU imu2;
-    double driftThreshold; ///< Drift threshold in degrees.
-    double fusedValue;     ///< Last fused rotation value.
-    double r1, r2;
+    double driftThreshold; // Used for outlier detection
+    double lastUpdateTime; // For tracking dt between updates
 
-    // Helper for scalar getters using a lambda on a single IMU.
-    template <typename Func>
-    double dual_get(Func f) const {
-        double v1 = f(imu1);
-        double v2 = f(imu2);
-        double diff = std::fabs(v1 - v2);
-        if(diff <= driftThreshold)
-            return (v1 + v2) / 2.0;
-        // When readings disagree, fallback to the stored fused value.
-        // (If fusedValue is not set yet, average is used.)
-        return (std::fabs(v1 - fusedValue) < std::fabs(v2 - fusedValue)) ? v1 : v2;
-    }
+    KalmanFilter rotFilter;
+    KalmanFilter headingFilter;
+    KalmanFilter yawFilter;
+    KalmanFilter pitchFilter;
+    KalmanFilter rollFilter;
+    
+    // Helper method to handle the update logic for a single measurement type
+    inline void applyFilter(KalmanFilter& filter, const double& val1, const double& val2);
 
 public:
     /**
      * @brief Constructs a DualIMU object.
      * @param port1 Port number for the first IMU.
      * @param port2 Port number for the second IMU.
-     * @param driftThreshold Threshold (in degrees) above which the readings are considered to be drifting.
+     * @param driftThreshold (Optional) A threshold value (in degrees) for outlier handling.
+     * @param motionModel (Optional) Custom turning model function.
      */
     DualIMU(int port1, int port2, double driftThreshold = 10.0);
 
     /**
-     * @brief Updates the internal fused value.
+     * @brief Updates each filter with readings from both IMUs.
      */
     void update();
 
-    // Read methods using the latest fused value.
+    // Accessor methods
     double get_rotation() const;
+    double get_rotation_velocity() const;
+    double get_heading() const;
     double get_yaw() const;
     double get_pitch() const;
     double get_roll() const;
 
-    // Command methods (broadcast to both sensors).
     void calibrate();
     void reset(bool blocking);
     bool is_calibrating() const;
+    
+    // Set a custom non-linear motion model
+    void set_motion_model(std::function<double(double, double, double)> model);
 };

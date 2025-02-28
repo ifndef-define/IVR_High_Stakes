@@ -6,6 +6,7 @@
 #include "lemlib/api.hpp"
 #include "robots/comp-24/pneumatics.h"
 #include "robots/comp-24/action.h"
+#include "common/dual_imu.h"
 
 class Action;
 extern Action actions;
@@ -17,7 +18,8 @@ extern pros::MotorGroup rightDrive;
 
 extern PneumaticsGroup pneumatics;
 
-extern IMU imu;
+extern IMU imu1;
+extern DualIMU imu;
 
 extern pros::adi::Encoder yEnc;
 extern pros::adi::Encoder rxEnc;

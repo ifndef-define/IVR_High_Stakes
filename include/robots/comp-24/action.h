@@ -30,6 +30,7 @@ class Action {
 
         void releaseIntake(bool inv=false);
         void ejectDisc();
+        void pullbackIntake();
 
         /**
          * @brief Sets arm to override state

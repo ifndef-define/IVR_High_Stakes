@@ -1,12 +1,12 @@
 #include "robots/comp-24/intake.h"
 
-Intake::Intake() : intakeMotor({-13, 17, -18}, pros::MotorGears::blue) {}
+Intake::Intake() : intakeMotor({10, -17}, pros::MotorGears::blue), intakeRot(-21) {}
 
 void Intake::startIntake(double speed){ intakeMotor.move(speed * 127); }
 
 void Intake::stopIntake(){ intakeMotor.brake(); }
 
-ColorDetector::ColorDetector() : colorSensor(6) {
+ColorDetector::ColorDetector() : colorSensor(20) {
   colorSensor.set_led_pwm(100);
   colorSensor.set_integration_time(20);
 }

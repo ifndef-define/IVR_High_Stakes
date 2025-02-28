@@ -9,6 +9,7 @@
 class Intake {
 private:
   pros::MotorGroup intakeMotor;
+  pros::Rotation intakeRot;
 
 public:
   Intake();

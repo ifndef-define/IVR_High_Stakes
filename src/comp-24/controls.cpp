@@ -44,10 +44,11 @@ void teleOp(Ring::Color ringToKeep) {
     while(1) {
         // Drive Control
         pow = ctrler.get_analog(currentProfile.powerAxis);
-        turn = ctrler.get_analog(currentProfile.turnAxis)/1.5;
+        turn = ctrler.get_analog(currentProfile.turnAxis);
+        chassis.arcade(pow, turn, 0);
 
-        leftDrive.move(pow + turn);
-        rightDrive.move(pow - turn);
+        // leftDrive.move(pow + turn);
+        // rightDrive.move(pow - turn);
 
         // Intake/Arm Control
         actions.setOverride(ctrler.get_digital(currentProfile.shift));

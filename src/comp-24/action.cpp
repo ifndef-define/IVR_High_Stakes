@@ -42,7 +42,7 @@ void Action::stateControl() {
             if(!override){
                 setEjectFlag(true);
                 if((int)(arm.getState()) > (int)(Arm::State::READY)){
-                    // arm.setState(Arm::State::SCORE); // position SCORE to avoid prevent intake collision
+                    arm.setState(Arm::State::SCORE); // position SCORE to avoid prevent intake collision
                 } else {
                     arm.setState(Arm::State::DOWN);  // For example, position DOWN to avoid intake
                 }
@@ -53,13 +53,7 @@ void Action::stateControl() {
             setEjectFlag(true);
             intakeManager.setIntakeSpeed(-1);
             intakeManager.startIntake();
-            if (pauseCounter < 10){ // 7*15 = 105ms
-                pauseCounter++;
-            } else {
-                pauseCounter = 0;
-                intakeManager.stopIntake();
-                setPullbackFlag(false);
-            }
+            pullbackIntake();
             break;
     }
 }
@@ -104,6 +98,16 @@ void Action::ejectDisc(){
             intakeManager.stopIntake();
         }
         setEjectFlag(false);
+    }
+}
+
+void Action::pullbackIntake(){
+    if (pauseCounter < 10){ // 7*15 = 105ms
+        pauseCounter++;
+    } else {
+        pauseCounter = 0;
+        intakeManager.stopIntake();
+        setPullbackFlag(false);
     }
 }
 

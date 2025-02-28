@@ -17,16 +17,18 @@
 
 pros::Controller ctrler(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup leftDrive({3, -1, 16, -2}, MotorGears::blue);
-pros::MotorGroup rightDrive({-13, 11, -14, 12}, MotorGears::blue);
+MotorGroup rightDrive({-2, 7, -13, 14}, MotorGears::blue);
+MotorGroup leftDrive({1, 5, -6, -16}, MotorGears::blue);
 
 PneumaticsGroup pneumatics;
 
 Action actions(0, Ring::Color::NONE);
 
-pros::IMU imu(8);
-pros::adi::Encoder xEnc(1, 2, false);
-pros::adi::Encoder yEnc(3, 4, true);
+pros::IMU imu1(12);
+DualIMU imu(12, 15, 2.5);
+
+adi::Encoder yEnc(adi::ext_adi_port_tuple_t(4, 1, 2), false);
+adi::Encoder xEnc(adi::ext_adi_port_tuple_t(4, 3, 4), true);  // 3 4
 
 // LEMLIB Config
 const float VERT_RATIO = 1;
@@ -39,7 +41,7 @@ lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
                             nullptr, // vertical tracking wheel 2
                             &horizontal, // horizontal tracking wheel
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-                            &imu // inertial sensor
+                            &imu1 // inertial sensor
 );
 
 lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
