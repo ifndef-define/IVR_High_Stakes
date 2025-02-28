@@ -47,9 +47,9 @@ public:
     double get_pitch() const;
     double get_roll() const;
 
-    void calibrate();
-    void reset(bool blocking);
+    void reset(bool blocking=false);
     bool is_calibrating() const;
+    pros::ImuStatus get_status() const;
     
     // Set a custom non-linear motion model
     void set_motion_model(std::function<double(double, double, double)> model);

@@ -1,5 +1,5 @@
 #include <math.h>
-#include "pros/imu.hpp"
+#include "common/dual_imu.h"
 #include "pros/motors.h"
 #include "pros/rtos.h"
 #include "lemlib/logger/logger.hpp"
@@ -10,7 +10,7 @@
 #include "pros/rtos.hpp"
 
 lemlib::OdomSensors::OdomSensors(TrackingWheel* vertical1, TrackingWheel* vertical2, TrackingWheel* horizontal1,
-                                 TrackingWheel* horizontal2, pros::Imu* imu)
+                                 TrackingWheel* horizontal2, DualIMU* imu)
     : vertical1(vertical1),
       vertical2(vertical2),
       horizontal1(horizontal1),

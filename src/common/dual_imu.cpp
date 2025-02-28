@@ -105,6 +105,10 @@ void DualIMU::reset(bool blocking) {
     rollFilter.reset((imu1.get_roll() + imu2.get_roll()) / 2.0, 0, 0, 0, 0, 0);
 }
 
+pros::ImuStatus DualIMU::get_status() const {
+    return imu1.get_status();
+}
+
 bool DualIMU::is_calibrating() const {
     return imu1.is_calibrating() || imu2.is_calibrating();
 }
