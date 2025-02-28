@@ -51,25 +51,33 @@ public:
         const double old_P_vel_acc = P_vel_acc;
         const double old_P_pos_acc = P_pos_acc;
         
-        // Position variance update
-        P_pos = old_P_pos + 2*dt*old_P_pos_vel + dt*dt*(old_P_vel + old_P_pos_acc*dt) + 
-                dt*dt*dt*old_P_vel_acc + 0.25*dt*dt*dt*dt*old_P_acc + Q_pos*adaptiveFactor;
-                
-        // Position-velocity covariance update
-        P_pos_vel = old_P_pos_vel + dt*old_P_vel + dt*old_P_pos_acc + 
-                   dt*dt*old_P_vel_acc + 0.5*dt*dt*dt*old_P_acc;
-        
-        // Position-acceleration covariance update
-        P_pos_acc = old_P_pos_acc + dt*old_P_vel_acc + 0.5*dt*dt*old_P_acc;
-        
-        // Velocity variance update
-        P_vel = old_P_vel + 2*dt*old_P_vel_acc + dt*dt*old_P_acc + Q_vel*adaptiveFactor;
-        
-        // Velocity-acceleration covariance update
-        P_vel_acc = old_P_vel_acc + dt*old_P_acc;
-        
-        // Acceleration variance update
-        P_acc = old_P_acc + Q_acc*adaptiveFactor;
+        // Corrected covariance updates for a 3-state (pos, vel, acc) model
+        P_pos = old_P_pos
+                + 2.0 * dt * old_P_pos_vel
+                + dt * dt * (old_P_vel + old_P_pos_acc)
+                + 1.5 * dt * dt * dt * old_P_vel_acc
+                + 0.25 * dt * dt * dt * dt * old_P_acc
+                + Q_pos * adaptiveFactor;
+
+        P_pos_vel = old_P_pos_vel
+                    + dt * (old_P_vel + old_P_pos_acc)
+                    + 1.5 * dt * dt * old_P_vel_acc
+                    + 0.5 * dt * dt * dt * old_P_acc;
+
+        P_pos_acc = old_P_pos_acc
+                    + dt * old_P_vel_acc
+                    + 0.5 * dt * dt * old_P_acc;
+
+        P_vel = old_P_vel
+                + 2.0 * dt * old_P_vel_acc
+                + dt * dt * old_P_acc
+                + Q_vel * adaptiveFactor;
+
+        P_vel_acc = old_P_vel_acc
+                    + dt * old_P_acc;
+
+        P_acc = old_P_acc
+                + Q_acc * adaptiveFactor;
     }
 
     inline void update(const double& measurement) {
