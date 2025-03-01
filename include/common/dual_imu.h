@@ -47,7 +47,7 @@ public:
     double get_pitch() const;
     double get_roll() const;
 
-    void reset(bool blocking=false);
+    void reset(bool blocking=true);
     bool is_calibrating() const;
     pros::ImuStatus get_status() const;
     

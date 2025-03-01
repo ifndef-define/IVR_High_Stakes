@@ -40,7 +40,7 @@ void initialize() {
             pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
             pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
             pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
-			pros::lcd::print(3, "IMU Heading: %f", imu.get_heading()); // heading
+			pros::lcd::print(3, "IMU Heading: %f", imu.get_rotation()); // heading
             // delay to save resources
             pros::delay(20);
         }
@@ -50,6 +50,7 @@ void initialize() {
         // while(pros::competition::is_autonomous()){
         while(true) {
             actions.runSubsystemFSM();
+			imu.update();
             delay(10);
         }
     }};
@@ -62,7 +63,7 @@ void competition_initialize() {}
 void autonomous() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 	chassis.setPose(0, 0, 0);
-    chassis.turnToHeading(180, 100000, {}, 0);
+    chassis.turnToHeading(90, 100000, {}, 0);
 	// auton(ringToKeep);
 }
 
