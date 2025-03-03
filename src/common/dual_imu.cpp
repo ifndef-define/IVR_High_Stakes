@@ -17,6 +17,7 @@ DualIMU::DualIMU(int port1, int port2, double driftThresh)
     yawFilter.update(imu2.get_yaw());
     pitchFilter.update(imu2.get_pitch());
     rollFilter.update(imu2.get_roll());
+    headingFilter.update(imu2.get_heading());
 }
 
 // Helper method for regular filters remains unchanged
@@ -35,12 +36,12 @@ inline void DualIMU::applyFilter(KalmanFilter& filter, const double& val1, const
 
 void DualIMU::update() {
     // Calculate dt since last update
-    double currentTime = pros::millis() / 1000.0;
-    double dt = currentTime - lastUpdateTime;
+    const double currentTime = pros::millis() / 1000.0;
+    const double dt = currentTime - lastUpdateTime;
     lastUpdateTime = currentTime;
     
     // Get current rotation velocity
-    double rotVelocityBefore = rotFilter.get_velocity();
+    const double rotVelocityBefore = rotFilter.get_velocity();
     
     // Predict rotation state using motion model and dt
     rotFilter.predict(dt);
@@ -50,17 +51,22 @@ void DualIMU::update() {
     const double y1 = imu1.get_yaw();
     const double p1 = imu1.get_pitch();
     const double rl1 = imu1.get_roll();
+    const double h1 = imu1.get_heading();
     
     const double r2 = imu2.get_rotation();
     const double y2 = imu2.get_yaw();
     const double p2 = imu2.get_pitch();
     const double rl2 = imu2.get_roll();
+    const double h2 = imu2.get_heading();
+
     
     // Regular filtering for all measurements
     applyFilter(rotFilter, r1, r2);
+    applyFilter(headingFilter, h1, h2);
     applyFilter(yawFilter, y1, y2);
     applyFilter(pitchFilter, p1, p2);
     applyFilter(rollFilter, rl1, rl2);
+    
     
     // Calculate current acceleration
     const double rotVelocityAfter = rotFilter.get_velocity();
@@ -91,22 +97,22 @@ double DualIMU::get_roll() const { return rollFilter.get_position(); }
 void DualIMU::reset(bool blocking) {
     imu1.reset(blocking);
     imu2.reset(blocking);
+    // // Get average readings to reset filters
+    double r1 = imu1.get_rotation(), r2 = imu2.get_rotation();
+    double y1 = imu1.get_yaw(), y2 = imu2.get_yaw();
+    double p1 = imu1.get_pitch(), p2 = imu2.get_pitch();
+    double rl1 = imu1.get_roll(), rl2 = imu2.get_roll();
+    double h1 = imu1.get_heading(), h2 = imu2.get_heading();
     
-    // Get average readings to reset filters
-    const double r1 = imu1.get_rotation(), r2 = imu2.get_rotation();
-    const double y1 = imu1.get_yaw(), y2 = imu2.get_yaw();
-    const double p1 = imu1.get_pitch(), p2 = imu2.get_pitch();
-    const double rl1 = imu1.get_roll(), rl2 = imu2.get_roll();
-    
-    rotFilter.reset((imu1.get_rotation() + imu2.get_rotation()) / 2.0, 0, 0, 0, 0, 0);
-    headingFilter.reset((imu1.get_heading() + imu2.get_heading()) / 2.0, 0, 0, 0, 0, 0);
-    yawFilter.reset((imu1.get_yaw() + imu2.get_yaw()) / 2.0, 0, 0, 0, 0, 0);
-    pitchFilter.reset((imu1.get_pitch() + imu2.get_pitch()) / 2.0, 0 , 0, 0, 0, 0);
-    rollFilter.reset((imu1.get_roll() + imu2.get_roll()) / 2.0, 0, 0, 0, 0, 0);
+    rotFilter.reset((r1-r2)/2.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    headingFilter.reset((h1-h2)/2.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    yawFilter.reset((y1-y2)/2.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    pitchFilter.reset((p1-p2)/2.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    rollFilter.reset((rl1-rl2)/2.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 }
 
 pros::ImuStatus DualIMU::get_status() const {
-    return imu1.get_status();
+    return imu2.get_status();
 }
 
 bool DualIMU::is_calibrating() const {

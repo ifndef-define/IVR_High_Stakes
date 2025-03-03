@@ -4,7 +4,7 @@ PneumaticsGroup::PneumaticsGroup():
     mogoRushArm('F', false),
     mogoRushClamp('C', false),
     mogoClamp('H', false),
-    doinker('A', true), 
+    doinker('B', false), 
     intakeLift('E', false) {}
 
 // No other methods, just a grouping class

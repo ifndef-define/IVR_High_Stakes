@@ -67,13 +67,13 @@ void teleOp(Ring::Color ringToKeep) {
             /*    ARM    */
             ///////////////
             if(actions.getOverride()){
-                // if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
-                //     actions.setArmSpeed(1);
-                // } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
-                //     actions.setArmSpeed(-1);
-                // } else {
-                //     actions.setArmSpeed(0);
-                // }
+                if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
+                    actions.setArmSpeed(1);
+                } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
+                    actions.setArmSpeed(-1);
+                } else {
+                    actions.setArmSpeed(0);
+                }
             } else if(currentProfile.incrementBackpack) {
                     if(ctrler.get_digital_new_press(currentProfile.backpackCycleStageUp)) {
                         actions.nextArmState();
@@ -114,9 +114,9 @@ void teleOp(Ring::Color ringToKeep) {
             }
         }
         //Print out data for 
-        pros::lcd::print(1, "%f", actions.getArmAngle());
-        pros::lcd::print(2, "%d", actions.getPullbackFlag());
-        pros::lcd::print(3, "%d", int(actions.getState()));
+        pros::lcd::print(7, "Arm Angle: %f", actions.getArmAngle());
+        pros::lcd::print(8, "Pullback: %d", actions.getPullbackFlag());
+        pros::lcd::print(9, "State: %d", int(actions.getState()));
         pros::delay(10);
     }
 }
