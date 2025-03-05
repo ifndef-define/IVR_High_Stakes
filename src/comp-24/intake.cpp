@@ -1,14 +1,18 @@
 #include "robots/comp-24/intake.h"
 
-Intake::Intake() : intakeMotor({10, -17}, pros::MotorGears::blue), intakeRot(-21) {}
+Intake::Intake() : intakeMotor({10, -18}, pros::MotorGears::blue), intakeRot(-5) {
+  intakeRot.reset_position();
+}
 
 void Intake::startIntake(double speed){ intakeMotor.move(speed * 127); }
 
 void Intake::stopIntake(){ intakeMotor.brake(); }
 
-ColorDetector::ColorDetector() : colorSensor(20) {
+double Intake::getAngle(){ return intakeRot.get_position()/100; }
+
+ColorDetector::ColorDetector() : colorSensor(12) {
   colorSensor.set_led_pwm(100);
-  colorSensor.set_integration_time(20);
+  colorSensor.set_integration_time(10);
 }
 
 Ring::Color ColorDetector::getColor() {
@@ -45,7 +49,7 @@ void IntakeManager::setFilterColor(Ring::Color filterColor) { filter = filterCol
 
 bool IntakeManager::getEject() { return eject; }
 
-
+double IntakeManager::getIntakeAngle() { return intake.getAngle(); }
 
 void IntakeManager::update() {
     // Check the current ring color from the detector

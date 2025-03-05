@@ -14,15 +14,6 @@ private:
 public:
   Intake();
   /**
-   * @brief Lifts up the Intake
-   */
-  void liftIntake();
-  /**
-   * @brief Sets the Intake back down
-   */
-  void lowerIntake();
-
-  /**
    * @brief Start the intake
    *
    * @param speed The speed of the intake [0, 1]
@@ -32,6 +23,12 @@ public:
    * @brief Stops the intake motors
    */
   void stopIntake();
+  /**
+   * @brief Gets the angle of the intake
+   *
+   * @return The angle of the intake
+   */
+  double getAngle();
 };
 
 namespace Ring {
@@ -81,6 +78,8 @@ public:
 
   void startIntake();
   void stopIntake();
+
+  double getIntakeAngle();
   /**
    * @brief Gets the type that is kept in filter
    *

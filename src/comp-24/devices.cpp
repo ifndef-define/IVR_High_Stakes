@@ -17,15 +17,13 @@
 
 pros::Controller ctrler(pros::E_CONTROLLER_MASTER);
 
-MotorGroup rightDrive({-2, 7, -13, 14}, MotorGears::blue);
-MotorGroup leftDrive({1, 5, -6, -16}, MotorGears::blue);
-
 PneumaticsGroup pneumatics;
-
 Action actions(0, Ring::Color::NONE);
 
-DualIMU imu(12, 15, 2.5);
+MotorGroup rightDrive({-2, 7, -15, 16}, MotorGears::blue);
+MotorGroup leftDrive({1, 4, -6, -19}, MotorGears::blue);
 
+DualIMU imu(13, 17, 2.5);
 adi::Encoder xEnc(adi::ext_adi_port_tuple_t(4, 1, 2), false);  // 1 2 
 adi::Encoder yEnc(adi::ext_adi_port_tuple_t(4, 3, 4), false);  // 3 4
 
@@ -64,7 +62,7 @@ lemlib::ControllerSettings linearController(1, // proportional gain (kP)
 );
 
 // angular motion controller 2.45, 5.5 ///// 2.7,7
-lemlib::ControllerSettings angularController(1.5, // proportional gain (kP) //1.41
+lemlib::ControllerSettings angularController(1.55, // proportional gain (kP) //1.41
                                              0.08, // integral gain (kI)
                                              5.5, // derivative gain (kD) //5
                                              10, // anti windup

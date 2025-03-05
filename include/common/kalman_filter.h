@@ -22,8 +22,8 @@ private:
 public:
     inline KalmanFilter(
         double init_pos=0, double init_vel=0, double init_acc=0,
-        double init_P_pos=0, double init_P_vel=0, double init_P_acc=0,
-        double Q_pos=0, double Q_vel=0, double Q_acc=0, double R=0.1) 
+        double init_P_pos=0.1, double init_P_vel=0.05, double init_P_acc=0.01,
+        double Q_pos=0.005, double Q_vel=0.001, double Q_acc=0.5, double R=0.1) 
         : position(init_pos), velocity(init_vel), acceleration(init_acc),
           P_pos(init_P_pos), P_vel(init_P_vel), P_acc(init_P_acc),
           P_pos_vel(0.0), P_vel_acc(0.0), P_pos_acc(0.0),
@@ -44,12 +44,12 @@ public:
         // P = F·P·F^T + Q where F is the state transition matrix
         
         // Temporary variables to store old values
-        const double old_P_pos = P_pos;
-        const double old_P_vel = P_vel;
-        const double old_P_acc = P_acc;
-        const double old_P_pos_vel = P_pos_vel;
-        const double old_P_vel_acc = P_vel_acc;
-        const double old_P_pos_acc = P_pos_acc;
+        static double old_P_pos = P_pos;
+        static double old_P_vel = P_vel;
+        static double old_P_acc = P_acc;
+        static double old_P_pos_vel = P_pos_vel;
+        static double old_P_vel_acc = P_vel_acc;
+        static double old_P_pos_acc = P_pos_acc;
         
         // Corrected covariance updates for a 3-state (pos, vel, acc) model
         P_pos = old_P_pos
@@ -82,13 +82,13 @@ public:
 
     inline void update(const double& measurement) {
         // Kalman gain calculation for position measurement
-        const double S = P_pos + R; // Innovation covariance
-        const double K_pos = P_pos / S;
-        const double K_vel = P_pos_vel / S;
-        const double K_acc = P_pos_acc / S;
+        static double S = P_pos + R; // Innovation covariance
+        static double K_pos = P_pos / S;
+        static double K_vel = P_pos_vel / S;
+        static double K_acc = P_pos_acc / S;
         
         // Innovation (measurement - prediction)
-        const double innovation = measurement - position;
+        static double innovation = measurement - position;
         
         // Update state estimates
         position += K_pos * innovation;
@@ -118,7 +118,7 @@ public:
     }
     
     inline double get_position() const { return position; }
-    inline double get_velocity() const { return velocity; }
+    inline  double get_velocity() const { return velocity; }
     inline double get_acceleration() const { return acceleration; }
 
     inline void setAdaptiveNoiseParams(double baseQPos, double baseQVel, double baseQAcc) {

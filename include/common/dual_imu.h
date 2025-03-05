@@ -30,7 +30,6 @@ public:
      * @param port1 Port number for the first IMU.
      * @param port2 Port number for the second IMU.
      * @param driftThreshold (Optional) A threshold value (in degrees) for outlier handling.
-     * @param motionModel (Optional) Custom turning model function.
      */
     DualIMU(int port1, int port2, double driftThreshold = 10.0);
 
@@ -50,7 +49,4 @@ public:
     void reset(bool blocking=true);
     bool is_calibrating() const;
     pros::ImuStatus get_status() const;
-    
-    // Set a custom non-linear motion model
-    void set_motion_model(std::function<double(double, double, double)> model);
 };

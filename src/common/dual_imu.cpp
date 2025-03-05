@@ -6,11 +6,11 @@ DualIMU::DualIMU(int port1, int port2, double driftThresh)
     driftThreshold(driftThresh),
     lastUpdateTime(pros::millis() / 1000.0),
     // Initialize enhanced filters with physics-based model (position, velocity, acceleration, P_pos, P_vel, P_acc, Q_pos, Q_vel, Q_acc, R)
-    rotFilter(imu1.get_rotation(), 0.0, 0.0, 1.0, 0.1, 0.05, 0.01, 0.005, 0.001, 0.5),
-    headingFilter(imu1.get_heading(), 0.0, 0.0, 1.0, 0.1, 0.05, 0.01, 0.005, 0.001, 0.5),
-    yawFilter(imu1.get_yaw(), 0.0, 0.0, 1.0, 0.1, 0.05, 0.01, 0.005, 0.001, 0.5),
-    pitchFilter(imu1.get_pitch(), 0.0, 0.0, 1.0, 0.1, 0.05, 0.01, 0.005, 0.001, 0.5),
-    rollFilter(imu1.get_roll(), 0.0, 0.0, 1.0, 0.1, 0.05, 0.01, 0.005, 0.001, 0.5) {
+    rotFilter(imu1.get_rotation(), 0.0, 0.0, 1.0),
+    headingFilter(imu1.get_heading(), 0.0, 0.0, 1.0),
+    yawFilter(imu1.get_yaw(), 0.0, 0.0, 1.0),
+    pitchFilter(imu1.get_pitch(), 0.0, 0.0, 1.0),
+    rollFilter(imu1.get_roll(), 0.0, 0.0, 1.0) {
     
     // Initial update with second sensor reading
     rotFilter.update(imu2.get_rotation());
@@ -25,7 +25,7 @@ inline void DualIMU::applyFilter(KalmanFilter& filter, const double& val1, const
     // Check for outliers and update the filter accordingly
     if (std::fabs(val1 - val2) > driftThreshold) {
         // If readings differ too much, use the one closer to current estimate
-        const double current = filter.get_position();
+        static double current = filter.get_position();
         filter.update(std::fabs(val1 - current) < std::fabs(val2 - current) ? val1 : val2);
     } else {
         // No outlier detected, use both readings for sensor fusion
@@ -36,28 +36,28 @@ inline void DualIMU::applyFilter(KalmanFilter& filter, const double& val1, const
 
 void DualIMU::update() {
     // Calculate dt since last update
-    const double currentTime = pros::millis() / 1000.0;
-    const double dt = currentTime - lastUpdateTime;
+    static double currentTime = pros::millis() / 1000.0;
+    static double dt = currentTime - lastUpdateTime;
     lastUpdateTime = currentTime;
     
     // Get current rotation velocity
-    const double rotVelocityBefore = rotFilter.get_velocity();
+    static double rotVelocityBefore = rotFilter.get_velocity();
     
     // Predict rotation state using motion model and dt
     rotFilter.predict(dt);
     
     // Read all IMU values
-    const double r1 = imu1.get_rotation();
-    const double y1 = imu1.get_yaw();
-    const double p1 = imu1.get_pitch();
-    const double rl1 = imu1.get_roll();
-    const double h1 = imu1.get_heading();
+    static double r1 = imu1.get_rotation();
+    static double y1 = imu1.get_yaw();
+    static double p1 = imu1.get_pitch();
+    static double rl1 = imu1.get_roll();
+    static double h1 = imu1.get_heading();
     
-    const double r2 = imu2.get_rotation();
-    const double y2 = imu2.get_yaw();
-    const double p2 = imu2.get_pitch();
-    const double rl2 = imu2.get_roll();
-    const double h2 = imu2.get_heading();
+    static double r2 = imu2.get_rotation();
+    static double y2 = imu2.get_yaw();
+    static double p2 = imu2.get_pitch();
+    static double rl2 = imu2.get_roll();
+    static double h2 = imu2.get_heading();
 
     
     // Regular filtering for all measurements
@@ -67,10 +67,9 @@ void DualIMU::update() {
     applyFilter(pitchFilter, p1, p2);
     applyFilter(rollFilter, rl1, rl2);
     
-    
     // Calculate current acceleration
-    const double rotVelocityAfter = rotFilter.get_velocity();
-    const double rotAccel = (rotVelocityAfter - rotVelocityBefore) / dt;
+    static double rotVelocityAfter = rotFilter.get_velocity();
+    static double rotAccel = (rotVelocityAfter - rotVelocityBefore) / dt;
     
     // Dynamically adjust process noise if experiencing high acceleration
     if (std::fabs(rotAccel) > 20.0) { // threshold for "high" acceleration
@@ -98,11 +97,11 @@ void DualIMU::reset(bool blocking) {
     imu1.reset(blocking);
     imu2.reset(blocking);
     // // Get average readings to reset filters
-    double r1 = imu1.get_rotation(), r2 = imu2.get_rotation();
-    double y1 = imu1.get_yaw(), y2 = imu2.get_yaw();
-    double p1 = imu1.get_pitch(), p2 = imu2.get_pitch();
-    double rl1 = imu1.get_roll(), rl2 = imu2.get_roll();
-    double h1 = imu1.get_heading(), h2 = imu2.get_heading();
+    static double r1 = imu1.get_rotation(), r2 = imu2.get_rotation();
+    static double y1 = imu1.get_yaw(), y2 = imu2.get_yaw();
+    static double p1 = imu1.get_pitch(), p2 = imu2.get_pitch();
+    static double rl1 = imu1.get_roll(), rl2 = imu2.get_roll();
+    static double h1 = imu1.get_heading(), h2 = imu2.get_heading();
     
     rotFilter.reset((r1-r2)/2.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     headingFilter.reset((h1-h2)/2.0, 0.0, 0.0, 0.0, 0.0, 0.0);

@@ -8,6 +8,8 @@ enum class ActionState {
     PULLBACK // Intake is pulling back to avoid hook-ring collision
 };
 
+enum class EjectPhase { IDLE, FORWARD, PAUSE, REVERSE };
+
 class Action {
     private:
         ActionState currentState;
@@ -16,21 +18,26 @@ class Action {
         bool isAuton;
         bool override = false;
         Arm::State lastArmState = Arm::State::DOWN;
-
+        
         int pauseCounter = 0;
         int ejectCounter = 23;
         bool pullbackFlag = false;
         bool ejectFlag = false;
         bool runColorSort = true;
         bool autoResumeFlag = false;
+
+        EjectPhase ejectPhase = EjectPhase::IDLE;
+        double ejectStartPos = 0;
+        uint32_t pauseStartTime = 0;
+        double currentRotation = 0;
+
     public:
         Action(bool isAuton, Ring::Color ringToKeep);
         void runSubsystemFSM();
         void stateControl();
 
         void releaseIntake(bool inv=false);
-        void ejectDisc();
-        void pullbackIntake();
+        void intakeState();
 
         /**
          * @brief Sets arm to override state
