@@ -14,6 +14,19 @@ private:
     pros::IMU imu2;
     double driftThreshold; // Used for outlier detection
     double lastUpdateTime; // For tracking dt between updates
+    
+    // Reusable sensor reading variables to avoid stack allocations
+    double r1, r2;    // rotation readings
+    double y1, y2;    // yaw readings
+    double p1, p2;    // pitch readings
+    double rl1, rl2;  // roll readings
+    double h1, h2;    // heading readings
+    double dt;        // time delta between updates
+    double rotVelocityBefore, rotVelocityAfter, rotAccel; // velocity/acceleration calculation
+    double headingVelocityBefore, headingVelocityAfter, headingAccel;
+    double yawVelocityBefore, yawVelocityAfter, yawAccel;
+    double pitchVelocityBefore, pitchVelocityAfter, pitchAccel;
+    double rollVelocityBefore, rollVelocityAfter, rollAccel;
 
     KalmanFilter rotFilter;
     KalmanFilter headingFilter;

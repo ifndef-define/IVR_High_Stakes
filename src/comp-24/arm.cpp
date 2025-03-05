@@ -1,7 +1,7 @@
 #include "robots/comp-24/arm.h"
 Arm::Arm(float kP, float kI, float kD, float kP2, float kI2, float kD2) : armMotor(3, pros::MotorGears::red), armRot(-8), large(kP, kI, kD, 0, 0), small(kP2, kI2, kD2, 0, 0) {
     armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-    armRot.set_position(-10);
+    armRot.set_position(-30);
 }
 
 void Arm::update(){
