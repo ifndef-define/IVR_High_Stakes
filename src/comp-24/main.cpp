@@ -72,17 +72,17 @@ void opcontrol() {
 	actions.setAutonControlFlag(false);
 	// teleOp(ringToKeep);
 
-		while (true) {
-			if(ctrler.get_digital_new_press(BUTTON_UP)) {
-				// auton(ringToKeep);
-				autonomous();
-				break;
-			}
-			else if (ctrler.get_digital_new_press(BUTTON_LEFT)) {
+		// while (true) {
+		// 	if(ctrler.get_digital_new_press(BUTTON_UP)) {
+		// 		// auton(ringToKeep);
+		// 		autonomous();
+		// 		break;
+		// 	}
+		// 	else if (ctrler.get_digital_new_press(BUTTON_LEFT)) {
 				teleOp(ringToKeep);
-				break;
-			}
+		// 		break;
+		// 	}
 	
-			delay(20);
-		}
+		// 	delay(20);
+		// }
 }
