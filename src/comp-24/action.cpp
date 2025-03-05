@@ -7,7 +7,7 @@
  * 
  * Sets the initial state of the arm to DOWN and the initial state of the Action to IDLE.
  */
-Action::Action(bool isAuton, Ring::Color ringToKeep): arm(3.2,0,0, 4.7,0,0), currentState(ActionState::IDLE), intakeManager(){ 
+Action::Action(bool isAuton, Ring::Color ringToKeep): arm(2.5,0,0, 4,0,0), currentState(ActionState::IDLE), intakeManager(){ 
     intakeManager.setFilterColor(ringToKeep);
     this->isAuton = isAuton;
 }
