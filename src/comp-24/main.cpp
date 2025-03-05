@@ -34,6 +34,7 @@ void initialize() {
 	pros::lcd::register_btn1_cb(on_center_button);
 	chassis.calibrate(true);
 
+	chassis.setPose(0, 0, 0);
 	pros::Task screen_task([&]() {
         while (true) {
             // print robot location to the brain screen
@@ -47,7 +48,7 @@ void initialize() {
 
 	pros::Task subsystem_task{[&]{
         while(true) {
-			imu.update();
+			// imu.update();
             actions.runSubsystemFSM();
             delay(10);
         }
@@ -61,13 +62,27 @@ void competition_initialize() {}
 void autonomous() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 	chassis.setPose(0, 0, 0);
-    chassis.turnToHeading(90, 100000, {}, 0);
-	// chassis.moveToPose(48,0,0,100000,{},0);
+    // chassis.turnToHeading(90, 100000, {}, 0);
+	chassis.moveToPose(0,48,0,100000,{},0);
 	// auton(ringToKeep);
 }
 
 void opcontrol() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	actions.setAutonControlFlag(false);
-	teleOp(ringToKeep);
+	// teleOp(ringToKeep);
+
+		while (true) {
+			if(ctrler.get_digital_new_press(BUTTON_UP)) {
+				// auton(ringToKeep);
+				autonomous();
+				break;
+			}
+			else if (ctrler.get_digital_new_press(BUTTON_LEFT)) {
+				teleOp(ringToKeep);
+				break;
+			}
+	
+			delay(20);
+		}
 }

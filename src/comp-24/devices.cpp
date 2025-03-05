@@ -24,13 +24,16 @@ MotorGroup rightDrive({-2, 7, -15, 16}, MotorGears::blue);
 MotorGroup leftDrive({1, 4, -6, -19}, MotorGears::blue);
 
 DualIMU imu(13, 17, 2.5);
-adi::Encoder xEnc(adi::ext_adi_port_tuple_t(4, 1, 2), false);  // 1 2 
-adi::Encoder yEnc(adi::ext_adi_port_tuple_t(4, 3, 4), false);  // 3 4
+// pros::Imu imu(13);
+// adi::Encoder xEnc(adi::ext_adi_port_tuple_t(4, 1, 2), false);  // 1 2 
+// adi::Encoder yEnc(adi::ext_adi_port_tuple_t(4, 3, 4), false);  // 3 4
+adi::Encoder xEnc(3, 4, true);
+adi::Encoder yEnc(1, 2, false);
 
 // LEMLIB Config
 // const float VERT_RATIO = 1;
 // const float HORI_RATIO = 1;
-lemlib::TrackingWheel horizontal(&xEnc, 1.3425, -0.25);
+lemlib::TrackingWheel horizontal(&xEnc, 1.3135, -0.25);
 lemlib::TrackingWheel vertical(&yEnc, 1.3275, -0.84375);
 
 // sensors for odometry
@@ -43,14 +46,14 @@ lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
 
 lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
                               &rightDrive, // right motor group
-                              11.875, // 11.825 inch track width
+                              11, // 11.825 inch track width
                               lemlib::Omniwheel::NEW_275, // using new 3.25" omnis
                               600, // drivetrain rpm is 600
                               2 // horizontal drift is 2. If we had traction wheels, it would have been 8
 );
 
 // lateral motion controller
-lemlib::ControllerSettings linearController(1, // proportional gain (kP)
+lemlib::ControllerSettings linearController(15, // proportional gain (kP)
                                             0.0, // integral gain (kI)
                                             0, // derivative gain (kD)
                                             0, // anti windup

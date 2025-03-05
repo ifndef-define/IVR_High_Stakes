@@ -24,8 +24,8 @@ void redAuton(){
     // blueAuton();
     chassis.setPose(-45.5, 64, 100);
     actions.setIntakeSpeed(0);
-    pneumatics.intakeLift.extend();
-    pneumatics.mogoRushArm.extend();
+    // pneumatics.intakeLift.extend();
+    // pneumatics.mogoRushArm.extend();
     pneumatics.mogoRushClamp.extend();
     chassis.follow(mirror_comp_white_1_txt, 15, 1500, 1, 0);
     while(chassis.isInMotion()){
@@ -47,7 +47,7 @@ void redAuton(){
         .maxSpeed = 127/2});
     while(chassis.isInMotion()){
         if(chassis.getPose().theta <= 170){
-            pneumatics.mogoRushArm.retract();
+            // pneumatics.mogoRushArm.retract();
             pneumatics.mogoRushClamp.extend();
         }
             delay(15);
@@ -86,8 +86,8 @@ ASSET(comp_white_2_txt);
 void blueAuton(){
     chassis.setPose(-45.5, -29.3, 100);
     actions.setIntakeSpeed(0);
-    pneumatics.intakeLift.extend();
-    pneumatics.mogoRushArm.extend();
+    // pneumatics.intakeLift.extend();
+    // pneumatics.mogoRushArm.extend();
     pneumatics.mogoRushClamp.extend();
     chassis.follow(comp_white_1_txt, 15, 1500, 1, 0);
     while(chassis.isInMotion()){
@@ -109,8 +109,8 @@ void blueAuton(){
         .maxSpeed = 127/2});
     while(chassis.isInMotion()){
         if(chassis.getPose().theta <= 80){
-            pneumatics.mogoRushArm.retract();
-            pneumatics.mogoRushClamp.extend();
+            // pneumatics.mogoRushArm.retract();
+            // pneumatics.mogoRushClamp.extend();
         }
         delay(15);
     }
