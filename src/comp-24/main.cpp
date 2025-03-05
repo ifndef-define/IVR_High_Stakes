@@ -40,7 +40,7 @@ void initialize() {
             // print robot location to the brain screen
             pros::lcd::print(0, "X: %f Y: %f", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta); // x,y
             pros::lcd::print(1, "Theta: %f", chassis.getPose().theta); // global theta
-			pros::lcd::print(2, "Heading: %f", imu.get_heading()); // heading
+			pros::lcd::print(2, "Heading: %f", imu.get_rotation()); // heading
             // delay to save resources
             pros::delay(20);
         }
