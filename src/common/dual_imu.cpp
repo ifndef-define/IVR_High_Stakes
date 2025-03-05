@@ -37,7 +37,7 @@ inline void DualIMU::applyFilter(KalmanFilter& filter, const double& val1, const
 
 void DualIMU::update() {
     // Calculate dt since last update
-    double currentTime = pros::millis() / 1000.0;
+    static double currentTime = pros::millis() / 1000.0;
     dt = currentTime - lastUpdateTime;
     lastUpdateTime = currentTime;
     
