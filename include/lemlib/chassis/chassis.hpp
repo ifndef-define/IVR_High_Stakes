@@ -8,6 +8,7 @@
 #include "lemlib/pid.hpp"
 #include "lemlib/exitcondition.hpp"
 #include "lemlib/driveCurve.hpp"
+#include "dualEnable.h"
 
 namespace lemlib {
 
@@ -40,13 +41,22 @@ class OdomSensors {
          *                     &imu); // IMU
          * @endcode
          */
+#ifdef ENABLE_DUAL_IMU
         OdomSensors(TrackingWheel* vertical1, TrackingWheel* vertical2, TrackingWheel* horizontal1,
                     TrackingWheel* horizontal2, DualIMU* imu);
+#else
+        OdomSensors(TrackingWheel* vertical1, TrackingWheel* vertical2, TrackingWheel* horizontal1,
+                    TrackingWheel* horizontal2, pros::Imu* imu);
+#endif
         TrackingWheel* vertical1;
         TrackingWheel* vertical2;
         TrackingWheel* horizontal1;
         TrackingWheel* horizontal2;
+#ifdef ENABLE_DUAL_IMU
         DualIMU* imu;
+#else
+        pros::Imu* imu;
+#endif
 };
 
 /**

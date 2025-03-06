@@ -63,7 +63,7 @@
  * Add other header files here;
  * NOTE: Only add imported libraries' headers here
  */
-
+#include "dualEnable.h"
 ///////////////////////////////////////
 
 /**

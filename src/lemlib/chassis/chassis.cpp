@@ -9,8 +9,13 @@
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "pros/rtos.hpp"
 
+#ifdef ENABLE_DUAL_IMU
 lemlib::OdomSensors::OdomSensors(TrackingWheel* vertical1, TrackingWheel* vertical2, TrackingWheel* horizontal1,
                                  TrackingWheel* horizontal2, DualIMU* imu)
+#else
+lemlib::OdomSensors::OdomSensors(TrackingWheel* vertical1, TrackingWheel* vertical2, TrackingWheel* horizontal1,
+                                 TrackingWheel* horizontal2, pros::Imu* imu)
+#endif
     : vertical1(vertical1),
       vertical2(vertical2),
       horizontal1(horizontal1),

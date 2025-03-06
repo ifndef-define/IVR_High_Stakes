@@ -23,15 +23,19 @@ Action actions(0, Ring::Color::NONE);
 MotorGroup rightDrive({-2, 15, -14, 7}, MotorGears::blue);
 MotorGroup leftDrive({4, -18, 1, -6}, MotorGears::blue);
 
+#ifdef ENABLE_DUAL_IMU
 DualIMU imu(12, 16, 2.5);
+#else
+pros::IMU imu(12);
+// pros::IMU imu(16);
+#endif
+
 adi::Encoder xEnc(3, 4, true);
 adi::Encoder yEnc(1, 2, false);
 
 // LEMLIB Config
-// const float VERT_RATIO = 1;
-// const float HORI_RATIO = 1;
-lemlib::TrackingWheel horizontal(&xEnc, 1.3135, -0.25);
-lemlib::TrackingWheel vertical(&yEnc, 1.3275, -0.84375);
+lemlib::TrackingWheel horizontal(&xEnc, 1.3235, -0.25);
+lemlib::TrackingWheel vertical(&yEnc, 1.339, -0.84375);
 
 // sensors for odometry
 lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
@@ -50,9 +54,9 @@ lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
 );
 
 // lateral motion controller
-lemlib::ControllerSettings linearController(15, // proportional gain (kP)
+lemlib::ControllerSettings linearController(35, // proportional gain (kP)
                                             0.0, // integral gain (kI)
-                                            0, // derivative gain (kD)
+                                            3.55, // derivative gain (kD)
                                             0, // anti windup
                                             0, // small error range, in inches
                                             0, // small error range timeout, in milliseconds
@@ -62,9 +66,9 @@ lemlib::ControllerSettings linearController(15, // proportional gain (kP)
 );
 
 // angular motion controller 2.45, 5.5 ///// 2.7,7
-lemlib::ControllerSettings angularController(1.55, // proportional gain (kP) //1.41
+lemlib::ControllerSettings angularController(1.555, // proportional gain (kP) //1.41
                                              0.08, // integral gain (kI)
-                                             5.5, // derivative gain (kD) //5
+                                             6.11, // derivative gain (kD) //5
                                              10, // anti windup
                                              1, // small error range, in degrees
                                              150, // small error range timeout, in milliseconds
