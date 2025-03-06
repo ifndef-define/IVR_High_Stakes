@@ -33,19 +33,6 @@ void lemlib::TrackingWheel::reset() {
     if (this->motors != nullptr) this->motors->tare_position_all();
 }
 
-// int lemlib::TrackingWheel::getRaw() {
-//     if (this->encoder != nullptr) {
-//         return this->encoder->get_value();
-
-//     // } else if (this->rotation != nullptr) {
-//     //     return this->rotation->get_position();
-//     // } else if (this->motors != nullptr) {
-//     //     return lemlib::avg(this->motors->get_position_all());
-//     } else {
-//         return 0;
-//     }
-// }
-
 float lemlib::TrackingWheel::getDistanceTraveled() {
     if (this->encoder != nullptr) {
         return (float(this->encoder->get_value()) * (360/TICKS_PER_REV) * this->diameter * M_PI / 360) / this->gearRatio;

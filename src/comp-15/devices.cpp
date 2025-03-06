@@ -24,7 +24,7 @@ PneumaticsGroup pneumatics;
 
 Action actions(0, Ring::Color::NONE);
 
-IMU imu(16);
+DualIMU imu2(12, 16, 2.5);
 adi::Encoder yEnc(adi::ext_adi_port_tuple_t(19, 1, 2));
 adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(19, 3, 4), true);  // 3 4
 
@@ -39,7 +39,7 @@ lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
                             nullptr, // vertical tracking wheel 2
                             &horizontal, // horizontal tracking wheel
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-                            &imu // inertial sensor
+                            &imu2 // inertial sensor
 );
 
 lemlib::Drivetrain drivetrain(&leftDrive, // left motor group

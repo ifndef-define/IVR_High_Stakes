@@ -185,8 +185,6 @@ class TrackingWheel {
          * @endcode
          */
         int getType();
-
-        int getRaw();
     private:
         float diameter;
         float distance;

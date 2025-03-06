@@ -24,9 +24,6 @@ MotorGroup rightDrive({-2, 15, -14, 7}, MotorGears::blue);
 MotorGroup leftDrive({4, -18, 1, -6}, MotorGears::blue);
 
 DualIMU imu(12, 16, 2.5);
-// pros::Imu imu(13);
-// adi::Encoder xEnc(adi::ext_adi_port_tuple_t(4, 1, 2), false);  // 1 2 
-// adi::Encoder yEnc(adi::ext_adi_port_tuple_t(4, 3, 4), false);  // 3 4
 adi::Encoder xEnc(3, 4, true);
 adi::Encoder yEnc(1, 2, false);
 

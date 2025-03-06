@@ -2,7 +2,6 @@
 #include "pros/imu.hpp"
 #include "common/kalman_filter.h"
 #include <cmath>
-#include <functional>
 
 /**
  * @class DualIMU
