@@ -294,8 +294,8 @@ void lemlib::Chassis::follow(const asset& path, float lookahead, int timeout, bo
     }
 
     // stop the robot
-    drivetrain.leftMotors->brake();
-    drivetrain.rightMotors->brake();
+    drivetrain.leftMotors->move(0);
+    drivetrain.rightMotors->move(0);
     // set distTraveled to -1 to indicate that the function has finished
     distTraveled = -1;
     // give the mutex back
