@@ -75,7 +75,7 @@ void opcontrol() {
 		// while (true) {
 		// 	if(ctrler.get_digital_new_press(BUTTON_UP)) {
 		// 		// auton(ringToKeep);
-		// 		autonomous();
+				autonomous();
 		// 		break;
 		// 	}
 		// 	else if (ctrler.get_digital_new_press(BUTTON_LEFT)) {

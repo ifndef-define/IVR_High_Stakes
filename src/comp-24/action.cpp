@@ -126,7 +126,7 @@ void Action::intakeState() {
             pros::lcd::print(4, "D: %f, C: %f, S: %f", ejectStartPos - currentRotation, currentRotation, ejectStartPos);
 
             // Check if we've rotated the required amount
-            if (std::abs(ejectStartPos - currentRotation) >= 300) {
+            if (std::abs(ejectStartPos - currentRotation) >= 150) {
                 ejectStartPos = currentRotation;
                 setEjectFlag(false);
                 setPullbackFlag(true);

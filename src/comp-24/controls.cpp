@@ -57,9 +57,9 @@ void teleOp(Ring::Color ringToKeep) {
             /*    INTAKE    */
             //////////////////
             if(ctrler.get_digital(currentProfile.intakeIn)) {
-                actions.setIntakeSpeed(1);
+                actions.setIntakeSpeed(0.8);
             } else if(ctrler.get_digital(currentProfile.intakeOut)) {
-                actions.setIntakeSpeed(-1);
+                actions.setIntakeSpeed(-0.8);
             } else {
                 actions.setIntakeSpeed(0);
             }

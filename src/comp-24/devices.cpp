@@ -49,7 +49,7 @@ lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
                               11, // 11.825 inch track width
                               lemlib::Omniwheel::NEW_275, // using new 3.25" omnis
                               600, // drivetrain rpm is 600
-                              2 // horizontal drift is 2. If we had traction wheels, it would have been 8
+                              8 // horizontal drift is 2. If we had traction wheels, it would have been 8
 );
 
 // lateral motion controller
