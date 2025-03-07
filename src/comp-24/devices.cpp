@@ -50,14 +50,14 @@ lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
                               11, // 11.825 inch track width
                               lemlib::Omniwheel::NEW_275, // using new 3.25" omnis
                               600, // drivetrain rpm is 600
-                              8 // horizontal drift is 2. If we had traction wheels, it would have been 8
+                              24 // horizontal drift is 2. If we had traction wheels, it would have been 8
 );
 
 // lateral motion controller
-lemlib::ControllerSettings linearController(35, // proportional gain (kP)
-                                            0.0, // integral gain (kI)
-                                            3.55, // derivative gain (kD)
-                                            0, // anti windup
+lemlib::ControllerSettings linearController(12, // proportional gain (kP)
+                                            0.02, // integral gain (kI)
+                                            30, // derivative gain (kD)
+                                            5, // anti windup
                                             0, // small error range, in inches
                                             0, // small error range timeout, in milliseconds
                                             0, // large error range, in inches
@@ -66,9 +66,9 @@ lemlib::ControllerSettings linearController(35, // proportional gain (kP)
 );
 
 // angular motion controller 2.45, 5.5 ///// 2.7,7
-lemlib::ControllerSettings angularController(1.555, // proportional gain (kP) //1.41
+lemlib::ControllerSettings angularController(1.56, // proportional gain (kP) //1.41
                                              0.08, // integral gain (kI)
-                                             6.11, // derivative gain (kD) //5
+                                             6.8, // derivative gain (kD) //5
                                              10, // anti windup
                                              1, // small error range, in degrees
                                              150, // small error range timeout, in milliseconds
