@@ -9,19 +9,10 @@
 class Intake {
 private:
   pros::MotorGroup intakeMotor;
-  pros::adi::Pneumatics lift;
+  pros::Rotation intakeRot;
 
 public:
-  Intake(): intakeMotor({-14, 20}, pros::MotorGears::blue), lift('F', false) {};
-  /**
-   * @brief Lifts up the Intake
-   */
-  void liftIntake();
-  /**
-   * @brief Sets the Intake back down
-   */
-  void lowerIntake();
-
+  Intake();
   /**
    * @brief Start the intake
    *
@@ -32,6 +23,12 @@ public:
    * @brief Stops the intake motors
    */
   void stopIntake();
+  /**
+   * @brief Gets the angle of the intake
+   *
+   * @return The angle of the intake
+   */
+  double getAngle();
 };
 
 namespace Ring {
@@ -81,6 +78,8 @@ public:
 
   void startIntake();
   void stopIntake();
+
+  double getIntakeAngle();
   /**
    * @brief Gets the type that is kept in filter
    *

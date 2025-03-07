@@ -17,7 +17,7 @@ struct driverProfile {
     pros::controller_digital_e_t mogoRushClamp;
 };
 
-driverProfile JesusPrimary = {
+driverProfile AdiPrimary = {
     .powerAxis = pros::E_CONTROLLER_ANALOG_LEFT_Y,
     .turnAxis = pros::E_CONTROLLER_ANALOG_RIGHT_X,
 
@@ -34,7 +34,7 @@ driverProfile JesusPrimary = {
     .mogoRushClamp = pros::E_CONTROLLER_DIGITAL_UP
 };
 
-const driverProfile &currentProfile = JesusPrimary;
+const driverProfile &currentProfile = AdiPrimary;
 
 void teleOp(Ring::Color ringToKeep) {
     int pow, turn, rushState = 0;

@@ -13,8 +13,8 @@ struct driverProfile {
     bool incrementBackpack;
 
     pros::controller_digital_e_t mogoClampToggle;
-    pros::controller_digital_e_t doinkerToggle;
     pros::controller_digital_e_t mogoRushCycle;
+    pros::controller_digital_e_t mogoRushClamp;
 };
 
 driverProfile JesusPrimary = {
@@ -27,27 +27,25 @@ driverProfile JesusPrimary = {
 
     .backpackCycleStageUp = pros::E_CONTROLLER_DIGITAL_L1,
     .backpackCycleStageDown = pros::E_CONTROLLER_DIGITAL_L2,
-    .incrementBackpack = true,
+    .incrementBackpack = false,
 
     .mogoClampToggle = pros::E_CONTROLLER_DIGITAL_Y,
-    .doinkerToggle = pros::E_CONTROLLER_DIGITAL_B,
-    .mogoRushCycle = pros::E_CONTROLLER_DIGITAL_A
+    .mogoRushCycle = pros::E_CONTROLLER_DIGITAL_A, // Only w/o field connection
+    .mogoRushClamp = pros::E_CONTROLLER_DIGITAL_UP
 };
 
 const driverProfile &currentProfile = JesusPrimary;
 
 void teleOp(Ring::Color ringToKeep) {
-    int pow, turn;
+    int pow, turn, rushState = 0;
     actions.setRingColor(ringToKeep);
     actions.setAutonControlFlag(false);
-    pneumatics.mogoRushArm.retract();
-    pneumatics.mogoRushClamp.retract();
     actions.setRunColorSort(false);
 
     while(1) {
         // Drive Control
         pow = ctrler.get_analog(currentProfile.powerAxis);
-        turn = ctrler.get_analog(currentProfile.turnAxis)/1.5;
+        turn = ctrler.get_analog(currentProfile.turnAxis)/1.3;
 
         leftDrive.move(pow + turn);
         rightDrive.move(pow - turn);
@@ -100,20 +98,25 @@ void teleOp(Ring::Color ringToKeep) {
             pneumatics.mogoClamp.toggle();
         }
 
-        if(ctrler.get_digital_new_press(currentProfile.doinkerToggle)) {
-            pneumatics.doinker.toggle();
+        if(ctrler.get_digital_new_press(currentProfile.mogoRushClamp)) {
+            pneumatics.mogoRushClamp.toggle();
         }
 
-        // if(ctrler.get_digital_new_press(currentProfile.mogoRushCycle)) {
-        //     if(!pneumatics.mogoRushArm.is_extended() && !pneumatics.mogoRushClamp.is_extended()){
-        //         pneumatics.mogoRushArm.extend();
-        //         pneumatics.mogoRushClamp.extend();
-        //     } else if(pneumatics.mogoRushArm.is_extended() && pneumatics.mogoRushClamp.is_extended()){
-        //         pneumatics.mogoRushClamp.retract();
-        //     } else if(pneumatics.mogoRushArm.is_extended() && !pneumatics.mogoRushClamp.is_extended()){
-        //         pneumatics.mogoRushArm.retract();
-        //     }
-        // }
+        if(ctrler.get_digital_new_press(currentProfile.mogoRushCycle)) {
+            if(rushState == 0) {
+                pneumatics.mogoRushLeftArm.extend();
+                pneumatics.mogoRushRightArm.retract();
+            } else if (rushState == 1) {
+                pneumatics.mogoRushLeftArm.retract();
+                pneumatics.mogoRushRightArm.extend();
+            } else {
+                pneumatics.mogoRushLeftArm.retract();
+                pneumatics.mogoRushRightArm.retract();
+            }
+
+            rushState = rushState == 2 ? 0 : rushState + 1;
+        }
+
         //Print out data for 
         pros::lcd::print(1, "%f", actions.getArmAngle());
         pros::lcd::print(2, "%d", actions.getPullbackFlag());

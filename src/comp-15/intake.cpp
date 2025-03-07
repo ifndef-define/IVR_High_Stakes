@@ -1,25 +1,26 @@
 #include "robots/comp-15/intake.h"
 
+Intake::Intake() : intakeMotor({15, -17}, pros::MotorGears::blue), intakeRot(-12) {
+  intakeRot.reset_position();
+}
+
 void Intake::startIntake(double speed){ intakeMotor.move(speed * 127); }
 
 void Intake::stopIntake(){ intakeMotor.brake(); }
 
-void Intake::liftIntake() { lift.retract(); }
+double Intake::getAngle(){ return intakeRot.get_position()/100; }
 
-void Intake::lowerIntake() { lift.extend(); }
-
-ColorDetector::ColorDetector() : colorSensor(6) {
+ColorDetector::ColorDetector() : colorSensor(11) {
   colorSensor.set_led_pwm(100);
-  colorSensor.set_integration_time(20);
+  colorSensor.set_integration_time(10);
 }
 
 Ring::Color ColorDetector::getColor() {
   double hue = colorSensor.get_hue();
   if(colorSensor.get_proximity() >= 230){
-    if((hue <= 280) && (hue >= 175)) { 
+    if((hue <= 280) && (hue >= 200)) { 
       return Ring::Color::BLUE;
-    } 
-    if((hue >= 330) || (hue <= 30)) {
+    }   if((hue >= 330) || (hue <= 30)) {
       return Ring::Color::RED; 
     }
   }
@@ -47,7 +48,7 @@ void IntakeManager::setFilterColor(Ring::Color filterColor) { filter = filterCol
 
 bool IntakeManager::getEject() { return eject; }
 
-
+double IntakeManager::getIntakeAngle() { return intake.getAngle(); }
 
 void IntakeManager::update() {
     // Check the current ring color from the detector

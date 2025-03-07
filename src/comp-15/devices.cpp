@@ -17,59 +17,62 @@
 
 pros::Controller ctrler(pros::E_CONTROLLER_MASTER);
 
-MotorGroup rightDrive({3, 4, -1, 2}, MotorGears::blue);
-MotorGroup leftDrive({-9, -8, 10, -7}, MotorGears::blue);
+MotorGroup rightDrive({-4, 11, -13, 16}, MotorGears::blue);
+MotorGroup leftDrive({8, -1, 5, -7}, MotorGears::blue);
 
 PneumaticsGroup pneumatics;
 
 Action actions(0, Ring::Color::NONE);
 
-DualIMU imu2(12, 16, 2.5);
-adi::Encoder yEnc(adi::ext_adi_port_tuple_t(19, 1, 2));
-adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(19, 3, 4), true);  // 3 4
+// DualIMU imu(2, 14, 2.5);
+pros::IMU imu(14);
+// adi::Encoder yEnc(adi::ext_adi_port_tuple_t(19, 1, 2));
+// adi::Encoder rxEnc(adi::ext_adi_port_tuple_t(19, 3, 4), true);  // 3 4
+adi::Encoder xEnc(1, 2, true);
+adi::Encoder yEnc(3, 4, true);  // 3 4
 
 // LEMLIB Config
-const float VERT_RATIO = 1.007352941176; //1.33225
-const float HORI_RATIO = 1.01029411765; //1.3485
+const float VERT_RATIO = 0.9865; //1.33225
+const float HORI_RATIO = 0.987; //1.3485
 lemlib::TrackingWheel vertical(&yEnc, 1.36*VERT_RATIO, 1);
-lemlib::TrackingWheel horizontal(&rxEnc, 1.36*HORI_RATIO, 0.375);
+lemlib::TrackingWheel horizontal(&xEnc, 1.36*HORI_RATIO, 0.375);
 
 // sensors for odometry
 lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
                             nullptr, // vertical tracking wheel 2
                             &horizontal, // horizontal tracking wheel
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-                            &imu2 // inertial sensor
+                            &imu // inertial sensor
 );
 
 lemlib::Drivetrain drivetrain(&leftDrive, // left motor group
                               &rightDrive, // right motor group
-                              11.875, // 11.825 inch track width
+                              11, // 11.825 inch track width
                               lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
-                              480, // drivetrain rpm is 480
-                              8 // horizontal drift is 2. If we had traction wheels, it would have been 8
+                              600, // drivetrain rpm is 480
+                              24 // horizontal drift is 2. If we had traction wheels, it would have been 8
 );
 
 // lateral motion controller
-lemlib::ControllerSettings linearController(11, // proportional gain (kP)
-                                            0.0003, // integral gain (kI)
-                                            1.4, // derivative gain (kD)
-                                            60, // anti windup
-                                            1, // small error range, in inches
-                                            100, // small error range timeout, in milliseconds
-                                            3, // large error range, in inches
-                                            500, // large error range timeout, in milliseconds
+lemlib::ControllerSettings linearController(10.35, // proportional gain (kP)
+                                            0.0, // integral gain (kI)
+                                            7.9, // derivative gain (kD)
+                                            0, // anti windup
+                                            0, // small error range, in inches
+                                            0, // small error range timeout, in milliseconds
+                                            0, // large error range, in inches
+                                            0, // large error range timeout, in milliseconds
                                             0 // maximum acceleration (slew)
 );
 
 // angular motion controller 2.45, 5.5 ///// 2.7,7
-lemlib::ControllerSettings angularController(0.80, // proportional gain (kP)
-                                             0.0003, // integral gain (kI)
-                                             1.9, // derivative gain (kD)
-                                             4, // anti windup
-                                             0.25, // small error range, in degrees
-                                             200, // small error range timeout, in milliseconds
-                                             0.5, // large error range, in degrees
+lemlib::ControllerSettings angularController(1.49, // proportional gain (kP) //1.41
+                                             0.09, // integral gain (kI)
+                                             6.75, // derivative gain (kD) //5
+                                             10, // anti windup
+                                             1, // small error range, in degrees
+                                             150, // small error range timeout, in milliseconds
+                                             1.5, // large error range, in degrees
                                              500, // large error range timeout, in milliseconds
                                              0 // maximum acceleration (slew)
 );
@@ -88,3 +91,11 @@ lemlib::ExpoDriveCurve steerCurve(3, // joystick deadband out of 127
 
 // create the chassis
 lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
+
+
+/**
+ * Odom tunning note,
+ * tune for small distance and large distance separately, then ccreate equation to
+ * represent the error in the system and use this to increment error based on
+ * absolute rotation of the tracking wheel
+ */

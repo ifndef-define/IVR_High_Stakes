@@ -7,7 +7,7 @@ Ring::Color ringToKeep = Ring::Color::BLUE;
 /**
  * A callback function for LLEMU's center button.
  *
- * Sets our autonomous routine to the blue side.
+ * Switches the autonomous routine color.
  */
 
 void on_center_button() {
@@ -32,24 +32,26 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::register_btn1_cb(on_center_button);
-	chassis.calibrate(true);
-	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
+	chassis.calibrate(false);
+	imu.reset(true);
 
+	chassis.setPose(0, 0, 0);
 	pros::Task screen_task([&]() {
         while (true) {
             // print robot location to the brain screen
-            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
-            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
-			pros::lcd::print(3, "IMU Heading: %f", imu.get_heading()); // heading
+            pros::lcd::print(0, "X: %f Y: %f", chassis.getPose().x, chassis.getPose().y); // x,y
+            pros::lcd::print(1, "Theta: %f", chassis.getPose().theta); // global theta
+			pros::lcd::print(2, "Heading: %f", imu.get_rotation()); // rotations
             // delay to save resources
             pros::delay(20);
         }
     });
 
-	pros::Task autoRingSort{[&]{
-        // while(pros::competition::is_autonomous()){
+	pros::Task subsystem_task{[&]{
         while(true) {
+			#ifdef ENABLE_DUAL_IMU
+			imu.update();
+			#endif
             actions.runSubsystemFSM();
             delay(10);
         }
@@ -61,10 +63,31 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-	auton(ringToKeep);
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
+	chassis.setPose(0, 0, 0);
+	chassis.moveToPose(0,48,0,5000,{},0);
+    chassis.turnToHeading(90, 5000, {}, 0);
+	// auton(ringToKeep);
 }
 
 void opcontrol() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-	teleOp(ringToKeep);
+	actions.setAutonControlFlag(false);
+	// teleOp(ringToKeep);
+
+		while (true) {
+			if(ctrler.get_digital_new_press(BUTTON_DOWN)) {
+				// auton(ringToKeep);
+				autonomous();
+				chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+				teleOp	(ringToKeep);
+				break;
+			}
+			else if (ctrler.get_digital_new_press(BUTTON_LEFT)) {
+				teleOp(ringToKeep);
+				break;
+			}
+	
+			delay(20);
+		}
 }

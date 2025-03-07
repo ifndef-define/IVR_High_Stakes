@@ -6,9 +6,9 @@ class Arm {
         enum class State : int {
             DOWN = 0,   // index 0
             READY = 1,  // index 1
-            // SCORE = 2,  // index 2
-            // DESCORE = 3,  // index 3
-            NUM_ARM_STATES = 2 // count of states
+            SCORE = 2,  // index 2
+            DESCORE = 3,  // index 3
+            NUM_ARM_STATES = 4 // count of states
         };
     private:
         pros::Motor armMotor;
@@ -20,10 +20,10 @@ class Arm {
 
         State curArmState = State::DOWN;
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
-            0,   // Angle for DOWN
-            9,  // Angle for READY 
-            // 110,   // Angle for SCORE
-            // 140  // Angle for DESCORE
+            5,   // Angle for DOWN
+            29,  // Angle for READY 
+            185,   // Angle for SCORE
+            260  // Angle for DESCORE
         };
 
         bool override = false;

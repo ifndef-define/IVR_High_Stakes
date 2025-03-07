@@ -53,7 +53,7 @@ void redAuton(){
     actions.setArmState(Arm::State::DOWN);
 
     // drop mogo rush right as auto starts
-    pneumatics.mogoRushArm.extend();
+    // pneumatics.mogoRushArm.extend();
     pneumatics.mogoRushClamp.extend();
     // move to grab mogo under ladder
     chassis.follow(comp_black_1_txt, 15, 3000, true);
@@ -67,7 +67,7 @@ void redAuton(){
     // chassis.swingToHeading(200, lemlib::DriveSide::LEFT, 1000, {.maxSpeed=100}, false);
     chassis.follow(comp_black_5_txt, 15, 3000, false, true);
     delay(700);
-    pneumatics.mogoRushArm.retract();
+    // pneumatics.mogoRushArm.retract();
     pneumatics.mogoRushClamp.retract();
     i_waitUntil(!chassis.isInMotion());
     actions.setIntakeSpeed(1);
@@ -226,7 +226,7 @@ void blueAuton() {
     actions.setArmState(Arm::State::DOWN);
 
     // drop mogo rush right as auto starts
-    pneumatics.mogoRushArm.extend();
+    // pneumatics.mogoRushArm.extend();
     pneumatics.mogoRushClamp.extend();
     // move to grab mogo under ladder
     chassis.follow(compBlack1b_txt, 15, 3000, true);
@@ -239,7 +239,7 @@ void blueAuton() {
     delay(300);
     chassis.follow(compBlack5b_txt, 15, 3000, false, true);
     delay(900);
-    pneumatics.mogoRushArm.retract();
+    // pneumatics.mogoRushArm.retract();
     pneumatics.mogoRushClamp.extend();
     i_waitUntil(!chassis.isInMotion());
     actions.setIntakeSpeed(1);

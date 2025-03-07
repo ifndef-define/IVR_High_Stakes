@@ -9,10 +9,10 @@ class PneumaticsGroup {
 
     public: 
         // Intake lift is managed by the intake class
-        pros::adi::Pneumatics mogoRushArm;
+        pros::adi::Pneumatics mogoRushLeftArm;
+        pros::adi::Pneumatics mogoRushRightArm;
         pros::adi::Pneumatics mogoRushClamp;
         pros::adi::Pneumatics mogoClamp;
-        pros::adi::Pneumatics doinker;
         PneumaticsGroup();
 };
 

@@ -1,9 +1,9 @@
 #include "robots/comp-24/pneumatics.h"
 
 PneumaticsGroup::PneumaticsGroup(): 
-    mogoRushLeftArm('E', false),
+    mogoRushLeftArm('G', false),
     mogoRushRightArm('H', false),
-    mogoRushClamp('F', false),
-    mogoClamp('G', false) {}
+    mogoRushClamp('E', false),
+    mogoClamp('F', false) {}
 
-// No other methods, just a grouping class
+// No other methods, just a grouping classa

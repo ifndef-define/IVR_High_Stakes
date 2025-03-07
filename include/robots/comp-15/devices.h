@@ -17,7 +17,11 @@ extern pros::MotorGroup rightDrive;
 
 extern PneumaticsGroup pneumatics;
 
+#ifdef ENABLE_DUAL_IMU
+extern DualIMU imu;
+#else
 extern IMU imu;
+#endif
 
 extern pros::adi::Encoder yEnc;
 extern pros::adi::Encoder rxEnc;
