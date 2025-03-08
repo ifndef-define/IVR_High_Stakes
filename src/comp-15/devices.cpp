@@ -58,9 +58,9 @@ lemlib::ControllerSettings linearController(10.35, // proportional gain (kP)
                                             0.0, // integral gain (kI)
                                             7.9, // derivative gain (kD)
                                             10, // anti windup
-                                            0.5, // small error range, in inches
+                                            0.25, // small error range, in inches
                                             100, // small error range timeout, in milliseconds
-                                            2, // large error range, in inches
+                                            0.5, // large error range, in inches
                                             250, // large error range timeout, in milliseconds
                                             0 // maximum acceleration (slew)
 );

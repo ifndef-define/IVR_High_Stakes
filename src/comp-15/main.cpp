@@ -64,6 +64,7 @@ void competition_initialize() {}
 
 void autonomous() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
+	actions.setAutonControlFlag(true);
 	// chassis.setPose(0, 0, 0);
 	// chassis.moveToPose(0,48,0,5000,{},0);
     // chassis.turnToHeading(90, 5000, {}, 0);

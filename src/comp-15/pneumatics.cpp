@@ -3,7 +3,7 @@
 PneumaticsGroup::PneumaticsGroup(): 
     mogoRushLeftArm('H', false),
     mogoRushRightArm('G', false),
-    mogoRushClamp('E', false),
+    mogoRushClamp('E', true),
     mogoClamp('F', false) {}
 
 // No other methods, just a grouping classa

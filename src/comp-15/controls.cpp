@@ -27,7 +27,7 @@ driverProfile JesusPrimary = {
 
     .backpackCycleStageUp = pros::E_CONTROLLER_DIGITAL_L1,
     .backpackCycleStageDown = pros::E_CONTROLLER_DIGITAL_L2,
-    .incrementBackpack = false,
+    .incrementBackpack = true,
 
     .mogoClampToggle = pros::E_CONTROLLER_DIGITAL_Y,
     .mogoRushCycle = pros::E_CONTROLLER_DIGITAL_A, // Only w/o field connection

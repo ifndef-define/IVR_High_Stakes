@@ -21,9 +21,9 @@ class Arm {
         State curArmState = State::DOWN;
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             5,   // Angle for DOWN
-            29,  // Angle for READY 
-            185,   // Angle for SCORE
-            260  // Angle for DESCORE
+            34,  // Angle for READY 
+            190,   // Angle for SCORE
+            280  // Angle for DESCORE
         };
 
         bool override = false;
