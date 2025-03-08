@@ -53,6 +53,8 @@ class Action {
          */
         void setAutonControlFlag(bool flag);
 
+        bool getAutonControlFlag();
+
         /**
          * @brief Returns if the arm is in an override state
          *

@@ -2,7 +2,7 @@
 #include "robots/comp-24/auton.h"
 #include "robots/comp-24/controls.h"
 
-Ring::Color ringToKeep = Ring::Color::RED;
+Ring::Color ringToKeep = Ring::Color::BLUE;
 
 /**
  * A callback function for LLEMU's center button.
@@ -53,6 +53,13 @@ void initialize() {
 			imu.update();
 			#endif
             actions.runSubsystemFSM();
+			// if(actions.getState() != ActionState::SORTING || actions.getOverride()){
+			// 	if(actions.getAutonControlFlag())
+			// 		actions.setIntakeSpeed(1);
+			// 	else 
+			// 		actions.setIntakeSpeed(0);
+			// }
+
             delay(10);
         }
     }};
@@ -64,9 +71,17 @@ void competition_initialize() {}
 
 void autonomous() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
-	// chassis.setPose(0, 0, 0);
-    // chassis.turnToHeading(90, 5000, {}, 0);
-	// chassis.moveToPose(0,48,0,5000,{},0);
+	actions.setRingColor(ringToKeep);
+	// actions.setIntakeSpeed(1);
+	// delay(30000);
+	// actions.setIntakeSpeed(0);
+	// delay(4000);
+	// actions.setAutonControlFlag(true);
+
+	// delay(10000);
+	// actions.setAutonControlFlag(false);
+	// delay(3000);
+	// actions.setIntakeSpeed(1);
 	auton(ringToKeep);
 }
 
@@ -74,13 +89,12 @@ void opcontrol() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	actions.setAutonControlFlag(false);
 	// teleOp(ringToKeep);
-
 		while (true) {
 			if(ctrler.get_digital_new_press(BUTTON_UP)) {
 				// auton(ringToKeep);
 				autonomous();
 				chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-				teleOp	(ringToKeep);
+				teleOp(ringToKeep);
 				break;
 			}
 			else if (ctrler.get_digital_new_press(BUTTON_LEFT)) {

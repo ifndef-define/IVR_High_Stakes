@@ -40,6 +40,7 @@ void teleOp(Ring::Color ringToKeep) {
     int pow, turn, rushState = 0;
     actions.setRingColor(ringToKeep);
     actions.setArmState(Arm::State::DOWN);
+    actions.setRunColorSort(true);
 
     while(1) {
         // Drive Control
@@ -57,9 +58,9 @@ void teleOp(Ring::Color ringToKeep) {
             /*    INTAKE    */
             //////////////////
             if(ctrler.get_digital(currentProfile.intakeIn)) {
-                actions.setIntakeSpeed(0.8);
+                actions.setIntakeSpeed(1);
             } else if(ctrler.get_digital(currentProfile.intakeOut)) {
-                actions.setIntakeSpeed(-0.8);
+                actions.setIntakeSpeed(-1);
             } else {
                 actions.setIntakeSpeed(0);
             }
