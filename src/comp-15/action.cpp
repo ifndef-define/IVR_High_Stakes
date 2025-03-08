@@ -41,7 +41,7 @@ void Action::stateControl() {
             ejectStartPos = intakeManager.getIntakeAngle();
             break;
         case ActionState::SORTING:
-            if(!override){
+            // if(!override){
                 setEjectFlag(true);
                 if((int)(arm.getState()) > (int)(Arm::State::READY)){
                     arm.setState(Arm::State::SCORE); // position SCORE to avoid prevent intake collision
@@ -49,7 +49,7 @@ void Action::stateControl() {
                     arm.setState(Arm::State::DOWN);  // For example, position DOWN to avoid intake
                 }
                 intakeState();
-            }
+            // }
             break;
         case ActionState::PULLBACK:
             setPullbackFlag(true);
@@ -126,7 +126,7 @@ void Action::intakeState() {
             pros::lcd::print(4, "D: %f, C: %f, S: %f", ejectStartPos - currentRotation, currentRotation, ejectStartPos);
 
             // Check if we've rotated the required amount
-            if (std::abs(ejectStartPos - currentRotation) >= 150) {
+            if (std::abs(ejectStartPos - currentRotation) >= 20) {
                 ejectStartPos = currentRotation;
                 setEjectFlag(false);
                 setPullbackFlag(true);
@@ -141,8 +141,9 @@ void Action::intakeState() {
             // Similar fix for reverse phase
             currentRotation = intakeManager.getIntakeAngle();
             if (std::abs(ejectStartPos - currentRotation) >= 150) {
-                intakeManager.stopIntake();
+                // intakeManager.stopIntake();
                 intakeManager.setIntakeSpeed(1);
+                intakeManager.startIntake();
                 setEjectFlag(false);
                 setPullbackFlag(false);
                 ejectPhase = EjectPhase::IDLE;

@@ -4,8 +4,9 @@
 
 #include "common/includeList.h"
 #include "lemlib/api.hpp"
-#include "pneumatics.h"
-#include "action.h"
+#include "robots/comp-15/pneumatics.h"
+#include "robots/comp-15/action.h"
+#include "common/dual_imu.h"
 
 class Action;
 extern Action actions;

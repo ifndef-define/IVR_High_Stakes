@@ -41,6 +41,7 @@ void teleOp(Ring::Color ringToKeep) {
     actions.setRingColor(ringToKeep);
     actions.setAutonControlFlag(false);
     actions.setRunColorSort(false);
+    actions.setArmState(Arm::State::DOWN);
 
     while(1) {
         // Drive Control
