@@ -4,6 +4,7 @@ Arm::Arm(float kP, float kI, float kD, float kP2, float kI2, float kD2) : armMot
     armRot.set_position(-30);
 }
 
+
 void Arm::update(){
     if(!override){ 
         error = armStateAngles[(int)curArmState] - getAngle();

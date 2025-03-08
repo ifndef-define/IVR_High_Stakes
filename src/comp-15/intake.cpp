@@ -10,7 +10,7 @@ void Intake::stopIntake(){ intakeMotor.brake(); }
 
 double Intake::getAngle(){ return intakeRot.get_position()/100; }
 
-ColorDetector::ColorDetector() : colorSensor(18) {
+ColorDetector::ColorDetector() : colorSensor(19) {
   colorSensor.set_led_pwm(100);
   colorSensor.set_integration_time(10);
 }
@@ -20,7 +20,8 @@ Ring::Color ColorDetector::getColor() {
   if(colorSensor.get_proximity() >= 230){
     if((hue <= 280) && (hue >= 200)) { 
       return Ring::Color::BLUE;
-    }   if((hue >= 330) || (hue <= 30)) {
+    } 
+    if((hue >= 330) || (hue <= 30)) {
       return Ring::Color::RED; 
     }
   }
@@ -57,5 +58,9 @@ void IntakeManager::update() {
       eject = ((curRing != filter) && (curRing != Ring::Color::NONE));
       pros::lcd::set_text(5, "Ring Color: " + std::to_string((int)curRing));
       pros::lcd::print(6, "eject: %d", eject);
+      // if(eject) { 
+      //   delay(500); 
+      //   eject = false;
+      // }
     }
 }
