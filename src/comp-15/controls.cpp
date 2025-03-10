@@ -40,7 +40,7 @@ void teleOp(Ring::Color ringToKeep) {
     int pow, turn, rushState = 0;
     actions.setRingColor(ringToKeep);
     actions.setAutonControlFlag(false);
-    actions.setRunColorSort(false);
+    actions.setRunColorSort(true);
     actions.setArmState(Arm::State::DOWN);
 
     while(1) {
@@ -80,9 +80,13 @@ void teleOp(Ring::Color ringToKeep) {
                 }
             } else if(currentProfile.incrementBackpack) {
                     if(ctrler.get_digital_new_press(currentProfile.backpackCycleStageUp)) {
-                        actions.nextArmState();
+                        if(actions.getArmState()==Arm::State::READY) {
+                            actions.setArmState(Arm::State::DOWN);
+                        } else {
+                            actions.setArmState(Arm::State::READY);
+                        }
                     } else if(ctrler.get_digital_new_press(currentProfile.backpackCycleStageDown)) {
-                        actions.prevArmState();
+                        actions.nextArmState();
                     }
             } else {
                 if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {

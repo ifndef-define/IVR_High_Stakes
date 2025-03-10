@@ -54,32 +54,31 @@ void redAuton(){
     pneumatics.mogoRushClamp.retract();
     chassis.follow(comp_black_1_txt, 15, 6000, true);
     while(chassis.isInMotion()){
-        if(chassis.getPose().x >= -25){
+        if(chassis.getPose().x >= -24){
             delay(50);
             pneumatics.mogoRushClamp.extend();
         }
         delay(15);
     }
     i_waitUntil(!chassis.isInMotion());
-    delay(200);
     // chassis.moveToPose(-49.5, -19, 75, 4000, {.forwards=false, .maxSpeed=80}, false);
     chassis.follow(comp_black_2_txt, 15, 6000, false, true);
     while(chassis.isInMotion()){
-        if(chassis.getPose().x <= -40){
+        if(chassis.getPose().x <= -35){
             delay(50);
-            pneumatics.mogoRushClamp.retract();            
+            pneumatics.mogoRushClamp.retract(); 
+            pneumatics.mogoRushLeftArm.retract();           
         }
         delay(15);
     }
     i_waitUntil(!chassis.isInMotion());
-    pneumatics.mogoRushLeftArm.retract();
     actions.nextArmState();
     delay(500);
     chassis.turnToHeading(180, 1000, {.maxSpeed=100}, true);
     delay(200);
     pneumatics.mogoRushLeftArm.retract();
     i_waitUntil(!chassis.isInMotion());
-    chassis.moveToPose(-50, 4, 180, 2000, {.forwards=false, .maxSpeed=80}, true);
+    chassis.moveToPose(-50, 4, 180, 2500, {.forwards=false, .maxSpeed=50}, true);
     actions.setIntakeSpeed(1);
     while(chassis.isInMotion()){
         if(chassis.getPose().y >= 0){
@@ -94,7 +93,7 @@ void redAuton(){
     chassis.turnToHeading(255, 1000, {.maxSpeed=100}, false);
     actions.setIntakeSpeed(1);
     delay(200);
-    chassis.moveToPose(-53, 2, 260, 2000, {.maxSpeed=80}, true);
+    chassis.moveToPose(-54, 2, 255, 600, {.maxSpeed=80}, true);
     delay(300);
     actions.nextArmState();
     i_waitUntil(!chassis.isInMotion());
@@ -105,35 +104,39 @@ void redAuton(){
     actions.nextArmState();
     chassis.follow(comp_black_4_txt, 15, 8000, true);
     i_waitUntil(!chassis.isInMotion());
+    chassis.turnToHeading(110, 1000, {.maxSpeed=60}, true);
+    chassis.moveToPose(-7, -58, 100, 1500, {.maxSpeed=80}, false); 
     delay(1000);
     chassis.moveToPose(-35, -35, 110, 2000, {.forwards=false, .maxSpeed=80}, false);
     chassis.turnToHeading(225, 1000, {.maxSpeed=100}, false);
-    chassis.moveToPose(-60, -65, 225, 500, {.maxSpeed=100}, false); 
-    chassis.moveToPose(-50, -55, 225, 500, {.forwards=false, .maxSpeed=100}, false);
-    chassis.moveToPose(-60, -65, 225, 500, {.maxSpeed=100}, false); 
-    chassis.moveToPose(-50, -55, 225, 500, {.forwards=false, .maxSpeed=100}, false);
-    chassis.moveToPose(-60, -65, 225, 500, {.maxSpeed=100}, false); 
-    chassis.moveToPose(-50, -55, 225, 500, {.forwards=false, .maxSpeed=100}, false);
-    chassis.moveToPose(-60, -65, 225, 500, {.maxSpeed=100}, false); 
+    chassis.moveToPose(-60, -65, 225, 1500, {.maxSpeed=80}, false); 
+    chassis.moveToPose(-50, -55, 225, 800, {.forwards=false, .maxSpeed=100}, false);
+    chassis.moveToPose(-60, -65, 225, 800, {.maxSpeed=100}, false); 
+    chassis.moveToPose(-50, -55, 225, 800, {.forwards=false, .maxSpeed=100}, false);
+    chassis.moveToPose(-60, -65, 225, 800, {.maxSpeed=100}, false); 
+    chassis.moveToPose(-50, -55, 225, 800, {.forwards=false, .maxSpeed=100}, false);
+    chassis.moveToPose(-60, -65, 225, 800, {.maxSpeed=100}, false); 
     chassis.moveToPose(-45, -50, 225, 800, {.forwards=false, .maxSpeed=100}, false);
     chassis.turnToHeading(45, 1000, {.maxSpeed=100}, false);
     pneumatics.mogoClamp.retract();
     actions.setIntakeSpeed(0);
     delay(500);
     chassis.moveToPose(-80, -80, 45, 800, {.forwards=false, .maxSpeed=127}, false);
-    delay(500);
-    chassis.moveToPose(-30, -35, 90, 1500, {.maxSpeed=70}, false);
-    chassis.turnToHeading(180, 1000, {.maxSpeed=100}, false);
-    chassis.moveToPose(-30, 10, 180, 1500, {.forwards=false, .maxSpeed=50}, true);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().y >= -15){
-            pneumatics.mogoClamp.extend();           
-        }
-        delay(15);
-    }
-    i_waitUntil(!chassis.isInMotion());
-    chassis.turnToHeading(0, 1000, {.maxSpeed=100}, false);
-    chassis.moveToPose(-20, 10, 0, 1500, {.maxSpeed=50}, false);
+    // delay(500);
+    // chassis.moveToPose(-30, -35, 90, 1500, {.maxSpeed=70}, false);
+    // chassis.turnToHeading(180, 1000, {.maxSpeed=100}, false);
+    // chassis.moveToPose(-30, 10, 180, 1500, {.forwards=false, .maxSpeed=50}, true);
+    // while(chassis.isInMotion()){
+    //     if(chassis.getPose().y >= -15){
+    //         pneumatics.mogoClamp.extend();           
+    //     }
+    //     delay(15);
+    // }
+    // i_waitUntil(!chassis.isInMotion());
+    // chassis.turnToHeading(0, 1000, {.maxSpeed=100}, false);
+    // chassis.moveToPose(-20, 10, 0, 1500, {.maxSpeed=50}, false);
+    chassis.moveToPose(-24, 0, 90, 2000, {.maxSpeed=100}, false); 
+    chassis.moveToPose(-10, 0, 90, 2000, {.maxSpeed=100}, false); 
 
 };
 
@@ -256,11 +259,15 @@ ASSET(comp_black_2b_txt);
 ASSET(comp_black_4b_txt);
 
 void blueAuton() {
+    // chassis.setPose(-49.5, -19, 75);
     chassis.setPose(49.5, -19, 285);
+    // actions.releaseIntake();
+    // pneumatics.mogoRushRightArm.extend();
+    // pneumatics.mogoRushClamp.retract();
+    chassis.follow(comp_black_1b_txt, 15, 6000, true);
+    actions.releaseIntake();
     pneumatics.mogoRushRightArm.extend();
     pneumatics.mogoRushClamp.retract();
-    chassis.follow(comp_black_1b_txt, 15, 6000, true);
-    actions.setIntakeSpeed(1);
     while(chassis.isInMotion()){
         if(chassis.getPose().x <= 25){
             delay(50);
@@ -274,14 +281,14 @@ void blueAuton() {
     // chassis.moveToPose(-49.5, -19, 75, 4000, {.forwards=false, .maxSpeed=80}, false);
     chassis.follow(comp_black_2b_txt, 15, 6000, false, true);
     while(chassis.isInMotion()){
-        if(chassis.getPose().x >= 40){
+        if(chassis.getPose().x >= 35){
             delay(50);
-            pneumatics.mogoRushClamp.retract();            
+            pneumatics.mogoRushClamp.retract();  
+            pneumatics.mogoRushRightArm.retract();          
         }
         delay(15);
     }
-    i_waitUntil(!chassis.isInMotion());
-    pneumatics.mogoRushRightArm.retract();
+    i_waitUntil(!chassis.isInMotion());   
     actions.nextArmState();
     delay(500);
     chassis.turnToHeading(180, 1000, {.maxSpeed=100}, true);
@@ -302,47 +309,49 @@ void blueAuton() {
     delay(200);
     chassis.turnToHeading(105, 1000, {.maxSpeed=100}, false);
     actions.setIntakeSpeed(1);
-    delay(200);
-    chassis.moveToPose(53, 2, 100, 2000, {.maxSpeed=80}, true);
-    delay(300);
+    chassis.moveToPose(55, 2, 100, 800, {.maxSpeed=80}, true);
+    delay(400);
     actions.nextArmState();
     i_waitUntil(!chassis.isInMotion());
     chassis.moveToPose(50, 4, 90, 2000, {.forwards=false, .maxSpeed=80}, true);
-    delay(500);
     i_waitUntil(!chassis.isInMotion());
     chassis.turnToHeading(200, 1000, {.maxSpeed=100}, false);
     actions.nextArmState();
     chassis.follow(comp_black_4b_txt, 15, 8000, true);
     i_waitUntil(!chassis.isInMotion());
-    delay(1000);
     chassis.moveToPose(35, -35, 250, 2000, {.forwards=false, .maxSpeed=80}, false);
     chassis.turnToHeading(135, 1000, {.maxSpeed=100}, false);
-    chassis.moveToPose(60, -65, 135, 500, {.maxSpeed=100}, false); 
-    chassis.moveToPose(50, -55, 135, 500, {.forwards=false, .maxSpeed=100}, false);
-    chassis.moveToPose(60, -65, 135, 500, {.maxSpeed=100}, false); 
-    chassis.moveToPose(50, -55, 135, 500, {.forwards=false, .maxSpeed=100}, false);
-    chassis.moveToPose(60, -65, 135, 500, {.maxSpeed=100}, false); 
-    chassis.moveToPose(50, -55, 135, 500, {.forwards=false, .maxSpeed=100}, false);
-    chassis.moveToPose(60, -65, 135, 500, {.maxSpeed=100}, false); 
+    chassis.moveToPose(60, -65, 135, 800, {.maxSpeed=100}, false); 
+    chassis.moveToPose(50, -55, 135, 800, {.forwards=false, .maxSpeed=100}, false);
+    chassis.moveToPose(60, -65, 135, 800, {.maxSpeed=100}, false); 
+    chassis.moveToPose(50, -55, 135, 800, {.forwards=false, .maxSpeed=100}, false);
+    chassis.moveToPose(60, -65, 135, 800, {.maxSpeed=100}, false); 
+    chassis.moveToPose(50, -55, 135, 800, {.forwards=false, .maxSpeed=100}, false);
+    chassis.moveToPose(60, -65, 135, 800, {.maxSpeed=100}, false); 
+    chassis.moveToPose(50, -55, 135, 800, {.forwards=false, .maxSpeed=100}, false);
+    chassis.moveToPose(60, -65, 135, 800, {.maxSpeed=100}, false); 
     chassis.moveToPose(45, -50, 135, 800, {.forwards=false, .maxSpeed=100}, false);
     chassis.turnToHeading(315, 1000, {.maxSpeed=100}, false);
     pneumatics.mogoClamp.retract();
     actions.setIntakeSpeed(0);
     delay(500);
     chassis.moveToPose(80, -80, 315, 800, {.forwards=false, .maxSpeed=127}, false);
-    delay(500);
-    chassis.moveToPose(30, -35, 270, 1500, {.maxSpeed=70}, false);
-    chassis.turnToHeading(180, 1000, {.maxSpeed=100}, false);
-    chassis.moveToPose(30, 10, 180, 1500, {.forwards=false, .maxSpeed=50}, true);
-    while(chassis.isInMotion()){
-        if(chassis.getPose().y >= -15){
-            pneumatics.mogoClamp.extend();           
-        }
-        delay(15);
-    }
-    i_waitUntil(!chassis.isInMotion());
-    chassis.turnToHeading(0, 1000, {.maxSpeed=100}, false);
-    chassis.moveToPose(20, 10, 0, 1500, {.maxSpeed=50}, false);
+    // chassis.moveToPose(30, -35, 270, 1500, {.maxSpeed=70}, false);
+    // chassis.turnToHeading(180, 1000, {.maxSpeed=100}, false);
+    // chassis.moveToPose(30, 10, 180, 1500, {.forwards=false, .maxSpeed=50}, true);
+    // while(chassis.isInMotion()){
+    //     if(chassis.getPose().y >= -15){
+    //         pneumatics.mogoClamp.extend();           
+    //     }
+    //     delay(15);
+    // }
+    // i_waitUntil(!chassis.isInMotion());
+    // chassis.turnToHeading(0, 1000, {.maxSpeed=100}, false);
+    // chassis.moveToPose(20, 10, 0, 1500, {.maxSpeed=50}, false);
+    // chassis.moveToPose(24, 0, 270, 2000, {.maxSpeed=100}, false);/
+    // chassis.moveToPose(10, 0, 270, 2000, {.maxSpeed=100}, false); 
+
+
 };
 
 // //SKILLS ASSETS
