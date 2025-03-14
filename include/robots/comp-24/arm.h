@@ -23,7 +23,7 @@ class Arm {
             5,   // Angle for DOWN
             29,  // Angle for READY 
             215,   // Angle for SCORE
-            260  // Angle for DESCORE
+            350  // Angle for DESCORE
         };
 
         bool override = false;
