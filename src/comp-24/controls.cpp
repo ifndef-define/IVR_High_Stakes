@@ -103,7 +103,9 @@ void teleOp(Ring::Color ringToKeep) {
         if(ctrler.get_digital_new_press(currentProfile.mogoClampToggle)) {
             pneumatics.mogoClamp.toggle();
             if(pneumatics.mogoClamp.is_extended()) {
-                ctrler.rumble("-");
+                ctrler.rumble("..");
+            } else {
+                ctrler.rumble("--");
             }
         }
 
@@ -126,7 +128,9 @@ void teleOp(Ring::Color ringToKeep) {
             if(ctrler.get_digital(currentProfile.toggleColorSort)){
                 actions.setRunColorSort(!actions.getRunColorSort());
                 if(actions.getRunColorSort()){
-                    ctrler.rumble(".");
+                    ctrler.rumble("..");
+                } else {
+                    ctrler.rumble("--");
                 }
             }
 
