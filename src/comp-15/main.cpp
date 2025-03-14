@@ -4,7 +4,7 @@
 
 Ring::Color ringToKeep = Ring::Color::BLUE;
 
-/**
+/**`
  * A callback function for LLEMU's center button.
  *
  * Switches the autonomous routine color.
@@ -89,19 +89,19 @@ void opcontrol() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	actions.setAutonControlFlag(false);
 	// teleOp(ringToKeep);
-		while (true) {
-			if(ctrler.get_digital_new_press(BUTTON_UP)) {
-				// auton(ringToKeep);
-				autonomous();
-				chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+		// while (true) {
+		// 	if(ctrler.get_digital_new_press(BUTTON_UP)) {
+		// 		// auton(ringToKeep);
+		// 		autonomous();
+		// 		chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+		// 		teleOp(ringToKeep);
+		// 		break;
+		// 	}
+		// 	else if (ctrler.get_digital_new_press(BUTTON_LEFT)) {
 				teleOp(ringToKeep);
-				break;
-			}
-			else if (ctrler.get_digital_new_press(BUTTON_LEFT)) {
-				teleOp(ringToKeep);
-				break;
-			}
+		// 		break;
+		// 	}
 	
-			delay(20);
-		}
+		// 	delay(20);
+		// }
 }
