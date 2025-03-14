@@ -15,8 +15,8 @@ class Arm {
         pros::Rotation armRot;
 
         float error = 0;
-        lemlib::PID small;
-        lemlib::PID large;
+        PID small;
+        PID large;
 
         State curArmState = State::DOWN;
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 

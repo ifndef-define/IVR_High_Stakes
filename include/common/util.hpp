@@ -3,10 +3,9 @@
 #include <cmath>
 #include <vector>
 #include "dualEnable.h"
-#include "lemlib/chassis/chassis.hpp"
-#include "lemlib/pose.hpp"
+// #include "lemlib/chassis/chassis.hpp"
+// #include "lemlib/pose.hpp"
 
-namespace lemlib {
 /**
  * @brief Slew rate limiter
  *
@@ -93,22 +92,22 @@ constexpr float sanitizeAngle(float angle, bool radians = true);
  * angleError(350, 10, false); // returns -20
  * @endcode
  */
-float angleError(float target, float position, bool radians = true,
-                 AngularDirection direction = AngularDirection::AUTO);
+// float angleError(float target, float position, bool radians = true,
+//                  AngularDirection direction = AngularDirection::AUTO);
 
-/**
- * @brief Return the sign of a number
- *
- * @param x the number to get the sign of
- * @return int - -1 if negative, 1 if positive
- *
- * @b Example
- * @code {.cpp}
- * sgn(-10); // returns -1
- * sgn(10); // returns 1
- * sgn(0); // returns 1 (by convention)
- * @endcode
- */
+// /**
+//  * @brief Return the sign of a number
+//  *
+//  * @param x the number to get the sign of
+//  * @return int - -1 if negative, 1 if positive
+//  *
+//  * @b Example
+//  * @code {.cpp}
+//  * sgn(-10); // returns -1
+//  * sgn(10); // returns 1
+//  * sgn(0); // returns 1 (by convention)
+//  * @endcode
+//  */
 template <typename T> constexpr T sgn(T value) { return value < 0 ? -1 : 1; }
 
 /**
@@ -163,5 +162,4 @@ float ema(float current, float previous, float smooth);
  * float curvature = getCurvature(pose, other);
  * @endcode
  */
-float getCurvature(Pose pose, Pose other);
-} // namespace lemlib
+// float getCurvature(Pose pose, Pose other);

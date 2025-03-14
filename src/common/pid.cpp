@@ -1,7 +1,6 @@
-#include "pid.hpp"
-#include "util.hpp"
+#include "common/pid.hpp"
+#include "common/util.hpp"
 
-namespace lemlib {
 PID::PID(float kP, float kI, float kD, float windupRange, bool signFlipReset)
     : kP(kP),
       kI(kI),
@@ -27,4 +26,3 @@ void PID::reset() {
     integral = 0;
     prevError = 0;
 }
-} // namespace lemlib

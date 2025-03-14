@@ -32,16 +32,16 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::register_btn1_cb(on_center_button);
-	chassis.calibrate(true);
+	// chassis.calibrate(true);
 	// imu.reset(true);
 
-	chassis.setPose(0, 0, 0);
+	// chassis.setPose(0, 0, 0);
 	pros::Task screen_task([&]() {
         while (true) {
             // print robot location to the brain screen
-            pros::lcd::print(1, "X: %f Y: %f", chassis.getPose().x, chassis.getPose().y); // x,y
-            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // global theta
-			pros::lcd::print(3, "Heading: %f", imu.get_rotation()); // rotations
+            // pros::lcd::print(1, "X: %f Y: %f", chassis.getPose().x, chassis.getPose().y); // x,y
+            // pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // global theta
+			// pros::lcd::print(3, "Heading: %f", imu.get_rotation()); // rotations
             // delay to save resources
             pros::delay(20);
         }
@@ -53,13 +53,6 @@ void initialize() {
 			imu.update();
 			#endif
             actions.runSubsystemFSM();
-			// if(actions.getState() != ActionState::SORTING || actions.getOverride()){
-			// 	if(actions.getAutonControlFlag())
-			// 		actions.setIntakeSpeed(1);
-			// 	else 
-			// 		actions.setIntakeSpeed(0);
-			// }
-
             delay(10);
         }
     }};
@@ -70,38 +63,13 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
+	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 	actions.setRingColor(ringToKeep);
-	// actions.setIntakeSpeed(1);
-	// delay(30000);
-	// actions.setIntakeSpeed(0);
-	// delay(4000);
-	// actions.setAutonControlFlag(true);
-
-	// delay(10000);
-	// actions.setAutonControlFlag(false);
-	// delay(3000);
-	// actions.setIntakeSpeed(1);
 	auton(ringToKeep);
 }
 
 void opcontrol() {
-	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	actions.setAutonControlFlag(false);
-	// teleOp(ringToKeep);
-		// while (true) {
-		// 	if(ctrler.get_digital_new_press(BUTTON_UP)) {
-		// 		// auton(ringToKeep);
-		// 		autonomous();
-		// 		chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-				teleOp(ringToKeep);
-		// 		break;
-		// 	}
-		// 	else if (ctrler.get_digital_new_press(BUTTON_LEFT)) {
-		// 		teleOp(ringToKeep);
-		// 		break;
-		// 	}
-	
-		// 	delay(20);
-		// }
+	teleOp(ringToKeep);
 }
