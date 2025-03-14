@@ -12,8 +12,8 @@ void auton(Ring::Color ringToKeep) {
 
 void redAuton(){
     
-};
+}
 
 void blueAuton() {
    
-};
+}
