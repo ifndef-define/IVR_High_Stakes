@@ -15,6 +15,8 @@ struct driverProfile {
     pros::controller_digital_e_t mogoClampToggle;
     pros::controller_digital_e_t mogoRushCycle;
     pros::controller_digital_e_t mogoRushClamp;
+
+    pros::controller_digital_e_t toggleColorSort;
 };
 
 driverProfile AdiPrimary = {
@@ -31,7 +33,9 @@ driverProfile AdiPrimary = {
 
     .mogoClampToggle = pros::E_CONTROLLER_DIGITAL_Y,
     .mogoRushCycle = pros::E_CONTROLLER_DIGITAL_A, // Only w/o field connection
-    .mogoRushClamp = pros::E_CONTROLLER_DIGITAL_UP
+    .mogoRushClamp = pros::E_CONTROLLER_DIGITAL_UP,
+
+    .toggleColorSort = pros::E_CONTROLLER_DIGITAL_X
 };
 
 const driverProfile &currentProfile = AdiPrimary;
@@ -98,6 +102,9 @@ void teleOp(Ring::Color ringToKeep) {
         //////////////////////
         if(ctrler.get_digital_new_press(currentProfile.mogoClampToggle)) {
             pneumatics.mogoClamp.toggle();
+            if(pneumatics.mogoClamp.is_extended()) {
+                ctrler.rumble("-");
+            }
         }
 
         if(ctrler.get_digital_new_press(currentProfile.mogoRushClamp)) {
@@ -114,6 +121,13 @@ void teleOp(Ring::Color ringToKeep) {
             } else {
                 pneumatics.mogoRushLeftArm.retract();
                 pneumatics.mogoRushRightArm.retract();
+            }
+
+            if(ctrler.get_digital(currentProfile.toggleColorSort)){
+                actions.setRunColorSort(!actions.getRunColorSort());
+                if(actions.getRunColorSort()){
+                    ctrler.rumble(".");
+                }
             }
 
             rushState = rushState == 2 ? 0 : rushState + 1;

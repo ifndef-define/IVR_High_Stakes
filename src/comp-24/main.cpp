@@ -33,7 +33,8 @@ void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::register_btn1_cb(on_center_button);
 	// chassis.calibrate(true);
-	// imu.reset(true);
+	imu.reset(true);
+	actions.setRingColor(ringToKeep);
 
 	// chassis.setPose(0, 0, 0);
 	pros::Task screen_task([&]() {
@@ -64,12 +65,10 @@ void competition_initialize() {}
 
 void autonomous() {
 	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
-	actions.setRingColor(ringToKeep);
 	auton(ringToKeep);
 }
 
 void opcontrol() {
 	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-	actions.setAutonControlFlag(false);
 	teleOp(ringToKeep);
 }
