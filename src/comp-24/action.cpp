@@ -167,7 +167,7 @@ void Action::climbControl() {
             break;
         case Climb::Tier::ZERO:
             climb.addEvent([&](){climb.setState(Climb::State::UP);}, 500);
-            if(!climb.isOverride()){ climb.setTier(Climb::Tier::IDLE); }   
+            climb.setTier(Climb::Tier::IDLE);  
             break;
         case Climb::Tier::ONE:
             climb.addEvent([&](){climb.setState(Climb::State::DOWN);}, 500);
@@ -181,7 +181,7 @@ void Action::climbControl() {
         case Climb::Tier::THREE:
             climb.addEvent([&](){climb.setState(Climb::State::UP);}, 500);
             climb.addEvent([&](){climb.setState(Climb::State::DOWN);}, 500);
-            //some score event here for high stake
+            arm.setState(Arm::State::SCORE);
             climb.setTier(Climb::Tier::IDLE);
             break;
     }
