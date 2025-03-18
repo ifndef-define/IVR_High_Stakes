@@ -13,6 +13,8 @@ class PneumaticsGroup {
         pros::adi::Pneumatics mogoRushRightArm;
         pros::adi::Pneumatics mogoRushClamp;
         pros::adi::Pneumatics mogoClamp;
+        pros::adi::Pneumatics climbPto;
+        pros::adi::Pneumatics climbPusher;
         PneumaticsGroup();
 };
 

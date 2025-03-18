@@ -15,6 +15,7 @@ class Action {
         ActionState currentState;
         IntakeManager intakeManager;
         Arm arm;
+        Climb climb;
         bool isAuton;
         bool override = false;
         Arm::State lastArmState = Arm::State::DOWN;
@@ -32,12 +33,14 @@ class Action {
         double currentRotation = 0;
 
     public:
-        Action(bool isAuton, Ring::Color ringToKeep);
+        Action(bool isAuton, Ring::Color ringToKeep, PneumaticsGroup& p);
         void runSubsystemFSM();
         void stateControl();
+        void climbControl();
 
         void releaseIntake(bool inv=false);
         void intakeState();
+        void climbState();
 
         /**
          * @brief Sets arm to override state
@@ -101,6 +104,13 @@ class Action {
          */
         void prevArmState();
         
+        /**
+         * @brief Set the climb state
+         * 
+         * @param newState The state to set the climb to
+         */
+        void setClimbState(Climb::State newState);
+
         /**
          * @brief Set the arm to a specific state
          * 
@@ -167,4 +177,5 @@ class Action {
          * @return false 
          */
         bool getRunColorSort();
+    
 };

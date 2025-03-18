@@ -7,7 +7,7 @@
  * 
  * Sets the initial state of the arm to DOWN and the initial state of the Action to IDLE.
  */
-Action::Action(bool isAuton, Ring::Color ringToKeep): arm(2.5,0,0, 4,0,0), currentState(ActionState::IDLE), intakeManager(){ 
+Action::Action(bool isAuton, Ring::Color ringToKeep, PneumaticsGroup& p): arm(2.5,0,0, 4,0,0), currentState(ActionState::IDLE), intakeManager(), climb(p, 1,0,0) { 
     intakeManager.setFilterColor(ringToKeep);
     this->isAuton = isAuton;
 }
@@ -26,10 +26,12 @@ void Action::runSubsystemFSM() {
     }
     // Run state control
     stateControl();
+    climbControl();
     
     // Update arm with new state
     lastArmState = arm.getState();
     arm.update();
+    climb.update();
 }
 
 void Action::stateControl() {
@@ -84,26 +86,6 @@ void Action::releaseIntake(bool inv){
     intakeManager.stopIntake();
 }
 
-// void Action::ejectDisc(){
-    // if(ejectCounter >= 12){
-    //     ejectCounter--;
-    // } else if(ejectCounter > 0){
-    //     intakeManager.setIntakeSpeed(-1);
-    //     intakeManager.startIntake();
-    //     ejectCounter--;
-    // } else {
-    //     ejectCounter = 17;
-    //     if (this->autoResumeFlag){
-    //         intakeManager.setIntakeSpeed(1);
-    //         intakeManager.startIntake();
-    //     } else {
-    //         intakeManager.stopIntake();
-    //     }
-    //     setEjectFlag(false);
-    // }
-
-// }
-
 void Action::intakeState() {
     if(ejectFlag){
         ejectPhase = EjectPhase::FORWARD;
@@ -155,16 +137,55 @@ void Action::intakeState() {
     }
 }
 
-// void Action::pullbackIntake(){
-    // if (pauseCounter < 10){ // 7*15 = 105ms
-    //     pauseCounter++;
-    // } else {
-    //     pauseCounter = 0;
-    //     intakeManager.stopIntake();
-    //     setPullbackFlag(false);
-    // }
+void Action::climbState() {
+    climb.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+    static bool firstTime = true;
+    switch(climb.getState()) {
+        case Climb::State::IDLE:
+            break;
+        case Climb::State::UP:
+            if(firstTime) {
+                firstTime = false;
+                climb.addEvent([&](){climb.extendPto();}, 100);
+                climb.addEvent([&](){climb.retractPto();});
+                climb.addEvent([&](){climb.extendPusher();}, 100);
+                climb.setState(Climb::State::IDLE);
+            } else {
+                climb.addEvent([&](){climb.extendPusher();}, 100);
+            }
+            break;
+        case Climb::State::DOWN:
+            climb.addEvent([&](){climb.retractPusher();}, 100);
+            break;
+    }
+}
 
-// }
+void Action::climbControl() {
+    if(climb.isOverride()){ climb.setTier(Climb::Tier::IDLE); }
+    switch(climb.getTier()) {
+        case Climb::Tier::IDLE:
+            break;
+        case Climb::Tier::ZERO:
+            climb.addEvent([&](){climb.setState(Climb::State::UP);}, 500);
+            if(!climb.isOverride()){ climb.setTier(Climb::Tier::IDLE); }   
+            break;
+        case Climb::Tier::ONE:
+            climb.addEvent([&](){climb.setState(Climb::State::DOWN);}, 500);
+            if(!climb.isOverride()){ climb.setTier(Climb::Tier::TWO); }
+            break;
+        case Climb::Tier::TWO:
+            climb.addEvent([&](){climb.setState(Climb::State::UP);}, 500);
+            climb.addEvent([&](){climb.setState(Climb::State::DOWN);}, 500);
+            if(!climb.isOverride()){ climb.setTier(Climb::Tier::THREE); }
+            break;
+        case Climb::Tier::THREE:
+            climb.addEvent([&](){climb.setState(Climb::State::UP);}, 500);
+            climb.addEvent([&](){climb.setState(Climb::State::DOWN);}, 500);
+            //some score event here for high stake
+            climb.setTier(Climb::Tier::IDLE);
+            break;
+    }
+}
 
 void Action::nextArmState() {
     arm.nextState();
@@ -172,6 +193,10 @@ void Action::nextArmState() {
 
 void Action::prevArmState() {
     arm.prevState();
+}
+
+void Action::setClimbState(Climb::State newState) {
+    climb.setState(newState);
 }
 
 void Action::setArmState(Arm::State newState) {
