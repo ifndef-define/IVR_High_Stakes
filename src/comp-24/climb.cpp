@@ -45,12 +45,10 @@ void Climb::update(){
                 }
             }
         }
-        static float error = climbStateAngles[(int)curClimbState] - getAngle();
         // Calculate PID error
         error = climbStateAngles[(int)curClimbState] - getAngle();
         // Apply PID output to drivetrain
         // drivetrain.move(climbPID.update(error));
-        climbing = std::abs(error) > 0.1; // Using absolute value for more accurate determination
     }
 }
 
@@ -63,11 +61,9 @@ Climb::State Climb::getState(){ return curClimbState; }
 Climb::State Climb::getLastState(){ return lastClimbState; }
 double Climb::getAngle(){ return climbRot.get_position()/100; }
 
-bool Climb::isClimbing(){ return climbing; }
 void Climb::setOverride(bool override){ this->override = override; }
 bool Climb::isOverride(){ return override; }
 
 bool Climb::isAtTargetPosition() {
-    float error = climbStateAngles[(int)curClimbState] - getAngle();
     return std::abs(error) < 1.0; // Consider position reached when error is less than 1.0
 }

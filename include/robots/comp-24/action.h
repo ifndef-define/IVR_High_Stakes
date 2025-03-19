@@ -157,7 +157,7 @@ class Action {
         * 
         * @return ActionState 
         */
-        ActionState getState();
+        ActionState getActionState();
 
         /**
          * @brief Get the Pullback Flag bool

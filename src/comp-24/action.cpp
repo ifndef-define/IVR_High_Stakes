@@ -179,24 +179,15 @@ void Action::climbControl() {
             break;
             
         case Climb::Tier::ZERO:
-            // Only initialize actions once when entering this state
-            if (!tierStateInitialized) {
-                // Align to the ladder
-                climb.addEvent([&](){climb.setState(Climb::State::UP);});
-                tierStateInitialized = true;
-            }
-            
-            // When PID target is reached, proceed to next tier
-            if (climb.isAtTargetPosition()) {
-                climb.setTier(Climb::Tier::ONE);
-            }
+                climb.setState(Climb::State::UP);
+                climb.setTier(Climb::Tier::IDLE);
             break;
             
         case Climb::Tier::ONE:
             // Only initialize actions once when entering this state
             if (!tierStateInitialized) {
                 // Pull up to tier one
-                climb.addEvent([&](){climb.setState(Climb::State::DOWN);});
+                climb.setState(Climb::State::DOWN);
                 tierStateInitialized = true;
             }
             
@@ -221,7 +212,6 @@ void Action::climbControl() {
             
             // Then wait for DOWN movement to complete
             if (tierSubstate == 1 && climb.isAtTargetPosition()) {
-                tierSubstate == 0;
                 climb.setTier(Climb::Tier::THREE);
             }
             break;
@@ -229,12 +219,12 @@ void Action::climbControl() {
         case Climb::Tier::THREE:
             // Similar substate approach for the final tier
             if (!tierStateInitialized) {
-                climb.addEvent([&](){climb.setState(Climb::State::UP);});
+                climb.setState(Climb::State::UP);
                 tierStateInitialized = true;
             }
             
-            if (tierSubstate == 0 && climb.isAtTargetPosition()) {
-                climb.addEvent([&](){climb.setState(Climb::State::DOWN);});
+            if (climb.isAtTargetPosition()) {
+                climb.setState(Climb::State::DOWN);
                 arm.setState(Arm::State::SCORE);
                 tierSubstate = 1;  // Stay in final state
             }
@@ -274,7 +264,7 @@ void Action::setRingColor(Ring::Color ringToKeep) {
     intakeManager.setFilterColor(ringToKeep);
 }
 
-ActionState Action::getState() {
+ActionState Action::getActionState() {
     return currentState;
 }
 

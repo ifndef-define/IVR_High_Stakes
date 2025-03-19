@@ -26,14 +26,15 @@ class Climb {
         struct TaskWithDelay {
             std::function<void()> task;
             uint32_t delayMs;
-        };;
+        };
 
         pros::Rotation climbRot;
         PneumaticsGroup* pneumatics;
         State curClimbState = State::UP;
-        Tier curTier = Tier::ONE;
+        Tier curTier = Tier::IDLE;
         State lastClimbState = curClimbState;
         PID climbPID;
+        float error;
 
         std::queue<TaskWithDelay> taskQueue;
         bool isWaitingAfterTask = false;
@@ -41,7 +42,6 @@ class Climb {
         uint32_t currentTaskDelayMs = 0;
 
         bool override = false;
-        bool climbing = false;
         
         const double climbStateAngles[(int)(State::NUM_CLIMB_STATES)] = { 
             getAngle(),   // Angle for IDLE
@@ -71,9 +71,7 @@ class Climb {
         State getState();
         State getLastState();
         double getAngle();
-
-        bool isClimbing();
-        void setClimbing(bool climbing);
+        
         void setOverride(bool override);
         bool isOverride();
         
