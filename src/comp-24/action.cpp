@@ -221,6 +221,7 @@ void Action::climbControl() {
             
             // Then wait for DOWN movement to complete
             if (tierSubstate == 1 && climb.isAtTargetPosition()) {
+                tierSubstate == 0;
                 climb.setTier(Climb::Tier::THREE);
             }
             break;
