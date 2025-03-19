@@ -26,6 +26,14 @@ void Action::runSubsystemFSM() {
     }
     // Run state control
     stateControl();
+    
+    // Check if tier changed - reset state initialization flag
+    if (lastTier != climb.getTier()) {
+        tierStateInitialized = false;
+        tierSubstate = 0;
+        lastTier = climb.getTier();
+    }
+    
     climbControl();
     
     // Update arm with new state
@@ -151,38 +159,84 @@ void Action::climbState() {
                 climb.addEvent([&](){climb.extendPusher();}, 100);
                 climb.setState(Climb::State::IDLE);
             } else {
-                climb.addEvent([&](){climb.extendPusher();}, 100);
+                climb.addEvent([&](){climb.extendPusher();});
             }
             break;
         case Climb::State::DOWN:
-            climb.addEvent([&](){climb.retractPusher();}, 100);
+            climb.addEvent([&](){climb.retractPusher();});
             break;
     }
 }
 
 void Action::climbControl() {
-    if(climb.isOverride()){ climb.setTier(Climb::Tier::IDLE); }
+    if(climb.isOverride()){ 
+        climb.setTier(Climb::Tier::IDLE); 
+        return;
+    }
+    
     switch(climb.getTier()) {
         case Climb::Tier::IDLE:
             break;
+            
         case Climb::Tier::ZERO:
-            climb.addEvent([&](){climb.setState(Climb::State::UP);}, 500);
-            climb.setTier(Climb::Tier::IDLE);  
+            // Only initialize actions once when entering this state
+            if (!tierStateInitialized) {
+                // Align to the ladder
+                climb.addEvent([&](){climb.setState(Climb::State::UP);});
+                tierStateInitialized = true;
+            }
+            
+            // When PID target is reached, proceed to next tier
+            if (climb.isAtTargetPosition()) {
+                climb.setTier(Climb::Tier::ONE);
+            }
             break;
+            
         case Climb::Tier::ONE:
-            climb.addEvent([&](){climb.setState(Climb::State::DOWN);}, 500);
-            if(!climb.isOverride()){ climb.setTier(Climb::Tier::TWO); }
+            // Only initialize actions once when entering this state
+            if (!tierStateInitialized) {
+                // Pull up to tier one
+                climb.addEvent([&](){climb.setState(Climb::State::DOWN);});
+                tierStateInitialized = true;
+            }
+            
+            // When PID target is reached, proceed to next tier
+            if (climb.isAtTargetPosition()) {
+                climb.setTier(Climb::Tier::TWO);
+            }
             break;
+            
         case Climb::Tier::TWO:
-            climb.addEvent([&](){climb.setState(Climb::State::UP);}, 500);
-            climb.addEvent([&](){climb.setState(Climb::State::DOWN);}, 500);
-            if(!climb.isOverride()){ climb.setTier(Climb::Tier::THREE); }
+            // Use substates to track progress through this tier
+            if (!tierStateInitialized) {
+                climb.addEvent([&](){climb.setState(Climb::State::UP);});
+                tierStateInitialized = true;
+            }
+            
+            // First wait for UP movement to complete
+            if (tierSubstate == 0 && climb.isAtTargetPosition()) {
+                climb.addEvent([&](){climb.setState(Climb::State::DOWN);});
+                tierSubstate = 1;
+            }
+            
+            // Then wait for DOWN movement to complete
+            if (tierSubstate == 1 && climb.isAtTargetPosition()) {
+                climb.setTier(Climb::Tier::THREE);
+            }
             break;
+            
         case Climb::Tier::THREE:
-            climb.addEvent([&](){climb.setState(Climb::State::UP);}, 500);
-            climb.addEvent([&](){climb.setState(Climb::State::DOWN);}, 500);
-            arm.setState(Arm::State::SCORE);
-            climb.setTier(Climb::Tier::IDLE);
+            // Similar substate approach for the final tier
+            if (!tierStateInitialized) {
+                climb.addEvent([&](){climb.setState(Climb::State::UP);});
+                tierStateInitialized = true;
+            }
+            
+            if (tierSubstate == 0 && climb.isAtTargetPosition()) {
+                climb.addEvent([&](){climb.setState(Climb::State::DOWN);});
+                arm.setState(Arm::State::SCORE);
+                tierSubstate = 1;  // Stay in final state
+            }
             break;
     }
 }

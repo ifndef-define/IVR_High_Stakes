@@ -32,6 +32,11 @@ class Action {
         uint32_t pauseStartTime = 0;
         double currentRotation = 0;
 
+        // Climb state tracking
+        Climb::Tier lastTier = Climb::Tier::IDLE;  
+        bool tierStateInitialized = false;
+        int tierSubstate = 0;  // For tracking progress within each tier
+
     public:
         Action(bool isAuton, Ring::Color ringToKeep, PneumaticsGroup& p);
         void runSubsystemFSM();

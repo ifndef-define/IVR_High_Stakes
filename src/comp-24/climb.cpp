@@ -5,7 +5,7 @@ Climb::Climb(PneumaticsGroup& p, float kP, float kI, float kD): climbRot(17), cl
 void Climb::increment() { curClimbState = (State)(std::min(int(curClimbState) + 1, int(State::NUM_CLIMB_STATES) - 1)); }
 void Climb::decrement() { curClimbState = (State)(std::max(int(curClimbState) - 1, 0)); }
 void Climb::setState(State newState){ curClimbState = newState; }
-void Climb::setTier(Tier newTier){  }
+void Climb::setTier(Tier newTier){ curTier = newTier; }
 
 void Climb::extendPto(){ pneumatics->climbPto.extend(); }
 void Climb::retractPto(){ pneumatics->climbPto.retract(); }
@@ -45,8 +45,12 @@ void Climb::update(){
                 }
             }
         }
-
-        // drivetrain.move(climbPID.update(climbStateAngles[(int)curClimbState] - climbRot.get_position()));
+        static float error = climbStateAngles[(int)curClimbState] - getAngle();
+        // Calculate PID error
+        error = climbStateAngles[(int)curClimbState] - getAngle();
+        // Apply PID output to drivetrain
+        // drivetrain.move(climbPID.update(error));
+        climbing = std::abs(error) > 0.1; // Using absolute value for more accurate determination
     }
 }
 
@@ -54,12 +58,16 @@ void Climb::setBrakeMode(pros::motor_brake_mode_e_t mode){
     // drivetrain.set_brake_mode(mode);
 }
 
-Climb::Tier Climb::getTier(){ return Tier::ONE; }
+Climb::Tier Climb::getTier(){ return curTier; }
 Climb::State Climb::getState(){ return curClimbState; }
 Climb::State Climb::getLastState(){ return lastClimbState; }
 double Climb::getAngle(){ return climbRot.get_position()/100; }
 
-void Climb::setClimbing(bool climbing){ this->climbing = climbing; }
 bool Climb::isClimbing(){ return climbing; }
 void Climb::setOverride(bool override){ this->override = override; }
 bool Climb::isOverride(){ return override; }
+
+bool Climb::isAtTargetPosition() {
+    float error = climbStateAngles[(int)curClimbState] - getAngle();
+    return std::abs(error) < 1.0; // Consider position reached when error is less than 1.0
+}

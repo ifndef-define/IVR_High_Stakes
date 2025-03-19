@@ -44,9 +44,9 @@ class Climb {
         bool climbing = false;
         
         const double climbStateAngles[(int)(State::NUM_CLIMB_STATES)] = { 
-            0,   // Angle for IDLE
-            90,  // Angle for DOWN
-            900   // Angle for UP
+            getAngle(),   // Angle for IDLE
+            900,  // Angle for DOWN
+            0   // Angle for UP
         };
 
     public:
@@ -76,4 +76,6 @@ class Climb {
         void setClimbing(bool climbing);
         void setOverride(bool override);
         bool isOverride();
-};;
+        
+        bool isAtTargetPosition();  // New method to check if PID has reached target
+};
