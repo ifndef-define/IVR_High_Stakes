@@ -57,7 +57,7 @@ void teleOp(Ring::Color ringToKeep) {
 
         // Intake/Arm Control
         actions.setOverride(ctrler.get_digital(currentProfile.shift));
-        if(actions.getState() != ActionState::SORTING || actions.getOverride()){
+        if(actions.getActionState() != ActionState::SORTING || actions.getOverride()){
             //////////////////
             /*    INTAKE    */
             //////////////////
@@ -139,7 +139,7 @@ void teleOp(Ring::Color ringToKeep) {
         //Print out data for 
         pros::lcd::print(7, "Arm Angle: %f", actions.getArmAngle());
         pros::lcd::print(8, "Pullback: %d", actions.getPullbackFlag());
-        pros::lcd::print(9, "State: %d", int(actions.getState()));
+        pros::lcd::print(9, "State: %d", int(actions.getActionState()));
         pros::delay(10);
     }
 }
