@@ -43,13 +43,21 @@ public:
         // Update covariances (full 3-state EKF propagation)
         // P = F·P·F^T + Q where F is the state transition matrix
         
-        // Temporary variables to store old values
-        static double old_P_pos = P_pos;
-        static double old_P_vel = P_vel;
-        static double old_P_acc = P_acc;
-        static double old_P_pos_vel = P_pos_vel;
-        static double old_P_vel_acc = P_vel_acc;
-        static double old_P_pos_acc = P_pos_acc;
+        // Temporary variables to store old values - make truly thread-local
+        thread_local static double old_P_pos;
+        thread_local static double old_P_vel;
+        thread_local static double old_P_acc;
+        thread_local static double old_P_pos_vel;
+        thread_local static double old_P_vel_acc;
+        thread_local static double old_P_pos_acc;
+        
+        // Save current values before updating
+        old_P_pos = P_pos;
+        old_P_vel = P_vel;
+        old_P_acc = P_acc;
+        old_P_pos_vel = P_pos_vel;
+        old_P_vel_acc = P_vel_acc;
+        old_P_pos_acc = P_pos_acc;
         
         // Corrected covariance updates for a 3-state (pos, vel, acc) model
         P_pos = old_P_pos
@@ -81,14 +89,21 @@ public:
     }
 
     inline void update(const double& measurement) {
-        // Kalman gain calculation for position measurement
-        static double S = P_pos + R; // Innovation covariance
-        static double K_pos = P_pos / S;
-        static double K_vel = P_pos_vel / S;
-        static double K_acc = P_pos_acc / S;
+        // Make calculation variables thread-local - scope them to this method
+        thread_local static double S; // Innovation covariance
+        thread_local static double K_pos, K_vel, K_acc; // Kalman gains
+        thread_local static double innovation; // Measurement innovation
         
-        // Innovation (measurement - prediction)
-        static double innovation = measurement - position;
+        // Calculate the innovation covariance
+        S = P_pos + R;
+        
+        // Kalman gain calculation
+        K_pos = P_pos / S;
+        K_vel = P_pos_vel / S;
+        K_acc = P_pos_acc / S;
+        
+        // Innovation calculation
+        innovation = measurement - position;
         
         // Update state estimates
         position += K_pos * innovation;
