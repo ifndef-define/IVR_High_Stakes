@@ -29,6 +29,7 @@ public:
    * @return The angle of the intake
    */
   double getAngle();
+  void resetAngle();
 };
 
 namespace Ring {
@@ -105,4 +106,6 @@ public:
    * @brief Updates the system
    */
   void update();
+
+  void resetIntakeAngle();
 };

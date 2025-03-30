@@ -1,6 +1,6 @@
 #pragma once
 #include "pros/imu.hpp"
-#include "common/robot_localization_filter.h"
+#include "common/localization_filter.h"
 #include <cmath>
 #include <functional>
 #include "../dualEnable.h"
@@ -31,7 +31,7 @@ private:
     double headingVelocity, headingAccel;
     
     // Filter for heading estimation (will be part of robot pose)
-    RobotLocalizationFilter headingFilter;
+    RobotLocalizationFilter *headingFilter;
     
     // Use radians internally
     bool useRadians;
@@ -74,7 +74,7 @@ public:
      * @param driftThreshold Threshold for drift detection
      * @param useRadians Whether to use radians (true) or degrees (false)
      */
-    DualIMU(int port1, int port2, double driftThreshold = 10.0, bool useRadians = false);
+    DualIMU(int port1, int port2, RobotLocalizationFilter &filter, double driftThreshold = 10.0, bool useRadians = false);
     
     /**
      * @brief Updates heading estimation from both IMUs

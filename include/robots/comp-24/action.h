@@ -26,6 +26,7 @@ class Action {
         bool ejectFlag = false;
         bool runColorSort = true;
         bool autoResumeFlag = false;
+        bool runClimb = false;
 
         EjectPhase ejectPhase = EjectPhase::IDLE;
         double ejectStartPos = 0;
@@ -182,5 +183,4 @@ class Action {
          * @return false 
          */
         bool getRunColorSort();
-    
 };

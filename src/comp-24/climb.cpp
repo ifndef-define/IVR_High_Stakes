@@ -16,7 +16,7 @@ void Climb::addEvent(std::function<void()> task, uint32_t delayMs){
     taskQueue.push({task, delayMs}); 
 }
 
-void Climb::update(){
+void Climb::update(int pos) {
     lastClimbState = curClimbState; 
     
     // Task queue handling with non-blocking delays
@@ -46,7 +46,8 @@ void Climb::update(){
             }
         }
         // Calculate PID error
-        error = climbStateAngles[(int)curClimbState] - getAngle();
+        curPos = pos;
+        error = climbStateAngles[(int)curClimbState] - getAngle(curPos);
         // Apply PID output to drivetrain
         // drivetrain.move(climbPID.update(error));
     }
@@ -59,11 +60,11 @@ void Climb::setBrakeMode(pros::motor_brake_mode_e_t mode){
 Climb::Tier Climb::getTier(){ return curTier; }
 Climb::State Climb::getState(){ return curClimbState; }
 Climb::State Climb::getLastState(){ return lastClimbState; }
-double Climb::getAngle(){ return climbRot.get_position()/100; }
+double Climb::getAngle(int pos){ return pos/100.0; }
 
 void Climb::setOverride(bool override){ this->override = override; }
 bool Climb::isOverride(){ return override; }
 
 bool Climb::isAtTargetPosition() {
-    return std::abs(error) < 1.0; // Consider position reached when error is less than 1.0
+    return std::abs(error) <= 2.0; // Consider position reached when error is less than 1.0
 }

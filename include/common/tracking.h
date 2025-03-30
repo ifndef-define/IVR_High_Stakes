@@ -1,5 +1,5 @@
 #pragma once
-#include "common/robot_localization_filter.h"
+#include "common/localization_filter.h"
 #include "common/dual_imu.h"
 #include "pros/adi.hpp"
 

@@ -1,4 +1,4 @@
-#include "common/robot_localization_filter.h"
+#include "common/localization_filter.h"
 #include <cmath>
 
 // Helper functions for angle conversions - static to avoid recreating

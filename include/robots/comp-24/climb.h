@@ -35,6 +35,7 @@ class Climb {
         State lastClimbState = curClimbState;
         PID climbPID;
         float error;
+        int curPos = 0;
 
         std::queue<TaskWithDelay> taskQueue;
         bool isWaitingAfterTask = false;
@@ -43,8 +44,8 @@ class Climb {
 
         bool override = false;
         
-        const double climbStateAngles[(int)(State::NUM_CLIMB_STATES)] = { 
-            getAngle(),   // Angle for IDLE
+        double climbStateAngles[(int)(State::NUM_CLIMB_STATES)] = { 
+            curPos,   // Angle for IDLE
             900,  // Angle for DOWN
             0   // Angle for UP
         };
@@ -62,7 +63,7 @@ class Climb {
         void retractPusher();
 
         void addEvent(std::function<void()> task, uint32_t delayMs = 0);
-        void update();
+        void update(int curPos);
 
         void setBrakeMode(pros::motor_brake_mode_e_t mode);
         
@@ -70,7 +71,7 @@ class Climb {
         void setTier(Tier newTier);
         State getState();
         State getLastState();
-        double getAngle();
+        double getAngle(int pos);
         
         void setOverride(bool override);
         bool isOverride();

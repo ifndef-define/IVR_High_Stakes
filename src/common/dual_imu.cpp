@@ -25,7 +25,7 @@ static inline double normalizeRadians(double radians) {
     return mod(radians + M_PI, 2.0 * M_PI) - M_PI;
 }
 
-DualIMU::DualIMU(int port1, int port2, double driftThresh, bool useRadians)
+DualIMU::DualIMU(int port1, int port2, RobotLocalizationFilter &filter, double driftThresh, bool useRadians)
   : imu1(port1),
     imu2(port2),
     driftThreshold(driftThresh),
@@ -37,12 +37,13 @@ DualIMU::DualIMU(int port1, int port2, double driftThresh, bool useRadians)
     filtered_accel_x(0), filtered_accel_y(0), filtered_accel_z(0),
     imu1Reliable(true), imu2Reliable(true), 
     imu1UnreliableCount(0), imu2UnreliableCount(0),
-    headingFilter(0.0, 0.0, 0.0, 0.01, 0.02, 0.05, 0.1, 0.1, 0.05, useRadians),
+    headingFilter(&filter),
+    // headingFilter(0.0, 0.0, 0.0, 0.01, 0.02, 0.05, 0.1, 0.1, 0.05, useRadians),
     useRadians(useRadians) {
     
     // Set safety limits for non-blocking operation
-    headingFilter.setMaxDt(0.1);
-    headingFilter.setMaxIterations(10);
+    headingFilter->setMaxDt(0.1);
+    headingFilter->setMaxIterations(10);
 }
 
 inline double DualIMU::normalizeAngle(double angle) const {
@@ -90,24 +91,24 @@ inline void DualIMU::fuseSensorReadings() {
     // Apply sensor fusion based on reliability
     if (imu1Reliable && imu2Reliable) {
         // Both IMUs are reliable, use both
-        headingFilter.updateHeading(h1);
-        headingFilter.updateHeading(h2);
+        headingFilter->updateHeading(h1);
+        headingFilter->updateHeading(h2);
     } else if (imu1Reliable) {
         // Only IMU 1 is reliable
-        headingFilter.updateHeading(h1);
+        headingFilter->updateHeading(h1);
     } else if (imu2Reliable) {
         // Only IMU 2 is reliable
-        headingFilter.updateHeading(h2);
+        headingFilter->updateHeading(h2);
     } else {
         // Both are unreliable - use the one with less drift
-        double currentHeading = headingFilter.getTheta();
+        double currentHeading = headingFilter->getTheta();
         double d1 = std::fabs(angleDifference(h1, currentHeading));
         double d2 = std::fabs(angleDifference(h2, currentHeading));
         
         if (d1 < d2) {
-            headingFilter.updateHeading(h1);
+            headingFilter->updateHeading(h1);
         } else {
-            headingFilter.updateHeading(h2);
+            headingFilter->updateHeading(h2);
         }
     }
     
@@ -121,7 +122,7 @@ inline void DualIMU::fuseSensorReadings() {
 }
 
 void DualIMU::updateReliability() {
-    double filterHeading = headingFilter.getTheta();
+    double filterHeading = headingFilter->getTheta();
     
     // Check if IMUs are drifting from filter estimate
     double diff1 = std::fabs(angleDifference(h1, filterHeading));
@@ -179,7 +180,7 @@ void DualIMU::updateReliability() {
 void DualIMU::rehabilitateIMUs() {
     // If both IMUs are unreliable for too long, reset by accepting
     // the one with smallest drift
-    double filterHeading = headingFilter.getTheta();
+    double filterHeading = headingFilter->getTheta();
     double diff1 = std::fabs(angleDifference(h1, filterHeading));
     double diff2 = std::fabs(angleDifference(h2, filterHeading));
     
@@ -205,10 +206,10 @@ void DualIMU::update() {
     dt = std::min(dt, 0.1);
     
     // Store current velocity before prediction
-    prevHeadingVelocity = headingFilter.getOmega();
+    prevHeadingVelocity = headingFilter->getOmega();
     
     // Predict state forward
-    headingFilter.predict(dt);
+    headingFilter->predict(dt);
 
     // Make IMU data structures static to avoid recreating
     static pros::imu_accel_s_t accel1, accel2;
@@ -248,7 +249,7 @@ void DualIMU::update() {
     filtered_accel_z = accel_z;
     
     // Update the filter with IMU acceleration data
-    headingFilter.updateAcceleration(accel_x, accel_y, accel_z);
+    headingFilter->updateAcceleration(accel_x, accel_y, accel_z);
     
     // Get gyro data using reliability info
     gyro_data1 = imu1.get_gyro_rate();
@@ -267,13 +268,13 @@ void DualIMU::update() {
     }
     
     // Update the filter with angular velocity
-    headingFilter.updateAngularVelocity(gyro_avg);
+    headingFilter->updateAngularVelocity(gyro_avg);
     
     // Fuse heading readings
     fuseSensorReadings();
     
     // Calculate acceleration for adaptive filtering - reuse member variables
-    headingVelocity = headingFilter.getOmega();
+    headingVelocity = headingFilter->getOmega();
     headingAccel = (headingVelocity - prevHeadingVelocity) / dt;
     
     // Use a static threshold variable
@@ -283,27 +284,27 @@ void DualIMU::update() {
     // Adjust process noise based on dynamics
     if (std::fabs(headingAccel) > accelThreshold) {
         // High acceleration detected - increase process noise
-        headingFilter.setAdaptiveNoiseFactor(2.0);
+        headingFilter->setAdaptiveNoiseFactor(2.0);
     } else {
         // Normal operation - standard process noise
-        headingFilter.setAdaptiveNoiseFactor(1.0);
+        headingFilter->setAdaptiveNoiseFactor(1.0);
     }
 }
 
 double DualIMU::getHeading() const {
-    return headingFilter.getTheta();
+    return headingFilter->getTheta();
 }
 
 double DualIMU::getHeadingRadians() const {
-    return headingFilter.getThetaRadians();
+    return headingFilter->getThetaRadians();
 }
 
 double DualIMU::getHeadingDegrees() const {
-    return headingFilter.getThetaDegrees();
+    return headingFilter->getThetaDegrees();
 }
 
 double DualIMU::getHeadingVelocity() const {
-    return headingFilter.getOmega();
+    return headingFilter->getOmega();
 }
 
 double DualIMU::getYaw() const {
@@ -312,7 +313,7 @@ double DualIMU::getYaw() const {
         return (y1 + y2) / 2.0;
     }
     // Otherwise use the one closer to the filter's estimate
-    double filterYaw = useRadians ? radiansToDegrees(headingFilter.getTheta()) : headingFilter.getTheta();
+    double filterYaw = useRadians ? radiansToDegrees(headingFilter->getTheta()) : headingFilter->getTheta();
     return std::fabs(angleDifference(y1, filterYaw)) < std::fabs(angleDifference(y2, filterYaw)) ? y1 : y2;
 }
 
@@ -351,7 +352,7 @@ void DualIMU::reset(bool blocking) {
     
     // Reset filter with average heading
     double avgHeading = (h1 + h2) / 2.0;
-    headingFilter.reset(0.0, 0.0, avgHeading);
+    headingFilter->reset(0.0, 0.0, avgHeading);
 }
 
 bool DualIMU::isCalibrating() const {

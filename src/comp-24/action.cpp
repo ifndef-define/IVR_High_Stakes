@@ -34,12 +34,15 @@ void Action::runSubsystemFSM() {
         lastTier = climb.getTier();
     }
     
-    climbControl();
+    // Update climb
+    if(runClimb){
+        climbControl();
+        climb.update(intakeManager.getIntakeAngle());
+    }
     
     // Update arm with new state
     lastArmState = arm.getState();
     arm.update();
-    climb.update();
 }
 
 void Action::stateControl() {
@@ -147,20 +150,11 @@ void Action::intakeState() {
 
 void Action::climbState() {
     climb.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-    static bool firstTime = true;
     switch(climb.getState()) {
         case Climb::State::IDLE:
             break;
         case Climb::State::UP:
-            if(firstTime) {
-                firstTime = false;
-                climb.addEvent([&](){climb.extendPto();}, 100);
-                climb.addEvent([&](){climb.retractPto();});
-                climb.addEvent([&](){climb.extendPusher();}, 100);
-                climb.setState(Climb::State::IDLE);
-            } else {
-                climb.addEvent([&](){climb.extendPusher();});
-            }
+            climb.addEvent([&](){climb.extendPusher();});
             break;
         case Climb::State::DOWN:
             climb.addEvent([&](){climb.retractPusher();});
@@ -176,11 +170,19 @@ void Action::climbControl() {
     
     switch(climb.getTier()) {
         case Climb::Tier::IDLE:
+            tierStateInitialized = false;
+            tierSubstate = 0;
             break;
             
         case Climb::Tier::ZERO:
-                climb.setState(Climb::State::UP);
+            if (!tierStateInitialized) {
+                tierStateInitialized = true;
+                intakeManager.resetIntakeAngle();
+                climb.addEvent([&](){climb.extendPto();}, 100);
+                climb.addEvent([&](){climb.retractPto();});
+                climb.addEvent([&](){climb.extendPusher();}, 100);
                 climb.setTier(Climb::Tier::IDLE);
+            }
             break;
             
         case Climb::Tier::ONE:
@@ -193,6 +195,7 @@ void Action::climbControl() {
             
             // When PID target is reached, proceed to next tier
             if (climb.isAtTargetPosition()) {
+                tierStateInitialized = false;
                 climb.setTier(Climb::Tier::TWO);
             }
             break;
@@ -212,6 +215,8 @@ void Action::climbControl() {
             
             // Then wait for DOWN movement to complete
             if (tierSubstate == 1 && climb.isAtTargetPosition()) {
+                tierSubstate = 0;
+                tierStateInitialized = false;
                 climb.setTier(Climb::Tier::THREE);
             }
             break;
@@ -226,7 +231,6 @@ void Action::climbControl() {
             if (climb.isAtTargetPosition()) {
                 climb.setState(Climb::State::DOWN);
                 arm.setState(Arm::State::SCORE);
-                tierSubstate = 1;  // Stay in final state
             }
             break;
     }
