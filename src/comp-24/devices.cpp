@@ -1,4 +1,5 @@
 #include "robots/comp-24/devices.h"
+#include "common/dualIMU.h"
 
 // Right Front: 3
 // Right Top: 4
@@ -23,12 +24,7 @@ Action actions(0, Ring::Color::NONE, pneumatics);
 MotorGroup rightDrive({-2, 15, -14, 7}, MotorGears::blue);
 MotorGroup leftDrive({4, -18, 1, -6}, MotorGears::blue);
 
-#ifdef ENABLE_DUAL_IMU
-DualIMU imu(12, 16, 2.5);
-#else
-pros::IMU imu(12);
-// pros::IMU imu(16);
-#endif
+DualIMU imu(11, 12, 2.5);
 
 adi::Encoder xEnc(3, 4, true);
 adi::Encoder yEnc(1, 2, false);
