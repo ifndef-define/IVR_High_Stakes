@@ -149,6 +149,7 @@ void teleOp(Ring::Color ringToKeep) {
                     actions.isPtoExtended() ? actions.extendPto() : actions.retractPto();
                 } else if(ctrler.get_digital_new_press(currentProfile.intakeOut)){
                     actions.isPusherExtended() ? actions.extendPusher() : actions.retractPusher();
+                }
             }
         }
         //Print out data for 

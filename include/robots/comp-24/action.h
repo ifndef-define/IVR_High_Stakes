@@ -187,10 +187,10 @@ class Action {
         void setRunClimb(bool flag);
         bool getRunClimb();
 
-        void Action::extendPto();
-        void Action::retractPto();
-        void Action::extendPusher();
-        void Action::retractPusher();
-        bool Action::isPtoExtended();
-        bool Action::isPusherExtended();
+        void extendPto();
+        void retractPto();
+        void extendPusher();
+        void retractPusher();
+        bool isPtoExtended();
+        bool isPusherExtended();
 };
