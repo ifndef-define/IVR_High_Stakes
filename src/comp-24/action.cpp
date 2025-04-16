@@ -38,6 +38,8 @@ void Action::runSubsystemFSM() {
     if(runClimb){
         climbControl();
         climb.update(intakeManager.getIntakeAngle());
+    } else {
+        climb.setState(Climb::State::IDLE);
     }
     
     // Update arm with new state
@@ -298,4 +300,33 @@ bool Action::getPullbackFlag(){
 
 bool Action::getEjectFlag(){
     return ejectFlag;
+}
+
+
+void Action::setRunClimb(bool runClimb){
+    this->runClimb = runClimb;
+}
+
+bool Action::getRunClimb(){
+    return runClimb;
+}
+
+void Action::extendPto(){
+    climb.extendPto();
+}
+void Action::retractPto(){
+    climb.retractPto();
+}
+void Action::extendPusher(){
+    climb.extendPusher();
+}
+void Action::retractPusher(){
+    climb.retractPusher();
+}
+
+bool Action::isPtoExtended() {
+    return climb.isPtoExtended();
+}
+bool Action::isPusherExtended() {
+    return climb.isPusherExtended();
 }

@@ -17,6 +17,7 @@ struct driverProfile {
     pros::controller_digital_e_t mogoRushClamp;
 
     pros::controller_digital_e_t toggleColorSort;
+    pros::controller_digital_e_t toggleClimb;
 };
 
 driverProfile AdiPrimary = {
@@ -35,7 +36,8 @@ driverProfile AdiPrimary = {
     .mogoRushCycle = pros::E_CONTROLLER_DIGITAL_A, // Only w/o field connection
     .mogoRushClamp = pros::E_CONTROLLER_DIGITAL_UP,
 
-    .toggleColorSort = pros::E_CONTROLLER_DIGITAL_X
+    .toggleColorSort = pros::E_CONTROLLER_DIGITAL_X, 
+    .toggleClimb = pros::E_CONTROLLER_DIGITAL_B
 };
 
 const driverProfile &currentProfile = AdiPrimary;
@@ -135,6 +137,19 @@ void teleOp(Ring::Color ringToKeep) {
             }
 
             rushState = rushState == 2 ? 0 : rushState + 1;
+        }
+
+        if(ctrler.get_digital_new_press(currentProfile.toggleClimb)){
+            if(!actions.getRunClimb()){
+                actions.setRunClimb(!actions.getRunClimb());
+            } else {
+                actions.setRunClimb(false);
+                //MANUAL CONTROL HERE
+                if(ctrler.get_digital_new_press(currentProfile.intakeIn)){
+                    actions.isPtoExtended() ? actions.extendPto() : actions.retractPto();
+                } else if(ctrler.get_digital_new_press(currentProfile.intakeOut)){
+                    actions.isPusherExtended() ? actions.extendPusher() : actions.retractPusher();
+            }
         }
         //Print out data for 
         pros::lcd::print(7, "Arm Angle: %f", actions.getArmAngle());

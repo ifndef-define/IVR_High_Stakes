@@ -28,14 +28,13 @@ class Climb {
             uint32_t delayMs;
         };
 
-        pros::Rotation climbRot;
         PneumaticsGroup* pneumatics;
         State curClimbState = State::UP;
         Tier curTier = Tier::IDLE;
         State lastClimbState = curClimbState;
         PID climbPID;
         float error;
-        int curPos = 0;
+        double curPos = 0;
 
         std::queue<TaskWithDelay> taskQueue;
         bool isWaitingAfterTask = false;
@@ -61,6 +60,9 @@ class Climb {
         void retractPto();
         void extendPusher();
         void retractPusher();
+
+        bool isPtoExtended();
+        bool isPusherExtended();
 
         void addEvent(std::function<void()> task, uint32_t delayMs = 0);
         void update(int curPos);

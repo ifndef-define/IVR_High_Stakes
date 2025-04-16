@@ -1,6 +1,6 @@
 #include "robots/comp-24/climb.h"
 
-Climb::Climb(PneumaticsGroup& p, float kP, float kI, float kD): climbRot(17), climbPID(kP, kI, kD) {}
+Climb::Climb(PneumaticsGroup& p, float kP, float kI, float kD): climbPID(kP, kI, kD) {}
 
 void Climb::increment() { curClimbState = (State)(std::min(int(curClimbState) + 1, int(State::NUM_CLIMB_STATES) - 1)); }
 void Climb::decrement() { curClimbState = (State)(std::max(int(curClimbState) - 1, 0)); }
@@ -67,4 +67,11 @@ bool Climb::isOverride(){ return override; }
 
 bool Climb::isAtTargetPosition() {
     return std::abs(error) <= 2.0; // Consider position reached when error is less than 1.0
+}
+
+bool Climb::isPtoExtended() {
+    return pneumatics->climbPto.is_extended();
+}
+bool Climb::isPusherExtended() {
+    return pneumatics->climbPusher.is_extended();
 }
