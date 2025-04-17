@@ -1,4 +1,5 @@
 include ./robotSelector.mk
+
 ARCHTUPLE=arm-none-eabi-
 DEVICE=VEX EDR V5
 
@@ -38,8 +39,8 @@ wlprefix=-Wl,$(subst $(SPACE),$(COMMA),$1)
 LNK_FLAGS=--gc-sections --start-group $(strip $(LIBRARIES)) -lgcc -lstdc++ --end-group -T$(FWDIR)/v5-common.ld
 
 ASMFLAGS=$(MFLAGS) $(WARNFLAGS)
-CFLAGS=$(MFLAGS) $(CPPFLAGS) $(WARNFLAGS) $(GCCFLAGS) $(ROBOTFLAGS) --std=$(C_STANDARD)			# Added RobotFlags for C 
-CXXFLAGS=$(MFLAGS) $(CPPFLAGS) $(WARNFLAGS) $(GCCFLAGS) $(ROBOTFLAGS) --std=$(CXX_STANDARD)		# Added RobotFlags for C++
+CFLAGS=$(MFLAGS) $(CPPFLAGS) $(WARNFLAGS) $(ROBOTFLAGS) $(GCCFLAGS) --std=$(C_STANDARD)		# Added RobotFlags for C
+CXXFLAGS=$(MFLAGS) $(CPPFLAGS) $(WARNFLAGS) $(ROBOTFLAGS) $(GCCFLAGS) --std=$(CXX_STANDARD)	# Added RobotFlags for C++
 LDFLAGS=$(MFLAGS) $(WARNFLAGS) -nostdlib $(GCCFLAGS)
 SIZEFLAGS=-d --common
 NUMFMTFLAGS=--to=iec --format %.2f --suffix=B

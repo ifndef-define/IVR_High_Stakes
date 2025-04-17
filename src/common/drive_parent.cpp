@@ -23,13 +23,12 @@ void drive::driveLoop() {
                 break;
             case drive_config_e::HOLONOMIC:
                 // Add holonomic drive control
-                /** @todo Will add Post-River Bots */
                 break;
             case drive_config_e::CUSTOM_c:
                 // Add custom drive control
                 break;
             default:
-                throw invalid_argument("Error applying drive configuration");
+                throw runtime_error("Error applying drive configuration");
                 break;
         }
     } while (isThread);
@@ -232,7 +231,7 @@ drive_builder &drive_builder::with_drive_config(drive::drive_config_e drive_conf
 }
 drive_builder &drive_builder::with_drive_motors(initializer_list<motor*> l_motors, initializer_list<motor*> r_motors) {
     if (l_motors.size() != r_motors.size()) {
-        throw invalid_argument("Left and right motor arrays must be the same size");
+        throw runtime_error("Left and right motor arrays must be the same size");
     }
     drive_->drive_motor_count_ = l_motors.size();
     auto l_it = l_motors.begin(); 
@@ -318,18 +317,18 @@ drive_builder &drive_builder::add_odom_config(/** @todo Need Odom class */) {
 }
 
 drive *drive_builder::build() {
-    if (checkSum[0] != 0b00001000) {
-        throw invalid_argument("Missing required parameters");
-    }
-    if (checkSum[1] != 0b00000001 || checkSum[1] != 0b00000010) {
-        throw invalid_argument("Multiple drive scale parameters set, only select one");
-    }
+    // if (checkSum[0] != 0b00001000) {
+    //     throw invalid_argument("Missing required parameters");
+    // }
+    // if (checkSum[1] != 0b00000001 || checkSum[1] != 0b00000010) {
+    //     throw invalid_argument("Multiple drive scale parameters set, only select one");
+    // }
     
-    if (drive_->drive_exponential_scale_ != 0) {
-        drive_->drive_sin_scale_ = 0;
-    } else if (drive_->drive_sin_scale_ != 0) {
-        drive_->drive_exponential_scale_ = 0;
-    }
+    // if (drive_->drive_exponential_scale_ != 0) {
+    //     drive_->drive_sin_scale_ = 0;
+    // } else if (drive_->drive_sin_scale_ != 0) {
+    //     drive_->drive_exponential_scale_ = 0;
+    // }
 
     /** @todo Need to allow for varying number of drive motors to be correctly assigned to the group */
     // If in tank config, create motor_g objects to ease control of left and right side
