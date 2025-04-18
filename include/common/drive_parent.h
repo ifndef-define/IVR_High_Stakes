@@ -28,6 +28,15 @@ class drive {
         static void stopLoop();
 
         /**
+         * @brief Stops the drive motors and kills the thread if running
+         */
+        static void stop();
+
+        ////////////////////////////////////
+        ///// Motion Related Functions /////
+        ////////////////////////////////////
+        
+        /**
          * @brief Moves the robot at a set RPM. The RPM will be scaled
          *  to a voltage value and applied to the motors
          * NOTE: The maxRPM must be set for this to work 
@@ -42,10 +51,116 @@ class drive {
         static void turnAtRPM(int rpm);
 
         /**
-         * @brief Stops the drive motors and kills the thread if running
+         * @brief Moves the robot to a set pose (x, y, theta). Field (0,0) is the red alliance
+         *  positive corner.
+         * 
+         * @param x X coordinate to move to [0,144] inches
+         * @param y Y coordinate to move to [0,144] inches
+         * @param theta Angle to move to [0,360] degrees
+         * @param min_speed Minimum speed to move at [0,1] percent of max speed
+         * @param max_speed Maximum speed to move at [0,1] percent of max speed
+         *  NOTE: max_speed > min_speed
+         * @param timeout Time to wait for the move to complete in milliseconds
+         * @param wait If true, will wait for the move to complete before returning
+         *  NOTE: Queuing is supported with mutex locks
          */
-        static void stop();
+        static void moveToPose(double x, double y, double theta, double min_speed=0.1, double max_speed=0.1, int timeout=10000, bool wait=true);
+
+        /**
+         * @brief Turns the robot to face a set pose. Field (0,0) is the red alliance
+         *  positive corner.
+         * 
+         * @param x X coordinate to face [0,144] inches
+         * @param y Y coordinate to face [0,144] inches
+         * @param min_speed Minimum speed to move at [0,1] percent of max speed
+         * @param max_speed Maximum speed to move at [0,1] percent of max speed
+         *  NOTE: max_speed > min_speed
+         * @param timeout Time to wait for the move to complete in milliseconds
+         * @param wait If true, will wait for the move to complete before returning
+         *  NOTE: Queuing is supported with mutex locks
+         */
+        static void turnToPose(double x, double y, double min_speed=0.1, double max_speed=0.1, int timeout=10000, bool wait=true);
+
+        /**
+         * @brief Turns the robot to face a set heading. Field (0,0) is the red alliance
+         *  positive corner.
+         * 
+         * @param theta Angle to face [0,360] degrees
+         * @param min_speed Minimum speed to move at [0,1] percent of max speed
+         * @param max_speed Maximum speed to move at [0,1] percent of max speed
+         *  NOTE: max_speed > min_speed
+         * @param timeout Time to wait for the move to complete in milliseconds
+         * @param wait If true, will wait for the move to complete before returning
+         *  NOTE: Queuing is supported with mutex locks  
+         */
+        static void turnToHeading(double theta, double min_speed=0.1, double max_speed=0.1, int timeout=10000, bool wait=true);
         
+        enum drive_side_e {
+            LEFT = 0,
+            RIGHT = 1
+        };
+
+        /**
+         * @brief Moves the robot to face a set pose (x, y) while keeping one side of the drive
+         *  locked in place. Field (0,0) is the red alliance positive corner.
+         * 
+         * @param x X coordinate to move to [0,144] inches
+         * @param y Y coordinate to move to [0,144] inches
+         * @param locked_side Side to lock in place
+         * @param min_speed Minimum speed to move at [0,1] percent of max speed
+         * @param max_speed Maximum speed to move at [0,1] percent of max speed
+         *  NOTE: max_speed > min_speed
+         * @param timeout Time to wait for the move to complete in milliseconds
+         * @param wait If true, will wait for the move to complete before returning
+         *  NOTE: Queuing is supported with mutex locks
+         */
+        static void swingToPose(double x, double y, drive_side_e locked_side, double min_speed=0.1, double max_speed=0.1, int timeout=10000, bool wait=true);
+
+        /**
+         * @brief Moves the robot to a set heading while keeping one side of the drive
+         *  locked in place. Field (0,0) is the red alliance positive corner.  
+         * 
+         * @param theta Angle to face [0,360] degrees
+         * @param locked_side Side to lock in place
+         * @param min_speed Minimum speed to move at [0,1] percent of max speed
+         * @param max_speed Maximum speed to move at [0,1] percent of max speed
+         *  NOTE: max_speed > min_speed
+         * @param timeout Time to wait for the move to complete in milliseconds
+         * @param wait If true, will wait for the move to complete before returning
+         *  NOTE: Queuing is supported with mutex locks 
+         */
+        static void swingToHeading(double theta, drive_side_e locked_side, double min_speed=0.1, double max_speed=0.1, int timeout=10000, bool wait=true);
+
+        /**
+         * @brief Determines values to move the robot given a vector. This will compute 
+         *  the vector from the current position to the target position and move the robot
+         * 
+         * @param x X component of the vector [0,144] inches
+         * @param y Y component of the vector [0,144] inches
+         */
+        static void moveByVector(double x, double y, double min_speed, double max_speed);
+
+        /**
+         * @brief Moves the robot given a normalized vector. This will compute the vector from the 
+         *  current position to the target position and move the robot
+         */
+        static void moveByVector_normalized(double x, double y, double min_speed, double max_speed);
+
+        /**
+         * @brief Moves the robot given a normalized left and right drive power value.
+         *  Converts the values to voltage and applies them to the motors
+         * 
+         * @param left Left side power value [-1, 1]
+         * @param right Right side power value [-1, 1]
+         */
+        static void moveDrive(double left, double right);
+
+        /**
+         * @brief Stops the drive from moving using brake mode. This will cancel the current motion profile if in use
+         * 
+         * @param kill_paths If true, will kill all queued motion paths
+         */
+        static void stopDrive(bool kill_paths=false);
 
         enum drive_mode_e {
             TANK_m = 1,             // Tank Drive
@@ -59,6 +174,7 @@ class drive {
             FIELD_CENTRIC_SL,       // Field Centric Drive with Strafe on Left Stick
             CUSTOM_m
         };
+
 
         enum drive_error {
             NO_ERROR = 0,
