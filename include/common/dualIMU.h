@@ -49,14 +49,28 @@ private:
     double r1, y1, p1, rl1;
     double r2, y2, p2, rl2;
     
+    // Add position stability threshold
+    double positionStabilityThreshold = 0.05;  // Position changes less than this are considered stable
+    
+    // Added tracking for position stability
+    double lastRotationReading = 0.0;
+    int positionStableCount = 0;
+    int positionStableThreshold = 5;
+
     // Helper method to handle the update logic for a single measurement type
     inline void applyFilter(KalmanFilter& filter, double val1, double val2);
     
     // Helper method to determine if robot is stationary - simplified
     void detectStationary();
     
+    // Enhanced stationary detection that considers both velocity and position
+    bool isPositionStable();
+    
     // Add method to check IMU connections
     void checkIMUConnection();
+    
+    // Add helper method for validating readings
+    double validateReading(double value, double lastValidValue, double maxDelta);
 
 public:
     /**
@@ -84,13 +98,13 @@ public:
     bool is_calibrating();
     pros::ImuStatus get_status();
     
-    // Set a custom non-linear motion model
-    void set_motion_model(std::function<double(double, double, double)> model);
-    
     // Anti-drift compensation methods
     void enableDriftCompensation(bool enable);
     void setStationaryVelocityThreshold(double threshold);
     bool getIsStationary() const;
+    
+    // Method to adjust position stability threshold
+    void setPositionStabilityThreshold(double threshold);
     
     // Debug methods
     double getVelocity() const; // For debugging
