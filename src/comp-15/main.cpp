@@ -19,8 +19,8 @@ void autonomous() {}
 
 Controller master(E_CONTROLLER_MASTER);
 
-MotorGroup rightDrive({-4, 11, -13, 16}, MotorGears::blue);
-MotorGroup leftDrive({8, -1, 5, -7}, MotorGears::blue);
+pros::MotorGroup leftDrive({4, -18, 1, -6});
+pros::MotorGroup rightDrive({-2, 15, -14, 7});
 
 drive *maindrive = drive_builder(master)
 	.with_drive_config(drive::drive_config_e::TANK_c)
@@ -28,8 +28,8 @@ drive *maindrive = drive_builder(master)
 	.with_drive_mode(drive::drive_mode_e::SPLIT_ARCADE_PL)
 	// .add_exponetial_drive_scale(2.5)
 	// .add_sin_drive_scale(2)
-	// .add_straight_drive_scale(0.80,1)
-	.add_ctrler_deadzone(5)
+	.add_straight_drive_scale(0.83,1)
+	// .add_ctrler_deadzone(10)
 	.build();
 
 void opcontrol() {
@@ -37,9 +37,16 @@ void opcontrol() {
 	delay(100);
 	
 	maindrive->loop(true);
-
+	
 	while (true) {
 		
 		delay(10);
 	}
 }
+
+/*
+track widht 8 1/16
+track length 11 1/16
+
+
+*/

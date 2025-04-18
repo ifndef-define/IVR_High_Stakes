@@ -60,6 +60,23 @@ class drive {
             CUSTOM_m
         };
 
+        enum drive_error {
+            NO_ERROR = 0,
+            // Long followed by # of short below
+            DRIVE_LOOP_FAIL = 1,
+            UPDATE_AXIS_BAD_DRIVE_MODE_TANK = 2,
+            UPDATE_AXIS_BAD_DRIVE_MODE_HOLONOMIC = 3,
+            BUILDER_UNBALANCED_MOTOR_ARRAYS = 4,
+            BUILDER_LARGE_CTRLER_DEADZONE = 5,
+            BUILDER_OUT_OF_BOUNDS_EXP_SCALE = 6,
+            BUILDER_OUT_OF_BOUNDS_SIN_SCALE = 7,
+            BUILDER_OUT_OF_BOUNDS_STRAIGHT_SCALE = 8,
+            // Two long followed by #-7 of short below
+            BUILDER_MISSING_REQUIRED_PARAMS = 9,
+            BUILDER_MULTIPLE_DRIVE_SCALES = 10,
+            MULTIPLE_DRIVE_OBJECTS = 11
+        };
+
         enum drive_config_e {
             TANK_c = 1,
             HOLONOMIC,
@@ -98,6 +115,8 @@ class drive {
 
         static pros::Task *drive_task;
         inline static bool isThread = false;
+
+        static void errorMsg(int err_num);
 
         // Private functions
         /**

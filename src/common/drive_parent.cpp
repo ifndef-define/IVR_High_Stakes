@@ -28,9 +28,11 @@ void drive::driveLoop() {
                 // Add custom drive control
                 break;
             default:
-                throw runtime_error("Error applying drive configuration");
+                errorMsg(DRIVE_LOOP_FAIL);
                 break;
         }
+
+        delay(10);
     } while (isThread);
 }
 
@@ -43,6 +45,28 @@ void drive::loop(bool thread) {
         if (drive::drive_task == nullptr)
             driveLoop();
     }
+}
+
+void drive::errorMsg(int err_num) {
+    int i = 0;
+    string error_msg;
+    if (err_num <= 7)
+        error_msg = "-";
+    else
+        error_msg = "--";
+    
+        for (int dash = 0; dash < err_num-7; dash++) {
+        error_msg.append(".");
+    }
+    pros::Task errorLoop([&]() {
+        while (1) {
+            if (i%2==0)
+                drive_ctrler_->rumble(error_msg.c_str());
+            i++;
+
+            delay(2500);
+        }
+    });
 }
 
 void drive::stopLoop() {
@@ -169,7 +193,7 @@ void drive::updateAxis() {
                 // Add custom drive mode for tank drive here
                 break;
             default:
-                throw invalid_argument("Invalid drive mode for tank drive config");
+                errorMsg(UPDATE_AXIS_BAD_DRIVE_MODE_TANK);
                 break;
         }
     } else if (drive_config_ == drive_config_e::HOLONOMIC) {
@@ -190,7 +214,7 @@ void drive::updateAxis() {
                 // Add custom drive configuration here
                 break;
             default:
-                throw invalid_argument("Invalid drive mode for holonomic drive config");
+                errorMsg(UPDATE_AXIS_BAD_DRIVE_MODE_HOLONOMIC);
                 break;
         }
     } else if (drive_config_ == drive_config_e::CUSTOM_c) {
@@ -231,7 +255,7 @@ drive_builder &drive_builder::with_drive_config(drive::drive_config_e drive_conf
 }
 drive_builder &drive_builder::with_drive_motors(initializer_list<motor*> l_motors, initializer_list<motor*> r_motors) {
     if (l_motors.size() != r_motors.size()) {
-        throw runtime_error("Left and right motor arrays must be the same size");
+        drive_->errorMsg(drive::drive_error::BUILDER_UNBALANCED_MOTOR_ARRAYS);
     }
     drive_->drive_motor_count_ = l_motors.size();
     auto l_it = l_motors.begin(); 
@@ -250,7 +274,7 @@ drive_builder &drive_builder::with_drive_motors(motor_g &motor_g_1, motor_g &mot
     vector<int8_t> l_motors = motor_g_1.get_port_all();
     vector<int8_t> r_motors = motor_g_2.get_port_all();
     if (l_motors.size() != r_motors.size()) {
-        throw invalid_argument("Left and right motor arrays must be the same size");
+        drive_->errorMsg(drive::drive_error::BUILDER_UNBALANCED_MOTOR_ARRAYS);
     }
     drive_->drive_motor_count_ = l_motors.size();
     for (int i = 0; i < l_motors.size(); i++) {
@@ -275,7 +299,7 @@ drive_builder &drive_builder::add_max_rpm(int rpm) {
 }
 drive_builder &drive_builder::add_ctrler_deadzone(short int deadzone) {
     if (deadzone < 0 || deadzone > 10) {
-        throw domain_error("Controller deadzone must be between 0 and 10");
+        drive_->errorMsg(drive::drive_error::BUILDER_LARGE_CTRLER_DEADZONE);
     }
     
     drive_->drive_deadzone_ = abs(deadzone);
@@ -286,11 +310,15 @@ drive_builder &drive_builder::add_straight_drive_scale(double l_scale, double r_
     drive_->straight_l_scale_ = fabs(l_scale);
     drive_->straight_r_scale_ = fabs(r_scale);
 
+    if (drive_->straight_l_scale_ < 0.7 || drive_->straight_r_scale_ < 0.7) {
+        drive_->errorMsg(drive::drive_error::BUILDER_OUT_OF_BOUNDS_STRAIGHT_SCALE);
+    }
+
     return *this;
 }
 drive_builder &drive_builder::add_exponetial_drive_scale(double scale) {
     if (scale < 0.3 || scale > 3) {
-        throw runtime_error("Exponential scale must be between 0.3 and 3");
+        drive_->errorMsg(drive::drive_error::BUILDER_OUT_OF_BOUNDS_EXP_SCALE);
     }
     drive_->drive_exponential_scale_ = fabs(scale);
     drive_->drive_sin_scale_ = 0;
@@ -301,7 +329,7 @@ drive_builder &drive_builder::add_exponetial_drive_scale(double scale) {
 }
 drive_builder &drive_builder::add_sin_drive_scale(double scale) {
     if (scale < 0.3 || scale > 3) {
-        throw domain_error("Sin scale must be between 0.3 and 3");
+        drive_->errorMsg(drive::drive_error::BUILDER_OUT_OF_BOUNDS_SIN_SCALE);
     }
     drive_->drive_sin_scale_ = fabs(scale);
     drive_->drive_exponential_scale_ = 0;
@@ -317,18 +345,12 @@ drive_builder &drive_builder::add_odom_config(/** @todo Need Odom class */) {
 }
 
 drive *drive_builder::build() {
-    // if (checkSum[0] != 0b00001000) {
-    //     throw invalid_argument("Missing required parameters");
-    // }
-    // if (checkSum[1] != 0b00000001 || checkSum[1] != 0b00000010) {
-    //     throw invalid_argument("Multiple drive scale parameters set, only select one");
-    // }
-    
-    // if (drive_->drive_exponential_scale_ != 0) {
-    //     drive_->drive_sin_scale_ = 0;
-    // } else if (drive_->drive_sin_scale_ != 0) {
-    //     drive_->drive_exponential_scale_ = 0;
-    // }
+    if (checkSum[0] != 0b00001000) {
+        drive_->errorMsg(drive::drive_error::BUILDER_MISSING_REQUIRED_PARAMS);
+    }
+    if (!(checkSum[1] == 0b00000001 || checkSum[1] == 0b00000010)) {
+        drive_->errorMsg(drive::drive_error::BUILDER_MULTIPLE_DRIVE_SCALES);
+    }
 
     /** @todo Need to allow for varying number of drive motors to be correctly assigned to the group */
     // If in tank config, create motor_g objects to ease control of left and right side
@@ -340,7 +362,7 @@ drive *drive_builder::build() {
     // }
 
     if(drive_->instance_ != nullptr) {
-        throw invalid_argument("Drive object already exists");
+        drive_->errorMsg(drive::drive_error::MULTIPLE_DRIVE_OBJECTS);
     }
 
     drive_->instance_ = drive_;
