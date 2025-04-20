@@ -27,20 +27,20 @@ void Action::runSubsystemFSM() {
     // Run state control
     stateControl();
     
-    // Check if tier changed - reset state initialization flag
-    if (lastTier != climb.getTier()) {
-        tierStateInitialized = false;
-        tierSubstate = 0;
-        lastTier = climb.getTier();
-    }
+    // // Check if tier changed - reset state initialization flag
+    // if (lastTier != climb.getTier()) {
+    //     tierStateInitialized = false;
+    //     tierSubstate = 0;
+    //     lastTier = climb.getTier();
+    // }
     
     // Update climb
-    if(runClimb){
-        climbControl();
-        climb.update(intakeManager.getIntakeAngle());
-    } else {
-        climb.setState(Climb::State::IDLE);
-    }
+    // if(runClimb){
+    //     climbControl();
+    //     climb.update(intakeManager.getIntakeAngle());
+    // } else {
+    //     climb.setState(Climb::State::IDLE);
+    // }
     
     // Update arm with new state
     lastArmState = arm.getState();

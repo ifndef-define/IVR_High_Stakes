@@ -48,14 +48,20 @@ void initialize() {
             pros::delay(20);
         }
     });
+	*/
 
 	pros::Task subsystem_task{[&]{
 		while(true) {
-			// actions.runSubsystemFSM();
+			actions.runSubsystemFSM();
+			// Make sure to update the IMU every loop
+			imu.update();
+			// Print the rotation value for debugging
+			pros::lcd::print(2, "Theta: %f", imu.get_rotation());
+			// You might want to add more debug info
+			pros::lcd::print(3, "IMU1 Status: %d", imu.get_status());
 			delay(10);
 		}
 	}};
-*/
 }
 
 void disabled() {}
@@ -68,18 +74,9 @@ void autonomous() {
 }
 
 void opcontrol() {
-	while(true){
-		// Make sure to update the IMU every loop
-		imu.update();
+	// while(true){
 		
-		// Print the rotation value for debugging
-		pros::lcd::print(2, "Theta: %f", imu.get_rotation());
-		
-		// You might want to add more debug info
-		pros::lcd::print(3, "IMU1 Status: %d", imu.get_status());
-		
-		delay(20);
-	}
+	// }
 	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-	// teleOp(ringToKeep);
+	teleOp(ringToKeep);
 }
