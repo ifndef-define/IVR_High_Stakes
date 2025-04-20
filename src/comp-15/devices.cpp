@@ -20,7 +20,7 @@ pros::Controller ctrler(pros::E_CONTROLLER_MASTER);
 MotorGroup rightDrive({-4, 11, -13, 16}, MotorGears::blue);
 MotorGroup leftDrive({8, -1, 5, -7}, MotorGears::blue);
 
-PneumaticsGroup pneumatics;
+// PneumaticsGroup pneumatics;
 
 Action actions(0, Ring::Color::NONE);
 

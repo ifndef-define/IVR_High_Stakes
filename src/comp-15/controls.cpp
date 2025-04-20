@@ -1,42 +1,150 @@
 #include "robots/comp-15/controls.h"
 
+/*
+List of everything that can be controlled:
+- Drive
+- Intake
+- Arm
+
+- Mogo Clamp
+- Mogo Rush R
+- Mogo Rush L
+- Mogo Rush Teeth
+- Intake Lock
+- Intake Lift
+
+- Left Wing
+- Right Wing
+- Inner Climb Arms
+- Outer Climb Arms
+- Climb PTO
+
+Controller Screens
+Drive Mode - Menu
+MogoClamp: Up/Down
+################ (16) Example
+Comp - Drive
+MogoClamp: Down
+*/
+
 struct driverProfile {
-    pros::controller_analog_e_t powerAxis;
-    pros::controller_analog_e_t turnAxis;
+    drive::drive_mode_e driveMode;
 
     pros::controller_digital_e_t intakeIn;
     pros::controller_digital_e_t intakeOut;
-    pros::controller_digital_e_t shift;
 
     pros::controller_digital_e_t backpackCycleStageUp;
     pros::controller_digital_e_t backpackCycleStageDown;
-    bool incrementBackpack;
+    bool adiSpecial;
 
     pros::controller_digital_e_t mogoClampToggle;
-    pros::controller_digital_e_t mogoRushCycle;
-    pros::controller_digital_e_t mogoRushClamp;
+    pros::controller_digital_e_t rightMogoRushCycle;
+    pros::controller_digital_e_t leftMogoRushCycle;
+    pros::controller_digital_e_t mogoRushTeethToggle;
+    pros::controller_digital_e_t intakeLock;
+    pros::controller_digital_e_t intakeLiftToggle;
+
+    pros::controller_digital_e_t climbMode_1;
+    pros::controller_digital_e_t climbMode_2;
+
+    pros::controller_digital_e_t leftWingToggle;
+    pros::controller_digital_e_t rightWingToggle;
+    pros::controller_digital_e_t innerClimbArmsToggle;
+    pros::controller_digital_e_t outerClimbArmsToggle;
+    pros::controller_digital_e_t climbPTOToggle;
 
     pros::controller_digital_e_t toggleColorSort;
 };
 
-driverProfile JesusPrimary = {
-    .powerAxis = pros::E_CONTROLLER_ANALOG_LEFT_Y,
-    .turnAxis = pros::E_CONTROLLER_ANALOG_RIGHT_X,
+// driverProfile old = {
+//     .powerAxis = pros::E_CONTROLLER_ANALOG_LEFT_Y,
+//     .turnAxis = pros::E_CONTROLLER_ANALOG_RIGHT_X,
 
-    .intakeIn = pros::E_CONTROLLER_DIGITAL_R1,
-    .intakeOut = pros::E_CONTROLLER_DIGITAL_R2,
-    .shift = pros::E_CONTROLLER_DIGITAL_RIGHT,
+//     .intakeIn = pros::E_CONTROLLER_DIGITAL_R1,
+//     .intakeOut = pros::E_CONTROLLER_DIGITAL_R2,
 
-    .backpackCycleStageUp = pros::E_CONTROLLER_DIGITAL_L1,
-    .backpackCycleStageDown = pros::E_CONTROLLER_DIGITAL_L2,
-    .incrementBackpack = true,
+//     .backpackCycleStageUp = pros::E_CONTROLLER_DIGITAL_L1,
+//     .backpackCycleStageDown = pros::E_CONTROLLER_DIGITAL_L2,
+//     .adiSpecial = true,
 
-    .mogoClampToggle = pros::E_CONTROLLER_DIGITAL_Y,
-    .mogoRushCycle = pros::E_CONTROLLER_DIGITAL_A, // Only w/o field connection
-    .mogoRushClamp = pros::E_CONTROLLER_DIGITAL_UP,
+//     .mogoClampToggle = pros::E_CONTROLLER_DIGITAL_Y,
+//     .mogoRushCycle = pros::E_CONTROLLER_DIGITAL_A, // Only w/o field connection
+//     .mogoRushClamp = pros::E_CONTROLLER_DIGITAL_UP,
 
-    .toggleColorSort = pros::E_CONTROLLER_DIGITAL_X
+//     .toggleColorSort = pros::E_CONTROLLER_DIGITAL_X
+// };
+
+const driverProfile JesusPrimary = {
+    .driveMode = drive::drive_mode_e::SPLIT_ARCADE_PL,
+    
+    .intakeIn = BUTTON_R1,
+    .intakeOut = BUTTON_R2,
+
+    .backpackCycleStageUp = BUTTON_L1,
+    .backpackCycleStageDown = BUTTON_L2,
+    .adiSpecial = false,
+
+    .mogoClampToggle = BUTTON_Y,
+    .rightMogoRushCycle = BUTTON_A,
+    .leftMogoRushCycle = BUTTON_A,
+    .mogoRushTeethToggle = BUTTON_UP,
+    // .intakeLock = null,
+    // .intakeLiftToggle = null,
+
+    .climbMode_1 = BUTTON_B,
+    .climbMode_2 = BUTTON_DOWN,
+
+    // .leftWingToggle = null,
+    // .rightWingToggle = null,
+    // .innerClimbArmsToggle = null,
+    // .outerClimbArmsToggle = null,
+    // .climbPTOToggle = null,
+
+    .toggleColorSort = BUTTON_X
 };
+
+
+const driverProfile ClimbMode = {
+    // .driveMode = drive::drive_mode_e::SPLIT_ARCADE_PL, // add custom drive mode no turn
+    
+    // .intakeIn = null,
+    // .intakeOut = null,
+
+    .backpackCycleStageUp = BUTTON_L1,
+    .backpackCycleStageDown = BUTTON_L2,
+    .adiSpecial = false,
+
+    // .mogoClampToggle = null, // Lock clamped
+    // .rightMogoRushCycle = null,
+    // .leftMogoRushCycle = null,
+    // .mogoRushTeethToggle = null,
+    // .intakeLock = null, // automatic
+    // .intakeLiftToggle = null, // automatic
+
+    .climbMode_1 = BUTTON_B,
+    .climbMode_2 = BUTTON_DOWN,
+
+    // .leftWingToggle = null, // automatic
+    // .rightWingToggle = null, // automatic
+    .innerClimbArmsToggle = BUTTON_RIGHT,
+    .outerClimbArmsToggle = BUTTON_LEFT,
+    .climbPTOToggle = BUTTON_B,
+
+    // .toggleColorSort = null
+};
+
+/*
+Before Climb
+- Get ring in arm
+- Line up with ladder
+
+Switch climb menu
+( this toggles wing and engages pto, locks intake? )
+Wait for rumble to climb
+
+inner arms out
+driver starts climbing
+*/
 
 const driverProfile &currentProfile = JesusPrimary;
 
