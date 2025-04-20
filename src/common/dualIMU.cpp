@@ -12,6 +12,24 @@ static double rawVel1, rawVel2;
 static bool velocityLow;
 static double head1, head2; // For heading values
 
+// Additional static variables for position checks and filter operations
+static double currentPosition;  // Used in multiple places to check position
+static double positionDiff;     // Used for position difference calculations
+static int i;                   // Loop counter
+static double testRot, testGyro; // For IMU validation
+
+// Last valid readings now static to persist across function calls
+static double lastValidR1 = 0.0;
+static double lastValidR2 = 0.0;
+static int longTermStationaryCounter = 0;
+
+// Add these static variables for connection tracking
+static unsigned long imu1DisconnectTime = 0;
+static unsigned long imu2DisconnectTime = 0;
+static bool imu1WasDisconnected = false;
+static bool imu2WasDisconnected = false;
+static const unsigned long RECONNECT_DELAY_MS = 500; // Wait 500ms before attempting reconnect
+
 DualIMU::DualIMU(int port1, int port2, double driftThresh)
   : imu1(port1),
     imu2(port2),
@@ -43,6 +61,11 @@ DualIMU::DualIMU(int port1, int port2, double driftThresh)
     yawFilter.update(y2);
     pitchFilter.update(p2);
     rollFilter.update(rl2);
+
+    // Initialize static variables
+    lastValidR1 = imu1.get_rotation();
+    lastValidR2 = imu2.get_rotation();
+    longTermStationaryCounter = 0;
 }
 
 // Helper method for regular filters - modified to handle disconnected IMUs
@@ -72,40 +95,106 @@ inline void DualIMU::applyFilter(KalmanFilter& filter, double val1, double val2)
     }
 }
 
-// Improved IMU connection check that also validates readings
+// Improved IMU connection check with reconnection support
 void DualIMU::checkIMUConnection() {
+    // Store previous state to detect reconnection
+    imu1WasDisconnected = imu1Disconnected;
+    imu2WasDisconnected = imu2Disconnected;
+    
     // Check IMU status first
     pros::ImuStatus status1 = imu1.get_status();
     pros::ImuStatus status2 = imu2.get_status();
     
     // Initial check based on IMU status
-    imu1Disconnected = (status1 == pros::ImuStatus::error);
-    imu2Disconnected = (status2 == pros::ImuStatus::error);
+    bool imu1CurrentState = (status1 == pros::ImuStatus::error);
+    bool imu2CurrentState = (status2 == pros::ImuStatus::error);
     
-    // Secondary check based on reading validity
-    // Try to read values and check if they're valid
-    if (!imu1Disconnected) {
+    // Store disconnect time when first disconnected
+    unsigned long currentTimeMs = pros::millis();
+    if (imu1CurrentState && !imu1Disconnected) {
+        imu1DisconnectTime = currentTimeMs;
+    }
+    if (imu2CurrentState && !imu2Disconnected) {
+        imu2DisconnectTime = currentTimeMs;
+    }
+    
+    // Update disconnect flags
+    imu1Disconnected = imu1CurrentState;
+    imu2Disconnected = imu2CurrentState;
+    
+    // If an IMU was disconnected but now seems available, verify with readings
+    if (imu1WasDisconnected && !imu1Disconnected) {
+        // Don't reconnect too quickly (wait RECONNECT_DELAY_MS)
+        if (currentTimeMs - imu1DisconnectTime < RECONNECT_DELAY_MS) {
+            imu1Disconnected = true; // Still consider disconnected during wait period
+            return;
+        }
+        
         try {
-            // Test readings - if these throw or return NaN/inf, mark as disconnected
-            double testRot = imu1.get_rotation();
-            double testGyro = imu1.get_gyro_rate().z;
+            // Test if IMU is really available
+            testRot = imu1.get_rotation();
+            testGyro = imu1.get_gyro_rate().z;
             
             if (std::isnan(testRot) || std::isinf(testRot) || 
                 std::isnan(testGyro) || std::isinf(testGyro) ||
-                std::abs(testRot) > 10000.0) { // Sanity check - no reasonable value is >10000
+                std::abs(testRot) > 10000.0) {
                 imu1Disconnected = true;
+            } else {
+                // Successfully reconnected - initialize IMU with current filter value
+                imu1Disconnected = false;
+                initializeReconnectedIMU(1);
             }
         } catch (...) {
-            // Any exception means the IMU is malfunctioning
             imu1Disconnected = true;
         }
     }
     
-    // Same for IMU2
+    // Same verification for IMU2
+    if (imu2WasDisconnected && !imu2Disconnected) {
+        // Don't reconnect too quickly
+        if (currentTimeMs - imu2DisconnectTime < RECONNECT_DELAY_MS) {
+            imu2Disconnected = true;
+            return;
+        }
+        
+        try {
+            testRot = imu2.get_rotation();
+            testGyro = imu2.get_gyro_rate().z;
+            
+            if (std::isnan(testRot) || std::isinf(testRot) || 
+                std::isnan(testGyro) || std::isinf(testGyro) ||
+                std::abs(testRot) > 10000.0) {
+                imu2Disconnected = true;
+            } else {
+                // Successfully reconnected - initialize IMU with current filter value
+                imu2Disconnected = false;
+                initializeReconnectedIMU(2);
+            }
+        } catch (...) {
+            imu2Disconnected = true;
+        }
+    }
+    
+    // Secondary check for IMUs that are connected
+    if (!imu1Disconnected) {
+        try {
+            testRot = imu1.get_rotation();
+            testGyro = imu1.get_gyro_rate().z;
+            
+            if (std::isnan(testRot) || std::isinf(testRot) || 
+                std::isnan(testGyro) || std::isinf(testGyro) ||
+                std::abs(testRot) > 10000.0) {
+                imu1Disconnected = true;
+            }
+        } catch (...) {
+            imu1Disconnected = true;
+        }
+    }
+    
     if (!imu2Disconnected) {
         try {
-            double testRot = imu2.get_rotation();
-            double testGyro = imu2.get_gyro_rate().z;
+            testRot = imu2.get_rotation();
+            testGyro = imu2.get_gyro_rate().z;
             
             if (std::isnan(testRot) || std::isinf(testRot) || 
                 std::isnan(testGyro) || std::isinf(testGyro) ||
@@ -115,6 +204,39 @@ void DualIMU::checkIMUConnection() {
         } catch (...) {
             imu2Disconnected = true;
         }
+    }
+}
+
+// New method to initialize a reconnected IMU with current filter values
+void DualIMU::initializeReconnectedIMU(int imuNumber) {
+    // Get the current filter estimates
+    double currentRotation = rotFilter.get_position();
+    double currentYaw = yawFilter.get_position();
+    double currentPitch = pitchFilter.get_position();
+    double currentRoll = rollFilter.get_position();
+    
+    if (imuNumber == 1) {
+        // Store the current filter estimates as "last valid" values for IMU1
+        lastValidR1 = currentRotation;
+        r1 = currentRotation; // Use filter value until IMU reading stabilizes
+        y1 = currentYaw;
+        p1 = currentPitch;
+        rl1 = currentRoll;
+        imu1.set_yaw(currentYaw);
+        imu1.set_rotation(currentRotation);
+        imu1.set_pitch(currentPitch);
+        imu1.set_roll(currentRoll);
+    } else {
+        // Store the current filter estimates as "last valid" values for IMU2
+        lastValidR2 = currentRotation;
+        r2 = currentRotation; // Use filter value until IMU reading stabilizes
+        y2 = currentYaw;
+        p2 = currentPitch;
+        rl2 = currentRoll;
+        imu2.set_yaw(currentYaw);
+        imu2.set_rotation(currentRotation);
+        imu2.set_pitch(currentPitch);
+        imu2.set_roll(currentRoll);
     }
 }
 
@@ -139,15 +261,15 @@ double DualIMU::validateReading(double value, double lastValidValue, double maxD
 
 // New helper method to check if position is stable
 bool DualIMU::isPositionStable() {
-    // Check if rotation position has changed less than the threshold
-    double currentRotation = rotFilter.get_position();
-    bool positionChange = std::fabs(currentRotation - lastRotationReading) < positionStabilityThreshold;
+    // Using member lastRotationReading instead of local variable
+    currentPosition = rotFilter.get_position();
+    positionDiff = std::fabs(currentPosition - lastRotationReading);
     
     // Update last reading for next time
-    lastRotationReading = currentRotation;
+    lastRotationReading = currentPosition;
     
     // If position is within threshold, increase counter
-    if (positionChange) {
+    if (positionDiff < positionStabilityThreshold) {
         positionStableCount++;
         return (positionStableCount >= positionStableThreshold);
     } else {
@@ -197,14 +319,21 @@ void DualIMU::detectStationary() {
     }
 }
 
+// Helper to reset filter with position and zero velocity while maintaining parameters
+inline void DualIMU::resetFilterStable(KalmanFilter& filter, double stablePos, double P_pos) {
+    filter.reset(stablePos, 0, 0, P_pos, 0.001, 0.001);
+}
+
 void DualIMU::update() {
-    // Store last valid readings for safety
-    static double lastValidR1 = rotFilter.get_position();
-    static double lastValidR2 = lastValidR1;
-    static int longTermStationaryCounter = 0; // Track how long we've been stationary
-    
     // Check IMU connection status before processing
     checkIMUConnection();
+    
+    // Output IMU status to LCD for debugging
+    // if (imu1Disconnected || imu2Disconnected) {
+    //     pros::lcd::print(5, "IMU Status: 1:%s 2:%s", 
+    //                      imu1Disconnected ? "Disconnected" : "Connected",
+    //                      imu2Disconnected ? "Disconnected" : "Connected");
+    // }
     
     // Calculate dt since last update
     currentTime = pros::millis() / 1000.0;
@@ -216,9 +345,8 @@ void DualIMU::update() {
         dt = 0.01; // Use reasonable default for invalid times
     }
     
-    // If both IMUs are disconnected, freeze the filter state completely
+    // If both IMUs are disconnected, freeze the filter state
     if (imu1Disconnected && imu2Disconnected) {
-        // Just return without updating (maintain last known state)
         return;
     }
     
@@ -233,11 +361,8 @@ void DualIMU::update() {
             p1 = validateReading(imu1.get_pitch(), pitchFilter.get_position(), 10.0);
             rl1 = validateReading(imu1.get_roll(), rollFilter.get_position(), 10.0);
             head1 = validateReading(imu1.get_heading(), headingFilter.get_position(), 10.0);
-            
-            // Update last valid readings
             lastValidR1 = r1;
         } catch (...) {
-            // Use last valid readings if exception occurs
             imu1Disconnected = true;
             r1 = lastValidR1;
         }
@@ -250,11 +375,8 @@ void DualIMU::update() {
             p2 = validateReading(imu2.get_pitch(), pitchFilter.get_position(), 10.0);
             rl2 = validateReading(imu2.get_roll(), rollFilter.get_position(), 10.0);
             head2 = validateReading(imu2.get_heading(), headingFilter.get_position(), 10.0);
-            
-            // Update last valid reading
             lastValidR2 = r2;
         } catch (...) {
-            // Use last valid readings if exception occurs
             imu2Disconnected = true;
             r2 = lastValidR2;
         }
@@ -271,36 +393,44 @@ void DualIMU::update() {
     if (isStationary && driftCompensationEnabled) {
         // WHEN STATIONARY - COMPLETELY PREVENT DRIFT
         
-        // After being stationary for a while, completely lock position
+        // After being stationary for a while, lock position with minimal checks
         if (longTermStationaryCounter > 40) {
-            // Increase position locking strength for tiny changes
-            // Only reset if position differs by more than a tiny amount
-            double currentPosition = rotFilter.get_position();
-            double positionDiff = std::fabs(currentPosition - lastStableRotation);
+            // Check each filter once, and reset if it's drifted
             
-            if (positionDiff > 0.01) { // Only reset if change is more than 0.01 degrees
-                rotFilter.reset(lastStableRotation, 0, 0, 0.001, 0.001, 0.001); // Even smaller covariance for tighter locking
+            // Rotation check - reuse static variables
+            currentPosition = rotFilter.get_position();
+            positionDiff = std::fabs(currentPosition - lastStableRotation);
+            
+            if (positionDiff > 0.01) {
+                resetFilterStable(rotFilter, lastStableRotation);
             }
             
-            // Same for other values - only reset if they've changed beyond a tiny tolerance
+            // Heading check
             currentPosition = headingFilter.get_position();
-            if (std::fabs(currentPosition - lastStableHeading) > 0.01) {
-                headingFilter.reset(lastStableHeading, 0, 0, 0.001, 0.001, 0.001);
+            positionDiff = std::fabs(currentPosition - lastStableHeading);
+            if (positionDiff > 0.01) {
+                resetFilterStable(headingFilter, lastStableHeading);
             }
             
+            // Yaw check
             currentPosition = yawFilter.get_position();
-            if (std::fabs(currentPosition - lastStableYaw) > 0.01) {
-                yawFilter.reset(lastStableYaw, 0, 0, 0.001, 0.001, 0.001);
+            positionDiff = std::fabs(currentPosition - lastStableYaw);
+            if (positionDiff > 0.01) {
+                resetFilterStable(yawFilter, lastStableYaw);
             }
             
+            // Pitch check
             currentPosition = pitchFilter.get_position();
-            if (std::fabs(currentPosition - lastStablePitch) > 0.01) {
-                pitchFilter.reset(lastStablePitch, 0, 0, 0.001, 0.001, 0.001);
+            positionDiff = std::fabs(currentPosition - lastStablePitch);
+            if (positionDiff > 0.01) {
+                resetFilterStable(pitchFilter, lastStablePitch);
             }
             
+            // Roll check
             currentPosition = rollFilter.get_position();
-            if (std::fabs(currentPosition - lastStableRoll) > 0.01) {
-                rollFilter.reset(lastStableRoll, 0, 0, 0.001, 0.001, 0.001);
+            positionDiff = std::fabs(currentPosition - lastStableRoll);
+            if (positionDiff > 0.01) {
+                resetFilterStable(rollFilter, lastStableRoll);
             }
             
             // Skip the rest of processing - position is locked
@@ -308,25 +438,19 @@ void DualIMU::update() {
             return;
         }
         
-        // For initial stationary period, we'll do a modified processing approach:
-        // Use a small prediction factor but stronger position locking
-        
-        // No prediction at all while stationary - this prevents drift
-        // Instead of: rotFilter.predict(reducedDt);
-        
         // Use high measurement noise to heavily discount new readings
         originalR = rotFilter.getR();
-        double stationaryNoiseFactor = 50.0; // Much higher noise factor (was 10.0)
+        double stationaryNoiseFactor = 50.0;
         
+        // Set all filters to high noise at once
         rotFilter.setR(originalR * stationaryNoiseFactor);
         headingFilter.setR(originalR * stationaryNoiseFactor);
         yawFilter.setR(originalR * stationaryNoiseFactor);
         pitchFilter.setR(originalR * stationaryNoiseFactor);
         rollFilter.setR(originalR * stationaryNoiseFactor);
         
-        // Apply filter with stable values having extreme weight
-        // We'll apply the stable values multiple times to give them more weight
-        for (int i = 0; i < 5; i++) { // Apply stable values 5 times
+        // Apply stable values with shared loop counter
+        for (i = 0; i < 5; i++) {
             rotFilter.update(lastStableRotation);
             headingFilter.update(lastStableHeading);
             yawFilter.update(lastStableYaw);  
@@ -334,48 +458,38 @@ void DualIMU::update() {
             rollFilter.update(lastStableRoll);
         }
         
-        // Apply IMU readings only once, with high noise reduction
+        // Apply IMU readings with higher noise
         applyFilter(rotFilter, r1, r2);
         applyFilter(headingFilter, head1, head2);
         applyFilter(yawFilter, y1, y2);
         applyFilter(pitchFilter, p1, p2);
         applyFilter(rollFilter, rl1, rl2);
         
-        // Restore original measurement noise
+        // Restore original measurement noise for all filters at once
         rotFilter.setR(originalR);
         headingFilter.setR(originalR);
         yawFilter.setR(originalR);
         pitchFilter.setR(originalR);
         rollFilter.setR(originalR);
         
-        // Force velocity to exactly zero - no tolerance for drift
-        rotFilter.reset(rotFilter.get_position(), 0, 0, 
-                      rotFilter.get_P_pos(), 0.01, 0.01); // Lower velocity covariance
-        
-        headingFilter.reset(headingFilter.get_position(), 0, 0, 
-                          headingFilter.get_P_pos(), 0.01, 0.01);
-        
-        yawFilter.reset(yawFilter.get_position(), 0, 0, 
-                      yawFilter.get_P_pos(), 0.01, 0.01);
-        
-        pitchFilter.reset(pitchFilter.get_position(), 0, 0, 
-                        pitchFilter.get_P_pos(), 0.01, 0.01);
-        
-        rollFilter.reset(rollFilter.get_position(), 0, 0, 
-                       rollFilter.get_P_pos(), 0.01, 0.01);
+        // Reset filters to force zero velocity
+        resetFilterStable(rotFilter, rotFilter.get_position(), rotFilter.get_P_pos());
+        resetFilterStable(headingFilter, headingFilter.get_position(), headingFilter.get_P_pos());
+        resetFilterStable(yawFilter, yawFilter.get_position(), yawFilter.get_P_pos());
+        resetFilterStable(pitchFilter, pitchFilter.get_position(), pitchFilter.get_P_pos());
+        resetFilterStable(rollFilter, rollFilter.get_position(), rollFilter.get_P_pos());
     } else {
         // WHEN MOVING - NORMAL FILTER OPERATION
-        
-        // Reset stationary counter
         longTermStationaryCounter = 0;
         
-        // Standard prediction and filter updates
+        // Standard prediction for all filters
         rotFilter.predict(dt);
         headingFilter.predict(dt);
         yawFilter.predict(dt);
         pitchFilter.predict(dt);
         rollFilter.predict(dt);
         
+        // Apply normal filtering
         applyFilter(rotFilter, r1, r2);
         applyFilter(headingFilter, head1, head2);
         applyFilter(yawFilter, y1, y2);
@@ -394,14 +508,11 @@ void DualIMU::update() {
     
     // Dynamically adjust process noise based on motion
     if (isStationary) {
-        // Very low process noise when stationary
         rotFilter.setAdaptiveNoiseParams(0.01, 0.005, 0.001);
     }
     else if (std::fabs(rotAccel) > 30.0) {
-        // Higher process noise during high acceleration
         rotFilter.setAdaptiveNoiseParams(0.2, 0.04, 0.002);
     } else {
-        // Normal process noise
         rotFilter.setAdaptiveNoiseParams(0.1, 0.01, 0.001);
     }
     

@@ -72,6 +72,12 @@ private:
     // Add helper method for validating readings
     double validateReading(double value, double lastValidValue, double maxDelta);
 
+    // Helper to reset filter with stable position and zero velocity
+    inline void resetFilterStable(KalmanFilter& filter, double stablePos, double P_pos = 0.001);
+    
+    // Add method to initialize a reconnected IMU
+    void initializeReconnectedIMU(int imuNumber);
+
 public:
     /**
      * @brief Constructs a DualIMU object.
@@ -109,4 +115,8 @@ public:
     // Debug methods
     double getVelocity() const; // For debugging
     double getAcceleration() const; // For debugging
+    
+    // Add getter for IMU connection status
+    bool isIMU1Connected() const { return !imu1Disconnected; }
+    bool isIMU2Connected() const { return !imu2Disconnected; }
 };
