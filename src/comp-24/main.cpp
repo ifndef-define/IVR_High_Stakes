@@ -52,7 +52,7 @@ void initialize() {
 
 	pros::Task subsystem_task{[&]{
 		while(true) {
-			actions.runSubsystemFSM();
+			// actions.runSubsystemFSM();
 			// Make sure to update the IMU every loop
 			imu.update();
 			// Print the rotation value for debugging
