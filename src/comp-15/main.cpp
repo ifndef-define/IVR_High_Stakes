@@ -80,9 +80,9 @@ void opcontrol() {
 		}
 
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-			arm.move(127/2.3);
+			arm.move(127/1.25);
 		} else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-			arm.move(-127/2.3);
+			arm.move(-127/1.25);
 		} else {
 			arm.brake();
 		}
