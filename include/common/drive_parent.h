@@ -13,6 +13,43 @@ using motor_g = pros::MotorGroup;
 
 class drive {
     public:
+        enum drive_mode_e {
+            TANK_m = 1,             // Tank Drive
+            SINGLE_STICK_ARCADE_R,  // Single Stick Arcade on Right Stick
+            SINGLE_STICK_ARCADE_L,  // Single Stick Arcade on Left Stick
+            SPLIT_ARCADE_PR,        // Split Arcade with power on Right Stick
+            SPLIT_ARCADE_PL,        // Split Arcade with power on Left Stick
+            HOLONOMIC_SR,           // Holonomic Drive with Strafe on Right Stick
+            HOLONOMIC_SL,           // Holonomic Drive with Strafe on Left Stick
+            FIELD_CENTRIC_SR,       // Field Centric Drive with Strafe on Right Stick
+            FIELD_CENTRIC_SL,       // Field Centric Drive with Strafe on Left Stick
+            CUSTOM_m
+        };
+
+
+        enum drive_error {
+            NO_ERROR = 0,
+            // Long followed by # of short below
+            DRIVE_LOOP_FAIL = 1,
+            UPDATE_AXIS_BAD_DRIVE_MODE_TANK = 2,
+            UPDATE_AXIS_BAD_DRIVE_MODE_HOLONOMIC = 3,
+            BUILDER_UNBALANCED_MOTOR_ARRAYS = 4,
+            BUILDER_LARGE_CTRLER_DEADZONE = 5,
+            BUILDER_OUT_OF_BOUNDS_EXP_SCALE = 6,
+            BUILDER_OUT_OF_BOUNDS_SIN_SCALE = 7,
+            BUILDER_OUT_OF_BOUNDS_STRAIGHT_SCALE = 8,
+            // Two long followed by #-7 of short below
+            BUILDER_MISSING_REQUIRED_PARAMS = 9,
+            BUILDER_MULTIPLE_DRIVE_SCALES = 10,
+            MULTIPLE_DRIVE_OBJECTS = 11
+        };
+
+        enum drive_config_e {
+            TANK_c = 1,
+            HOLONOMIC,
+            CUSTOM_c
+        };
+        
         /**
          * @brief Used by driver control to move the robot
          * 
@@ -73,44 +110,15 @@ class drive {
          * 
          * @param kill_paths If true, will kill all queued motion paths
          */
-        static void stopDrive(bool kill_paths=false);
+        static void brake();
 
-        enum drive_mode_e {
-            TANK_m = 1,             // Tank Drive
-            SINGLE_STICK_ARCADE_R,  // Single Stick Arcade on Right Stick
-            SINGLE_STICK_ARCADE_L,  // Single Stick Arcade on Left Stick
-            SPLIT_ARCADE_PR,        // Split Arcade with power on Right Stick
-            SPLIT_ARCADE_PL,        // Split Arcade with power on Left Stick
-            HOLONOMIC_SR,           // Holonomic Drive with Strafe on Right Stick
-            HOLONOMIC_SL,           // Holonomic Drive with Strafe on Left Stick
-            FIELD_CENTRIC_SR,       // Field Centric Drive with Strafe on Right Stick
-            FIELD_CENTRIC_SL,       // Field Centric Drive with Strafe on Left Stick
-            CUSTOM_m
-        };
+        /**
+         * @brief Changes the drive mode of the robot
+         * 
+         * @param drive_mode new drive mode to set
+         */
+        static void changeDriveMode(drive_mode_e drive_mode);
 
-
-        enum drive_error {
-            NO_ERROR = 0,
-            // Long followed by # of short below
-            DRIVE_LOOP_FAIL = 1,
-            UPDATE_AXIS_BAD_DRIVE_MODE_TANK = 2,
-            UPDATE_AXIS_BAD_DRIVE_MODE_HOLONOMIC = 3,
-            BUILDER_UNBALANCED_MOTOR_ARRAYS = 4,
-            BUILDER_LARGE_CTRLER_DEADZONE = 5,
-            BUILDER_OUT_OF_BOUNDS_EXP_SCALE = 6,
-            BUILDER_OUT_OF_BOUNDS_SIN_SCALE = 7,
-            BUILDER_OUT_OF_BOUNDS_STRAIGHT_SCALE = 8,
-            // Two long followed by #-7 of short below
-            BUILDER_MISSING_REQUIRED_PARAMS = 9,
-            BUILDER_MULTIPLE_DRIVE_SCALES = 10,
-            MULTIPLE_DRIVE_OBJECTS = 11
-        };
-
-        enum drive_config_e {
-            TANK_c = 1,
-            HOLONOMIC,
-            CUSTOM_c
-        };
 
     private:
         drive() = default;
@@ -133,6 +141,8 @@ class drive {
         inline static int max_rpm_ = 0;
         static drive_mode_e drive_mode_;
         static drive_config_e drive_config_;
+
+        static pros::Mutex multiDrive_mutex;
 
         // Drive control variables
         struct ctrler_axis_s {
@@ -182,13 +192,6 @@ class drive {
          * NOTE: Normalization will happen in the function
          */
         static int sinScale(int axis);
-
-        /**
-         * @brief Changes the drive mode of the robot
-         * 
-         * @param drive_mode new drive mode to set
-         */
-        static void changeDriveMode(drive_mode_e drive_mode);
 
     // Allow drive_builder to access private members
     friend class drive_builder;

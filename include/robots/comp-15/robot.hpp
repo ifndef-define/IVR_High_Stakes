@@ -9,3 +9,4 @@
 extern pros::Controller ctrler;
 
 extern drive *chassis;
+extern drive *climbChassis;

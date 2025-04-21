@@ -2,7 +2,9 @@
 
 // Add all common code headers here //
 #include "./drive_parent.h"
-#include "common/pid.hpp"
+#include "./pid.hpp"
+#include "./motion.h"
+#include "./odom.h"
 // #include "common/dual_imu.h"
 // #include "common/kalman_filter.h"
 // #include "common/localization_filter.h"

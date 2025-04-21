@@ -13,6 +13,8 @@ motor *drive::driveMotors[8];
 pros::Task *drive::drive_task;
 
 void drive::driveLoop() {
+    // High Stakes Specific, prevent multiple threads from running
+    drive::multiDrive_mutex.take();
     do {
         updateAxis();
 
@@ -34,6 +36,7 @@ void drive::driveLoop() {
 
         delay(10);
     } while (isThread);
+    drive::multiDrive_mutex.give();
 }
 
 void drive::loop(bool thread) {
