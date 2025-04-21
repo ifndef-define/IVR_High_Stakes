@@ -1,6 +1,5 @@
 #pragma once
-#include "common/includeList.h"
-#include "robots/comp-15/includeList.h"
+#include "robots/comp-15/robot.hpp"
 
 enum class ActionState {
     IDLE, // Robot is doing normal actions
@@ -166,3 +165,5 @@ class Action {
          */
         bool getRunColorSort();
 };
+
+extern Action actions;

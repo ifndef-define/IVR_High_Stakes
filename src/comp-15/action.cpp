@@ -221,3 +221,5 @@ bool Action::getPullbackFlag(){
 bool Action::getEjectFlag(){
     return ejectFlag;
 }
+
+Action actions(0, Ring::Color::NONE);

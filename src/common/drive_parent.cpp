@@ -224,9 +224,9 @@ void drive::updateAxis() {
         // Add custom drive configuration
     }
 
-    lcd::print(0, "Raw Axis: %d %d %d %d", raw_axis.l_x, raw_axis.l_y, raw_axis.r_x, raw_axis.r_y);
-    lcd::print(1, "Calc Axis: %d %d %d %d", calc_axis.l_x, calc_axis.l_y, calc_axis.r_x, calc_axis.r_y);
-    lcd::print(2, "Left: %d Right: %d", left, right);
+    // lcd::print(0, "Raw Axis: %d %d %d %d", raw_axis.l_x, raw_axis.l_y, raw_axis.r_x, raw_axis.r_y);
+    // lcd::print(1, "Calc Axis: %d %d %d %d", calc_axis.l_x, calc_axis.l_y, calc_axis.r_x, calc_axis.r_y);
+    // lcd::print(2, "Left: %d Right: %d", left, right);
 }
 
 double drive::normalizeAxis(double axis) {
@@ -256,17 +256,18 @@ drive_builder &drive_builder::with_drive_config(drive::drive_config_e drive_conf
 
     return *this;
 }
-drive_builder &drive_builder::with_drive_motors(initializer_list<motor*> l_motors, initializer_list<motor*> r_motors) {
+drive_builder &drive_builder::with_drive_motors(vector<int8_t> l_motors, vector<int8_t> r_motors, pros::MotorGears gearing) {
     if (l_motors.size() != r_motors.size()) {
         drive_->errorMsg(drive::drive_error::BUILDER_UNBALANCED_MOTOR_ARRAYS);
     }
     drive_->drive_motor_count_ = l_motors.size();
-    auto l_it = l_motors.begin(); 
+
+    auto l_it = l_motors.begin();
     auto r_it = r_motors.begin();
-    for (int i = 0; i < l_motors.size(); i++, l_it++, r_it++) {
-        drive_->driveMotors[i] = *l_it;
-        drive_->driveMotors[i + l_motors.size()] = *r_it;
-    }
+
+    drive_->left_side_ = new motor_g(l_motors, gearing);
+    drive_->right_side_ = new motor_g(r_motors, gearing);
+
     checkSum[0]<<=1; // Shift left by 1
 
     return *this;
@@ -280,10 +281,10 @@ drive_builder &drive_builder::with_drive_motors(motor_g &motor_g_1, motor_g &mot
         drive_->errorMsg(drive::drive_error::BUILDER_UNBALANCED_MOTOR_ARRAYS);
     }
     drive_->drive_motor_count_ = l_motors.size();
-    for (int i = 0; i < l_motors.size(); i++) {
-        drive_->driveMotors[i] = new motor(l_motors[i]);
-        drive_->driveMotors[i + l_motors.size()] = new motor(r_motors[i]);
-    }
+    // for (int i = 0; i < l_motors.size(); i++) {
+    //     drive_->driveMotors[i] = new motor(l_motors[i]);
+    //     drive_->driveMotors[i + l_motors.size()] = new motor(r_motors[i]);
+    // }
     checkSum[0]<<=1; // Shift left by 1   
 
     return *this;

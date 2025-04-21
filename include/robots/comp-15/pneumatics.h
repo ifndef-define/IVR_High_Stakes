@@ -18,4 +18,4 @@ class PneumaticsGroup {
         PneumaticsGroup();
 };
 
-PneumaticsGroup pneumatics;
+extern PneumaticsGroup pneumatics;

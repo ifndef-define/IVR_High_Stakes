@@ -209,10 +209,10 @@ class drive_builder {
          * @brief Set the drive motors
          * NOTE: Required to build a drive object
          * 
-         * @param l_motors Left side motors in a list
-         * @param r_motors Right side motors in a list
+         * @param l_motors Left side motor ports
+         * @param r_motors Right side motors ports
          */
-        drive_builder &with_drive_motors(initializer_list<motor*> l_motors, initializer_list<motor*> r_motors);
+        drive_builder &with_drive_motors(vector<int8_t> l_motors, vector<int8_t> r_motors, pros::MotorGears gearing);
 
         /**
          * @brief Set the drive motors

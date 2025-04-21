@@ -7,4 +7,6 @@ PneumaticsGroup::PneumaticsGroup():
     intakeLift(pros::adi::ext_adi_port_pair_t(8, 4), false),
     intakeLock(pros::adi::ext_adi_port_pair_t(8, 5), true),
     rightMogoRushArm(pros::adi::ext_adi_port_pair_t(8, 6), false) {}
-// No other methods, just a grouping classa
+// No other methods, just a grouping class
+
+PneumaticsGroup pneumatics;
