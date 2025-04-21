@@ -241,6 +241,10 @@ int drive::sinScale(int axis) {
     return (axis/abs(axis)) * pow(sin(M_PI_2 * fabs(normalizeAxis(axis))), drive_sin_scale_) * 127.0;
 }
 
+void drive::changeDriveMode(drive_mode_e drive_mode) {
+    drive_mode_ = drive_mode;
+}
+
 drive_builder::drive_builder(contoller &ctrler_1) {
     checkSum[0] = 0b00000001; // Used for required parameters 
     checkSum[1] = 0b00000001; // Used for selected drive scale parameters

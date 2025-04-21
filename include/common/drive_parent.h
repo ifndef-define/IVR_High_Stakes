@@ -183,6 +183,13 @@ class drive {
          */
         static int sinScale(int axis);
 
+        /**
+         * @brief Changes the drive mode of the robot
+         * 
+         * @param drive_mode new drive mode to set
+         */
+        static void changeDriveMode(drive_mode_e drive_mode);
+
     // Allow drive_builder to access private members
     friend class drive_builder;
 };

@@ -173,26 +173,16 @@ const driverProfile SoloClimbMode = {
     // .toggleColorSort = null // off
 };
 
-void controllerMsg(string msg) {
-    ctrler.rumble("...");
-    delay(100);
-    ctrler.clear_line(3);
-    delay(100);
-    ctrler.print(0, 0, msg.c_str());
-    delay(650);
-}
 
-/*
+/* Climb Operations:
 Before Climb
 - Get ring in arm
-- Line up with ladder (no pressure on intake to allow intake to lock)
+- Hold clamp mogo if climbing with
 
-Switch climb menu
-( this toggles wing and engages pto, locks intake? )
-Wait for rumble to climb
-
-inner arms out
-driver starts climbing
+Switch climb menu (this locks intake, toggles wing, and deploys inner arms)
+- Line up with ladder
+- Engage pto (this enables arm control and disables turning in drive) 
+- Driver starts climbing
 */
 
 const driverProfile controls[4] = {
@@ -209,16 +199,49 @@ enum DriveMode {
     MODE_COMP_CLIMB
 };
 
+void updateRobotSystems(DriveMode newMode, string msg) {
+    ctrler.rumble("...");
+    delay(100);
+    ctrler.clear_line(3);
+    delay(100);
+    ctrler.print(0, 0, msg.c_str());
+    delay(650);
+
+    switch (newMode) {
+        case MODE_SOLO:
+            // Close Left Wing
+            // Close Right Wing
+            // Retract Inner Climb Arms
+            // Retract Outer Climb Arms
+            // Disengage PTO
+            // Set Drive Mode to specified mode
+            // Enable color sort
+            break;
+        case MODE_SOLO_CLIMB:
+            // Extended Mogo Clamp
+            // Retract Mogo Rush Arms
+            // Lock Intake
+            // Deploy Inner Climb Arms
+            break;
+        case MODE_COMP:
+            // chassis->changeDriveMode(drive::drive_mode_e::SPLIT_ARCADE_PL);
+            break;
+        case MODE_COMP_CLIMB:
+            // chassis->changeDriveMode(drive::drive_mode_e::CUSTOM_m);
+            break;
+    }
+}
+
 void teleOp(Ring::Color ringToKeep) {
     chassis->loop(true);
     DriveMode activeProfile = MODE_SOLO;
 
     if (!pros::competition::is_connected()) {
         activeProfile = MODE_SOLO;
-        controllerMsg("Solo - Drive");
+        updateRobotSystems(activeProfile, "Solo - Drive");
     } else {
         activeProfile = MODE_COMP;
-        controllerMsg("Comp - Drive");
+        updateRobotSystems(activeProfile, "Comp - Drive");
     }
 
     while(1) {
@@ -272,7 +295,7 @@ void teleOp(Ring::Color ringToKeep) {
                 // Mode Change //
                 if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
                     activeProfile = MODE_SOLO_CLIMB;
-                    controllerMsg("Solo - Climb");
+                    updateRobotSystems(activeProfile, "Solo - Climb");
                 }
                 break;
             case MODE_SOLO_CLIMB:
@@ -280,7 +303,7 @@ void teleOp(Ring::Color ringToKeep) {
                 // Mode Change //
                 if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
                     activeProfile = MODE_SOLO;
-                    controllerMsg("Solo - Drive");
+                    updateRobotSystems(activeProfile, "Solo - Drive");
                 }
                 break;
             case MODE_COMP:
@@ -288,7 +311,7 @@ void teleOp(Ring::Color ringToKeep) {
                 // Mode Change //
                 if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
                     activeProfile = MODE_COMP_CLIMB;
-                    controllerMsg("Comp - Climb");
+                    updateRobotSystems(activeProfile, "Comp - Climb");
                 }
                 break;
             case MODE_COMP_CLIMB:
@@ -296,7 +319,7 @@ void teleOp(Ring::Color ringToKeep) {
                 // Mode Change //
                 if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
                     activeProfile = MODE_COMP;
-                    controllerMsg("Comp - Drive");
+                    updateRobotSystems(activeProfile, "Comp - Drive");
                 }
                 break;
         }
