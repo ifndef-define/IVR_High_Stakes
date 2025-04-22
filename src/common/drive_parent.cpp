@@ -11,6 +11,7 @@ drive::ctrler_axis_s drive::calc_axis;
 contoller *drive::drive_ctrler_;
 motor *drive::driveMotors[8];
 pros::Task *drive::drive_task;
+pros::Mutex drive::multiDrive_mutex;
 
 void drive::driveLoop() {
     // High Stakes Specific, prevent multiple threads from running

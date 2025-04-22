@@ -65,9 +65,9 @@ class drive {
         static void stopLoop();
 
         /**
-         * @brief Stops the drive motors and kills the thread if running
+         * @brief Full stops the drive motors and kills the thread if running
          */
-        static void stop();
+        static void brake();
 
         ////////////////////////////////////
         ///// Motion Related Functions /////
@@ -104,13 +104,6 @@ class drive {
          * @param right Right side power value [-1, 1]
          */
         static void moveDrive(double left, double right);
-
-        /**
-         * @brief Stops the drive from moving using brake mode. This will cancel the current motion profile if in use
-         * 
-         * @param kill_paths If true, will kill all queued motion paths
-         */
-        static void brake();
 
         /**
          * @brief Changes the drive mode of the robot

@@ -277,9 +277,7 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
 
         switch (activeProfile) {
             case MODE_SOLO:
-                //////////////////
-                /*    INTAKE    */
-                //////////////////
+                /// INTAKE ///
                 if(ctrler.get_digital(controls[activeProfile].intakeIn)) {
                     actions.setIntakeSpeed(1);
                 } else if(ctrler.get_digital(controls[activeProfile].intakeOut)) {
@@ -288,14 +286,10 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                     actions.setIntakeSpeed(0);
                 }
 
-                ///////////////
-                /*    ARM    */
-                ///////////////
+                /// ARM ///
                 /** @todo Rishi */
 
-                //////////////////
-                /*  Pneumatics  */
-                //////////////////
+                /// PNEUMATICS ///
                 if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {
                     pneumatics.mogoClamp.toggle();
                     if(pneumatics.mogoClamp.is_extended()) {
@@ -353,7 +347,7 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                 if (ctrler.get_digital_new_press(controls[activeProfile].climbPTOToggle)) {
                     pneumatics.climbPTO.toggle();
                     if (pneumatics.climbPTO.is_extended()) {
-                        chassis->stopDrive();
+                        // chassis->stopDrive();
                     } else {
                         chassis->changeDriveMode(controls[MODE_COMP].driveMode);
                     }
