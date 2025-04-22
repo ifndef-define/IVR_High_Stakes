@@ -74,7 +74,7 @@ void drive::errorMsg(int err_num) {
 }
 
 void drive::stopLoop() {
-    stop();
+    brake();
 
     if (drive::drive_task != nullptr) {
         drive::drive_task->remove();
@@ -91,7 +91,7 @@ void drive::turnAtRPM(int rpm) {
     /** @todo Will add Post-River Bots */
 }
 
-void drive::stop() {    
+void drive::brake() {    
     if (left_side_ != nullptr && right_side_ != nullptr) {
         left_side_->brake();
         right_side_->brake();

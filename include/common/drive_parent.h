@@ -64,11 +64,6 @@ class drive {
          */
         static void stopLoop();
 
-        /**
-         * @brief Full stops the drive motors and kills the thread if running
-         */
-        static void brake();
-
         ////////////////////////////////////
         ///// Motion Related Functions /////
         ////////////////////////////////////
@@ -111,6 +106,11 @@ class drive {
          * @param drive_mode new drive mode to set
          */
         static void changeDriveMode(drive_mode_e drive_mode);
+
+        /**
+         * @brief Full stops the drive motors and kills the thread if running
+         */
+        static void brake();
 
 
     private:
