@@ -58,11 +58,14 @@ class Climb {
 
         void extendPto();
         void retractPto();
-        void extendPusher();
-        void retractPusher();
+        void extendInnerArm();
+        void extendOuterArm();
+        void retractInnerArm();
+        void retractOuterArm();
 
         bool isPtoExtended();
-        bool isPusherExtended();
+        bool isInnerArmExtended();
+        bool isOuterArmExtended();
 
         void addEvent(std::function<void()> task, uint32_t delayMs = 0);
         void update(int curPos);

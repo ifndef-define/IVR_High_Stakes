@@ -7,10 +7,12 @@ void Climb::decrement() { curClimbState = (State)(std::max(int(curClimbState) - 
 void Climb::setState(State newState){ curClimbState = newState; }
 void Climb::setTier(Tier newTier){ curTier = newTier; }
 
-void Climb::extendPto(){ pneumatics->climbPto.extend(); }
-void Climb::retractPto(){ pneumatics->climbPto.retract(); }
-void Climb::extendPusher(){ pneumatics->climbPusher.extend(); }
-void Climb::retractPusher(){ pneumatics->climbPusher.retract(); }
+void Climb::extendPto(){ pneumatics->climbPTO.extend(); }
+void Climb::retractPto(){ pneumatics->climbPTO.retract(); }
+void Climb::extendInnerArm(){ pneumatics->innerClimbArms.extend(); }
+void Climb::retractInnerArm(){ pneumatics->innerClimbArms.retract(); }
+void Climb::extendOuterArm(){ pneumatics->outerClimbArms.extend(); }
+void Climb::retractOuterArm(){ pneumatics->outerClimbArms.retract(); }
 
 void Climb::addEvent(std::function<void()> task, uint32_t delayMs){ 
     taskQueue.push({task, delayMs}); 
@@ -69,8 +71,12 @@ bool Climb::isAtTargetPosition() {
 }
 
 bool Climb::isPtoExtended() {
-    return pneumatics->climbPto.is_extended();
+    return pneumatics->climbPTO.is_extended();
 }
-bool Climb::isPusherExtended() {
-    return pneumatics->climbPusher.is_extended();
+bool Climb::isInnerArmExtended() {
+    return pneumatics->innerClimbArms.is_extended();
+}
+
+bool Climb::isOuterArmExtended() {
+    return pneumatics->outerClimbArms.is_extended();
 }

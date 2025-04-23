@@ -31,6 +31,7 @@ double odom::Y_ENC_OFFSET = 0.0;
 pros::adi::Encoder* odom::_x_enc;
 pros::adi::Encoder* odom::_y_enc;
 pros::IMU* odom::_imu;
+DualIMU* odom::_dual_imu;
 
 odom::enc_coord odom::currentEnc;
 odom::enc_coord odom::lastEnc;
@@ -43,6 +44,7 @@ odom::odom(pros::adi::Encoder *x_enc, pros::adi::Encoder *y_enc, pros::IMU *imu,
     _x_enc = x_enc;
     _y_enc = y_enc;
     _imu = imu;
+    _dual_imu = nullptr;
     
     _x_enc->reset();
     _y_enc->reset();
@@ -57,7 +59,27 @@ odom::odom(pros::adi::Encoder *x_enc, pros::adi::Encoder *y_enc, pros::IMU *imu,
     deltaDisp = {0, 0, 0};
     currentPos = startPos;
     lastPos = startPos;
+}
+
+odom::odom(pros::adi::Encoder *x_enc, pros::adi::Encoder *y_enc, DualIMU *imu, r_coord startPos, double x_off, double x_tune, double y_off, double y_tune) {
+    _x_enc = x_enc;
+    _y_enc = y_enc;
+    _imu = nullptr;
+    _dual_imu = imu;
     
+    _x_enc->reset();
+    _y_enc->reset();
+
+    X_ENC_OFFSET = x_off * x_tune;
+    Y_ENC_OFFSET = y_off * y_tune;
+    
+    // Clear all values
+    currentEnc = {0, 0, 0};
+    lastEnc = {0, 0, 0};
+    deltaEnc = {0, 0, 0};
+    deltaDisp = {0, 0, 0};
+    currentPos = startPos;
+    lastPos = startPos;
 }
 
 void odom::update() {
@@ -66,7 +88,7 @@ void odom::update() {
         // Get the current encoder values and heading
         currentEnc.x = _x_enc->get_value();
         currentEnc.y = _y_enc->get_value();
-        currentEnc.theta = -convert::degToRad(_imu->get_rotation());
+        currentEnc.theta = -convert::degToRad(_dual_imu ? _dual_imu->get_rotation() : _imu->get_rotation());
     
         // Calculate the encoder value change since the last update
         deltaEnc = currentEnc - lastEnc;

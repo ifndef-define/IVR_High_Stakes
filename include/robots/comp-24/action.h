@@ -187,13 +187,6 @@ class Action {
 
         void setRunClimb(bool flag);
         bool getRunClimb();
-
-        void extendPto();
-        void retractPto();
-        void extendPusher();
-        void retractPusher();
-        bool isPtoExtended();
-        bool isPusherExtended();
 };
 
 extern Action actions;
