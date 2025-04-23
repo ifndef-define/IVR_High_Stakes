@@ -4,7 +4,7 @@ void auton(Ring::Color ringToKeep) {
     //Add auton code here
     if(ringToKeep == Ring::Color::RED) {
         redAuton();
-    }else if(ringToKeep == Ring::Color::BLUE) {
+    } else {
         blueAuton();
     }
 }
@@ -13,6 +13,6 @@ void redAuton(){
     
 }
 
-void blueAuton() {
-   
+void blueAuton(){
+    
 }

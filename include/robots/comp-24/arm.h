@@ -13,7 +13,7 @@ class Arm {
     private:
         pros::Motor armMotor;
         pros::Rotation armRot;
-        pros::ADIDigitalIn armLimit;
+        pros::adi::DigitalIn armLimit;
         int currentLimitState;
 
         float error = 0;

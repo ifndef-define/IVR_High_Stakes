@@ -81,7 +81,6 @@ public:
   void stopIntake();
 
   double getIntakeAngle();
-  void resetIntakeAngle();
   /**
    * @brief Gets the type that is kept in filter
    *
@@ -107,4 +106,6 @@ public:
    * @brief Updates the system
    */
   void update();
+
+  void resetIntakeAngle();
 };
