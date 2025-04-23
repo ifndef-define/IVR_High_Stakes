@@ -8,10 +8,12 @@ drive::drive_mode_e drive::drive_mode_;
 drive::drive_config_e drive::drive_config_;
 drive::ctrler_axis_s drive::raw_axis;
 drive::ctrler_axis_s drive::calc_axis;
-contoller *drive::drive_ctrler_;
+controller *drive::drive_ctrler_;
 motor *drive::driveMotors[8];
 pros::Task *drive::drive_task;
 pros::Mutex drive::multiDrive_mutex;
+PID drive::drive_pid(0,0,0,10,0);
+PID drive::turn_pid(0,0,0,5,0);
 
 void drive::driveLoop() {
     // High Stakes Specific, prevent multiple threads from running
@@ -249,7 +251,7 @@ void drive::changeDriveMode(drive_mode_e drive_mode) {
     drive_mode_ = drive_mode;
 }
 
-drive_builder::drive_builder(contoller &ctrler_1) {
+drive_builder::drive_builder(controller &ctrler_1) {
     checkSum[0] = 0b00000001; // Used for required parameters 
     checkSum[1] = 0b00000001; // Used for selected drive scale parameters
 

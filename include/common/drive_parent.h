@@ -1,9 +1,10 @@
 #pragma once
 #include "main.h"
+#include "common/pid.hpp"
 
 // Aliases
 using motor = pros::Motor;
-using contoller = pros::Controller;
+using controller = pros::Controller;
 using motor_g = pros::MotorGroup;
 
 /**
@@ -119,10 +120,13 @@ class drive {
         static drive *instance_;
 
         // Device pointers
-        static contoller *drive_ctrler_;
+        static controller *drive_ctrler_;
         static motor *driveMotors[8];
         static motor_g *left_side_;
         static motor_g *right_side_;
+
+        static PID drive_pid;
+        static PID turn_pid;
 
         // Drive configuration
         inline static short int drive_motor_count_ = 0;
@@ -198,7 +202,7 @@ class drive_builder {
          * 
          * @param ctrler_1 Controller object to use for drive control
          */
-        drive_builder(contoller &ctrler_1);
+        drive_builder(controller &ctrler_1);
 
         /**
          * @brief Set the drive configuration
