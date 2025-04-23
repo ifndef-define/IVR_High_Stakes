@@ -15,12 +15,9 @@ Ring::Color ringToKeep = Ring::Color::BLUE;
 
 void initialize() {
 	pros::lcd::initialize();
-	imu.reset(false);
 	
-
-
+	imu.reset(true);
 	actions.setRingColor(ringToKeep);
-
 
 	// chassis.calibrate(true);
 	// chassis.setPose(0, 0, 0);

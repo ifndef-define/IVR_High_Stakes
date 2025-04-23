@@ -239,7 +239,15 @@ void teleOp(Ring::Color ringToKeep) {
                 ///////////////
                 /*    ARM    */
                 ///////////////
-                /** @todo Rishi */
+                if(controls[activeProfile].backpackCycleStageUp && ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)){
+                    actions.setArmState(Arm::State::DESCORE);
+                } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                    actions.setArmState(Arm::State::READY);
+                } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                    actions.setArmState(Arm::State::SCORE);
+                } else {
+                    actions.setArmState(Arm::State::DOWN);
+                }
 
                 //////////////////
                 /*  Pneumatics  */
@@ -268,6 +276,8 @@ void teleOp(Ring::Color ringToKeep) {
                 if(ctrler.get_digital_new_press(controls[activeProfile].intakeLock)) {
                     pneumatics.intakeLock.toggle();
                 }
+
+                actions.runSubsystemFSM();
 
                 // Mode Change //
                 if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {

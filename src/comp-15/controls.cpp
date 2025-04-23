@@ -273,6 +273,11 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
         updateRobotSystems(activeProfile, "Comp - Drive", ringToKeep);
     }
 
+    actions.setRingColor(ringToKeep);
+    actions.setAutonControlFlag(false);
+    actions.setRunColorSort(true);
+    actions.setArmState(Arm::State::DOWN);
+
     while(1) {
 
         switch (activeProfile) {
@@ -288,6 +293,25 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
 
                 /// ARM ///
                 /** @todo Rishi */
+                if(actions.getOverride()){
+                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                        actions.setArmSpeed(1);
+                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.setArmSpeed(-1);
+                    } else {
+                        actions.setArmSpeed(0);
+                    }
+                } else {
+                    if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageUp)) {
+                        if(actions.getArmState()==Arm::State::READY) {
+                            actions.setArmState(Arm::State::DOWN);
+                        } else {
+                            actions.setArmState(Arm::State::READY);
+                        }
+                    } else if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.nextArmState();
+                    }
+                }
 
                 /// PNEUMATICS ///
                 if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {
@@ -314,6 +338,8 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                 if(ctrler.get_digital_new_press(controls[activeProfile].intakeLock)) {
                     pneumatics.intakeLock.toggle();
                 }
+
+                actions.runSubsystemFSM();
 
                 // Mode Change //
                 if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
