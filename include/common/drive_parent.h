@@ -102,6 +102,20 @@ class drive {
         static void moveDrive(double left, double right);
 
         /**
+         * @brief Stops drive motion given current motor brake mode
+         */
+        static void brake();
+
+        /**
+         * * @brief Sets the brake mode of the drive motors
+         */
+        static void setBrakeMode(pros::motor_brake_mode_e mode);
+
+        ///////////////////////////////////////////
+        /// Temporary Functions For High Stakes ///
+        ///////////////////////////////////////////
+
+        /**
          * @brief Changes the drive mode of the robot
          * 
          * @param drive_mode new drive mode to set
@@ -118,11 +132,6 @@ class drive {
          */
         [[deprecated("ONLY FOR VEX HIGH STAKES")]]
         static void changeDriveMotors(motor_g &motor_g_1, motor_g &motor_g_2);
-
-        /**
-         * @brief Full stops the drive motors and kills the thread if running
-         */
-        static void brake();
 
 
     private:

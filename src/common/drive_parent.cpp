@@ -101,10 +101,20 @@ void drive::brake() {
         return;
     }
 
-    for (int i = 0; i < drive_motor_count_; i++) {
-        if (driveMotors[i] != nullptr)
-            driveMotors[i]->brake();
-    }
+    // for (int i = 0; i < drive_motor_count_; i++) {
+    //     if (driveMotors[i] != nullptr)
+    //         driveMotors[i]->brake();
+    // }
+}
+
+void drive::changeDriveMotors(motor_g &motor_g_1, motor_g &motor_g_2) {
+    left_side_ = &motor_g_1;
+    right_side_ = &motor_g_2;
+}
+
+void drive::setBrakeMode(pros::motor_brake_mode_e mode) {
+    left_side_->set_brake_mode_all(mode);
+    right_side_->set_brake_mode_all(mode);
 }
 
 void drive::updateAxis() {

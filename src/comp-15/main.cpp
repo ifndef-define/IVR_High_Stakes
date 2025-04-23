@@ -5,14 +5,6 @@
 
 Ring::Color ringToKeep = Ring::Color::BLUE;
 
-// drive *climbChassis = drive_builder(ctrler)
-// 	.with_drive_config(drive::drive_config_e::TANK_c)
-// 	.with_drive_motors(leftClimbDrive, rightClimbDrive)
-// 	.with_drive_mode(drive::drive_mode_e::SPLIT_ARCADE_PL)
-// 	.add_max_rpm(600)
-// 	.add_ctrler_deadzone(3)
-// 	.build();
-
 void initialize() {
 	pros::lcd::initialize();
 	
