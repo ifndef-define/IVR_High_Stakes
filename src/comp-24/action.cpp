@@ -156,10 +156,10 @@ void Action::climbState() {
         case Climb::State::IDLE:
             break;
         case Climb::State::UP:
-            climb.addEvent([&](){climb.extendPusher();});
+            climb.addEvent([&](){climb.retractOuterArm();});
             break;
         case Climb::State::DOWN:
-            climb.addEvent([&](){climb.retractPusher();});
+            climb.addEvent([&](){climb.retractInnerArm();});
             break;
     }
 }
@@ -182,7 +182,7 @@ void Action::climbControl() {
                 intakeManager.resetIntakeAngle();
                 climb.addEvent([&](){climb.extendPto();}, 100);
                 climb.addEvent([&](){climb.retractPto();});
-                climb.addEvent([&](){climb.extendPusher();}, 100);
+                climb.addEvent([&](){climb.extendInnerArm();}, 100);
                 climb.setTier(Climb::Tier::IDLE);
             }
             break;
@@ -311,22 +311,5 @@ bool Action::getRunClimb(){
     return runClimb;
 }
 
-void Action::extendPto(){
-    climb.extendPto();
-}
-void Action::retractPto(){
-    climb.retractPto();
-}
-void Action::extendPusher(){
-    climb.extendPusher();
-}
-void Action::retractPusher(){
-    climb.retractPusher();
-}
 
-bool Action::isPtoExtended() {
-    return climb.isPtoExtended();
-}
-bool Action::isPusherExtended() {
-    return climb.isPusherExtended();
-}
+Action actions(0, Ring::Color::NONE, pneumatics);

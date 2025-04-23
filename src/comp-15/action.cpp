@@ -7,7 +7,7 @@
  * 
  * Sets the initial state of the arm to DOWN and the initial state of the Action to IDLE.
  */
-Action::Action(bool isAuton, Ring::Color ringToKeep): arm(2.5,0,0, 4,0,0), currentState(ActionState::IDLE), intakeManager(){ 
+Action::Action(bool isAuton, Ring::Color ringToKeep, PneumaticsGroup& p): arm(2.5,0,0, 4,0,0), currentState(ActionState::IDLE), intakeManager(), climb(p, 1,0,0) { 
     intakeManager.setFilterColor(ringToKeep);
     this->isAuton = isAuton;
 }
@@ -26,6 +26,21 @@ void Action::runSubsystemFSM() {
     }
     // Run state control
     stateControl();
+    
+    // // Check if tier changed - reset state initialization flag
+    // if (lastTier != climb.getTier()) {
+    //     tierStateInitialized = false;
+    //     tierSubstate = 0;
+    //     lastTier = climb.getTier();
+    // }
+    
+    // Update climb
+    // if(runClimb){
+    //     climbControl();
+    //     climb.update(intakeManager.getIntakeAngle());
+    // } else {
+    //     climb.setState(Climb::State::IDLE);
+    // }
     
     // Update arm with new state
     lastArmState = arm.getState();
@@ -84,26 +99,6 @@ void Action::releaseIntake(bool inv){
     intakeManager.stopIntake();
 }
 
-// void Action::ejectDisc(){
-    // if(ejectCounter >= 12){
-    //     ejectCounter--;
-    // } else if(ejectCounter > 0){
-    //     intakeManager.setIntakeSpeed(-1);
-    //     intakeManager.startIntake();
-    //     ejectCounter--;
-    // } else {
-    //     ejectCounter = 17;
-    //     if (this->autoResumeFlag){
-    //         intakeManager.setIntakeSpeed(1);
-    //         intakeManager.startIntake();
-    //     } else {
-    //         intakeManager.stopIntake();
-    //     }
-    //     setEjectFlag(false);
-    // }
-
-// }
-
 void Action::intakeState() {
     if(ejectFlag){
         ejectPhase = EjectPhase::FORWARD;
@@ -155,16 +150,93 @@ void Action::intakeState() {
     }
 }
 
-// void Action::pullbackIntake(){
-    // if (pauseCounter < 10){ // 7*15 = 105ms
-    //     pauseCounter++;
-    // } else {
-    //     pauseCounter = 0;
-    //     intakeManager.stopIntake();
-    //     setPullbackFlag(false);
-    // }
+void Action::climbState() {
+    climb.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+    switch(climb.getState()) {
+        case Climb::State::IDLE:
+            break;
+        case Climb::State::UP:
+            climb.addEvent([&](){climb.retractOuterArm();});
+            break;
+        case Climb::State::DOWN:
+            climb.addEvent([&](){climb.retractInnerArm();});
+            break;
+    }
+}
 
-// }
+void Action::climbControl() {
+    if(climb.isOverride()){ 
+        climb.setTier(Climb::Tier::IDLE); 
+        return;
+    }
+    
+    switch(climb.getTier()) {
+        case Climb::Tier::IDLE:
+            tierStateInitialized = false;
+            tierSubstate = 0;
+            break;
+            
+        case Climb::Tier::ZERO:
+            if (!tierStateInitialized) {
+                tierStateInitialized = true;
+                intakeManager.resetIntakeAngle();
+                climb.addEvent([&](){climb.extendPto();}, 100);
+                climb.addEvent([&](){climb.retractPto();});
+                climb.addEvent([&](){climb.extendInnerArm();}, 100);
+                climb.setTier(Climb::Tier::IDLE);
+            }
+            break;
+            
+        case Climb::Tier::ONE:
+            // Only initialize actions once when entering this state
+            if (!tierStateInitialized) {
+                // Pull up to tier one
+                climb.setState(Climb::State::DOWN);
+                tierStateInitialized = true;
+            }
+            
+            // When PID target is reached, proceed to next tier
+            if (climb.isAtTargetPosition()) {
+                tierStateInitialized = false;
+                climb.setTier(Climb::Tier::TWO);
+            }
+            break;
+            
+        case Climb::Tier::TWO:
+            // Use substates to track progress through this tier
+            if (!tierStateInitialized) {
+                climb.addEvent([&](){climb.setState(Climb::State::UP);});
+                tierStateInitialized = true;
+            }
+            
+            // First wait for UP movement to complete
+            if (tierSubstate == 0 && climb.isAtTargetPosition()) {
+                climb.addEvent([&](){climb.setState(Climb::State::DOWN);});
+                tierSubstate = 1;
+            }
+            
+            // Then wait for DOWN movement to complete
+            if (tierSubstate == 1 && climb.isAtTargetPosition()) {
+                tierSubstate = 0;
+                tierStateInitialized = false;
+                climb.setTier(Climb::Tier::THREE);
+            }
+            break;
+            
+        case Climb::Tier::THREE:
+            // Similar substate approach for the final tier
+            if (!tierStateInitialized) {
+                climb.setState(Climb::State::UP);
+                tierStateInitialized = true;
+            }
+            
+            if (climb.isAtTargetPosition()) {
+                climb.setState(Climb::State::DOWN);
+                arm.setState(Arm::State::SCORE);
+            }
+            break;
+    }
+}
 
 void Action::nextArmState() {
     arm.nextState();
@@ -172,6 +244,10 @@ void Action::nextArmState() {
 
 void Action::prevArmState() {
     arm.prevState();
+}
+
+void Action::setClimbState(Climb::State newState) {
+    climb.setState(newState);
 }
 
 void Action::setArmState(Arm::State newState) {
@@ -194,7 +270,7 @@ void Action::setRingColor(Ring::Color ringToKeep) {
     intakeManager.setFilterColor(ringToKeep);
 }
 
-ActionState Action::getState() {
+ActionState Action::getActionState() {
     return currentState;
 }
 
@@ -214,6 +290,10 @@ bool Action::getRunColorSort(){
     return runColorSort;
 }
 
+bool Action::getAutonControlFlag(){
+    return autoResumeFlag;
+}
+
 bool Action::getPullbackFlag(){
     return pullbackFlag;
 }
@@ -222,4 +302,14 @@ bool Action::getEjectFlag(){
     return ejectFlag;
 }
 
-Action actions(0, Ring::Color::NONE);
+
+void Action::setRunClimb(bool runClimb){
+    this->runClimb = runClimb;
+}
+
+bool Action::getRunClimb(){
+    return runClimb;
+}
+
+
+Action actions(0, Ring::Color::NONE, pneumatics);

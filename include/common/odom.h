@@ -1,5 +1,6 @@
 #pragma once
 #include "main.h"
+#include "common/dualIMU.h"
 
 class odom {
     public:
@@ -17,7 +18,7 @@ class odom {
         static odom* instance;
 
         odom(pros::adi::Encoder *x_enc, pros::adi::Encoder *y_enc, pros::IMU *imu, r_coord startPos, double x_off, double x_tune, double y_off, double y_tune);
-
+        odom(pros::adi::Encoder *x_enc, pros::adi::Encoder *y_enc, DualIMU *imu, r_coord startPos, double x_off, double x_tune, double y_off, double y_tune);
     private:
         struct enc_coord {
             double x, y, theta;
@@ -42,6 +43,7 @@ class odom {
         static pros::adi::Encoder* _x_enc;
         static pros::adi::Encoder* _y_enc;
         static pros::IMU* _imu;
+        static DualIMU* _dual_imu;
         static pros::Task *odom_task;
 
         static enc_coord currentEnc;

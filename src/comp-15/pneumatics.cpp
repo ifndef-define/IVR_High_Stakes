@@ -13,5 +13,4 @@ PneumaticsGroup::PneumaticsGroup():
     outerClimbArms(7, false),
     climbPTO(7, false) {}
 // No other methods, just a grouping class
-
 PneumaticsGroup pneumatics;

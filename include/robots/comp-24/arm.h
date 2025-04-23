@@ -13,10 +13,15 @@ class Arm {
     private:
         pros::Motor armMotor;
         pros::Rotation armRot;
+        pros::ADIDigitalIn armLimit;
+        int currentLimitState;
 
         float error = 0;
         PID small;
         PID large;
+
+        // Add variable to track previous limit switch state
+        int prevLimitState = 0;
 
         State curArmState = State::DOWN;
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 

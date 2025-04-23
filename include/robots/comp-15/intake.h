@@ -29,6 +29,7 @@ public:
    * @return The angle of the intake
    */
   double getAngle();
+  void resetAngle();
 };
 
 namespace Ring {
@@ -80,6 +81,7 @@ public:
   void stopIntake();
 
   double getIntakeAngle();
+  void resetIntakeAngle();
   /**
    * @brief Gets the type that is kept in filter
    *

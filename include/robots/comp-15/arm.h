@@ -13,17 +13,22 @@ class Arm {
     private:
         pros::Motor armMotor;
         pros::Rotation armRot;
+        pros::ADIDigitalIn armLimit;
+        int currentLimitState;
 
         float error = 0;
         PID small;
         PID large;
 
+        // Add variable to track previous limit switch state
+        int prevLimitState = 0;
+
         State curArmState = State::DOWN;
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             5,   // Angle for DOWN
-            34,  // Angle for READY 
-            190,   // Angle for SCORE
-            280  // Angle for DESCORE
+            29,  // Angle for READY 
+            215,   // Angle for SCORE
+            350  // Angle for DESCORE
         };
 
         bool override = false;
