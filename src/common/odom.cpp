@@ -88,8 +88,8 @@ void odom::update() {
         deltaDisp.theta = NAN; // This is not used
     
         // Update the global position of the robot
-        currentPos.x = lastPos.x + (deltaDisp.x * cos(deltaEnc.theta) - (deltaDisp.y * sin(deltaEnc.theta)));
-        currentPos.y = lastPos.y + (deltaDisp.x * sin(deltaEnc.theta) + (deltaDisp.y * cos(deltaEnc.theta)));
+        currentPos.x = lastPos.x + (deltaDisp.x * cos(currentPos.theta) - (deltaDisp.y * sin(currentPos.theta)));
+        currentPos.y = lastPos.y + (deltaDisp.x * sin(currentPos.theta) + (deltaDisp.y * cos(currentPos.theta)));
         currentPos.theta += convert::radToDeg(deltaEnc.theta); // Raw IMU value is the heading
     
         // Calculate the heading in Odom
@@ -127,6 +127,9 @@ void odom::update() {
     
         // Update last position
         lastPos = currentPos;
+        
+        if (debugMode)
+            debug();
 
         if (isThread)
             pros::delay(10); // Delay to save resources
@@ -139,12 +142,12 @@ odom::r_coord odom::getPos() {
 
 void odom::debug() {
     lcd::print(0, "Odom Info:");
-    lcd::print(1, "X: %f", currentPos.x);
-    lcd::print(2, "Y: %f", currentPos.y);
-    lcd::print(3, "Theta: %f", convert::radToDeg(currentPos.theta));
-    lcd::print(4, "RX Enc: %d", _x_enc->get_value());
-    lcd::print(5, "Y Enc: %d", _y_enc->get_value());
-    lcd::print(6, "Theta Enc: %f", _imu->get_rotation());
+    lcd::print(1, "X Enc: %d", _x_enc->get_value());
+    lcd::print(2, "Y Enc: %d", _y_enc->get_value());
+    lcd::print(3, "IMU Theta: %f", _imu->get_rotation());
+    lcd::print(4, "X: %f", currentPos.x);
+    lcd::print(5, "Y: %f", currentPos.y);
+    lcd::print(6, "Theta: %f", convert::radToDeg(currentPos.theta));
 }
 
 void odom::start(bool thread) {

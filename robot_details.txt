@@ -1,0 +1,56 @@
+//////////////////////////////////
+Both Robots
+//////////////////////////////////
+Controller screen line 3
+################ (16) Example
+Comp - Drive
+
+//////////////////////////////////
+Comp 15 (Black Bot)
+//////////////////////////////////
+Controllables:
+- Drive
+- Intake
+- Arm
+
+- Mogo Clamp
+- Mogo Rush R
+- Mogo Rush L
+- Mogo Rush Teeth
+- Intake Lift
+
+- Left Wing
+- Right Wing
+- Inner Climb Arms
+- Outer Climb Arms
+- Climb PTO
+
+Notes:
+- Only auto side mogo rush and wings
+- Can only climb outside of ladder either side
+
+//////////////////////////////////
+Comp 24 (White Bot)
+//////////////////////////////////
+Controllables:
+
+- Drive
+- Intake
+- Arm
+
+- Mogo Clamp
+- Mogo Rush R
+- Mogo Rush L
+- Mogo Rush Teeth
+- Intake Lock
+
+- Wings/Intake Lift
+- Inner Climb Arms
+- Outer Climb Arms
+- Climb PTO
+- Paper Climb Left
+- Paper Climb Left
+
+Notes:
+- No mogo rush in match
+- Can do inner/outer climb on either side

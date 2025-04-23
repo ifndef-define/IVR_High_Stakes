@@ -104,8 +104,19 @@ class drive {
          * @brief Changes the drive mode of the robot
          * 
          * @param drive_mode new drive mode to set
+         * NOTE: Unique to Vex High Stakes
          */
+        [[deprecated("ONLY FOR VEX HIGH STAKES")]]
         static void changeDriveMode(drive_mode_e drive_mode);
+
+        /**
+         * @brief Changes the motors of the robot's drive
+         * 
+         * @param  new drive configuration to set
+         * NOTE: Unique to Vex High Stakes
+         */
+        [[deprecated("ONLY FOR VEX HIGH STAKES")]]
+        static void changeDriveMotors(motor_g &motor_g_1, motor_g &motor_g_2);
 
         /**
          * @brief Full stops the drive motors and kills the thread if running

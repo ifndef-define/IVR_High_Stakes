@@ -27,13 +27,6 @@ drive *chassis = drive_builder(ctrler)
 pros::Imu imu(12);
 odom *robotOdom = new odom(&xEnc, &yEnc, &imu, odom::r_coord(0, 0, 90), 
 	-1.25, 1.0001, -0.625, 1.0001);
-// drive *climbChassis = drive_builder(ctrler)
-// 	.with_drive_config(drive::drive_config_e::TANK_c)
-// 	.with_drive_motors(leftClimbDrive, rightClimbDrive)
-// 	.with_drive_mode(drive::drive_mode_e::SPLIT_ARCADE_PL)
-// 	.add_max_rpm(600)
-// 	.add_ctrler_deadzone(3)
-// 	.build();
 
 void initialize() {
 	pros::lcd::initialize();
@@ -56,16 +49,6 @@ void initialize() {
     //         pros::delay(20);
     //     }
     // });
-
-	// pros::Task subsystem_task{[&]{
-    //     while(true) {
-	// 		#ifdef ENABLE_DUAL_IMU
-	// 		imu.update();
-	// 		#endif
-    //         actions.runSubsystemFSM();
-    //         delay(10);
-    //     }
-    // }};
 }
 
 void disabled() {}
@@ -77,16 +60,5 @@ void autonomous() {
 	auton(ringToKeep);
 }
 void opcontrol() {
-	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	teleOp(ringToKeep, false);
-	// robotOdom->start(true);
-	// while(1) {
-	// 	lcd::print(1, "X Enc: %d", xEnc.get_value());
-	// 	lcd::print(2, "Y Enc: %d", yEnc.get_value());
-	// 	lcd::print(3, "Heading: %f", -imu.get_rotation()); // rotations
-	// 	lcd::print(5, "X: %f Y: %f", robotOdom->getPos().x, robotOdom->getPos().y); // x,y
-	// 	lcd::print(6, "Theta: %f", robotOdom->getPos().theta); // global theta
-
-	// 	delay(20);
-	// }
 }

@@ -1,32 +1,5 @@
 #include "robots/comp-15/controls.h"
 
-/*
-List of everything that can be controlled:
-- Drive
-- Intake
-- Arm
-
-- Mogo Clamp
-- Mogo Rush R
-- Mogo Rush L
-- Mogo Rush Teeth
-- Intake Lock
-- Intake Lift
-
-- Left Wing
-- Right Wing
-- Inner Climb Arms
-- Outer Climb Arms
-- Climb PTO
-
-Controller Screens
-Drive Mode - Menu
-MogoClamp: Up/Down
-################ (16) Example
-Comp - Drive
-MogoClamp: Down
-*/
-
 struct driverProfile {
     drive::drive_mode_e driveMode;
 
