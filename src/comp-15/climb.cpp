@@ -1,4 +1,4 @@
-#include "robots/comp-24/climb.h"
+#include "robots/comp-15/climb.h"
 
 Climb::Climb(PneumaticsGroup& p, float kP, float kI, float kD): climbPID(kP, kI, kD) {}
 

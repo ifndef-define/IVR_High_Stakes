@@ -9,13 +9,15 @@ class PneumaticsGroup {
 
     public: 
         // Intake lift is managed by the intake class
-        pros::adi::Pneumatics mogoRushLeftArm;
-        pros::adi::Pneumatics mogoRushRightArm;
-        pros::adi::Pneumatics mogoRushClamp;
         pros::adi::Pneumatics mogoClamp;
+        pros::adi::Pneumatics leftMogoRushArm;
+        pros::adi::Pneumatics mogoRushTeeth;
+        pros::adi::Pneumatics intakeLift;
+        pros::adi::Pneumatics intakeLock;
+        pros::adi::Pneumatics rightMogoRushArm;
         pros::adi::Pneumatics climbPto;
         pros::adi::Pneumatics climbPusher;
         PneumaticsGroup();
 };
 
-using Air = PneumaticsGroup;
+extern PneumaticsGroup pneumatics;

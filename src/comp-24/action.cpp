@@ -330,3 +330,5 @@ bool Action::isPtoExtended() {
 bool Action::isPusherExtended() {
     return climb.isPusherExtended();
 }
+
+Action actions(0, Ring::Color::NONE, pneumatics);

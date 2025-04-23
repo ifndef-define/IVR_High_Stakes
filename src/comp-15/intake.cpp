@@ -10,6 +10,8 @@ void Intake::stopIntake(){ intakeMotor.brake(); }
 
 double Intake::getAngle(){ return intakeRot.get_position()/100; }
 
+void Intake::resetAngle(){ intakeRot.reset_position(); }
+
 ColorDetector::ColorDetector() : colorSensor(19) {
   colorSensor.set_led_pwm(100);
   colorSensor.set_integration_time(10);
@@ -50,6 +52,8 @@ void IntakeManager::setFilterColor(Ring::Color filterColor) { filter = filterCol
 bool IntakeManager::getEject() { return eject; }
 
 double IntakeManager::getIntakeAngle() { return intake.getAngle(); }
+
+void IntakeManager::resetIntakeAngle(){ intake.resetAngle(); }
 
 void IntakeManager::update() {
     // Check the current ring color from the detector

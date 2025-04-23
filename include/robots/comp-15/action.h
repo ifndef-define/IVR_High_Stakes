@@ -1,5 +1,7 @@
 #pragma once
 #include "robots/comp-15/robot.hpp"
+#include "common/includeList.h"
+// #include "robots/comp-24/includeList.h"
 
 enum class ActionState {
     IDLE, // Robot is doing normal actions
@@ -14,6 +16,7 @@ class Action {
         ActionState currentState;
         IntakeManager intakeManager;
         Arm arm;
+        Climb climb;
         bool isAuton;
         bool override = false;
         Arm::State lastArmState = Arm::State::DOWN;
@@ -24,19 +27,27 @@ class Action {
         bool ejectFlag = false;
         bool runColorSort = true;
         bool autoResumeFlag = false;
+        bool runClimb = false;
 
         EjectPhase ejectPhase = EjectPhase::IDLE;
         double ejectStartPos = 0;
         uint32_t pauseStartTime = 0;
         double currentRotation = 0;
 
+        // Climb state tracking
+        Climb::Tier lastTier = Climb::Tier::IDLE;  
+        bool tierStateInitialized = false;
+        int tierSubstate = 0;  // For tracking progress within each tier
+
     public:
-        Action(bool isAuton, Ring::Color ringToKeep);
+        Action(bool isAuton, Ring::Color ringToKeep, PneumaticsGroup& p);
         void runSubsystemFSM();
         void stateControl();
+        void climbControl();
 
         void releaseIntake(bool inv=false);
         void intakeState();
+        void climbState();
 
         /**
          * @brief Sets arm to override state
@@ -51,6 +62,8 @@ class Action {
          * @param flag The flag to set
          */
         void setAutonControlFlag(bool flag);
+
+        bool getAutonControlFlag();
 
         /**
          * @brief Returns if the arm is in an override state
@@ -99,6 +112,13 @@ class Action {
         void prevArmState();
         
         /**
+         * @brief Set the climb state
+         * 
+         * @param newState The state to set the climb to
+         */
+        void setClimbState(Climb::State newState);
+
+        /**
          * @brief Set the arm to a specific state
          * 
          * @param newState The state to set the arm to
@@ -139,7 +159,7 @@ class Action {
         * 
         * @return ActionState 
         */
-        ActionState getState();
+        ActionState getActionState();
 
         /**
          * @brief Get the Pullback Flag bool
@@ -164,6 +184,16 @@ class Action {
          * @return false 
          */
         bool getRunColorSort();
+
+        void setRunClimb(bool flag);
+        bool getRunClimb();
+
+        void extendPto();
+        void retractPto();
+        void extendPusher();
+        void retractPusher();
+        bool isPtoExtended();
+        bool isPusherExtended();
 };
 
 extern Action actions;

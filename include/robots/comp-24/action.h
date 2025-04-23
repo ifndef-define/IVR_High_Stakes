@@ -1,6 +1,7 @@
 #pragma once
+#include "robots/comp-24/robot.hpp"
 #include "common/includeList.h"
-#include "robots/comp-24/includeList.h"
+// #include "robots/comp-24/includeList.h"
 
 enum class ActionState {
     IDLE, // Robot is doing normal actions
@@ -194,3 +195,5 @@ class Action {
         bool isPtoExtended();
         bool isPusherExtended();
 };
+
+extern Action actions;

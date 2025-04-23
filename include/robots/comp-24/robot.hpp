@@ -1,10 +1,10 @@
 #pragma once
 
 // Add all robot header files here //
-#include "robots/comp-15/arm.h"
-#include "robots/comp-15/intake.h"
-#include "robots/comp-15/pneumatics.h"
-#include "robots/comp-15/climb.h"
+#include "robots/comp-24/arm.h"
+#include "robots/comp-24/intake.h"
+#include "robots/comp-24/pneumatics.h"
+#include "robots/comp-24/climb.h"
 #include "common/dualIMU.h"
 
 // Robot Definitions //
