@@ -173,26 +173,16 @@ const driverProfile SoloClimbMode = {
     // .toggleColorSort = null // off
 };
 
-void controllerMsg(string msg) {
-    ctrler.rumble("...");
-    delay(100);
-    ctrler.clear_line(3);
-    delay(100);
-    ctrler.print(0, 0, msg.c_str());
-    delay(650);
-}
 
-/*
+/* Climb Operations:
 Before Climb
 - Get ring in arm
-- Line up with ladder (no pressure on intake to allow intake to lock)
+- Hold clamp mogo if climbing with
 
-Switch climb menu
-( this toggles wing and engages pto, locks intake? )
-Wait for rumble to climb
-
-inner arms out
-driver starts climbing
+Switch climb menu (this locks intake, toggles wing, and deploys inner arms)
+- Line up with ladder
+- Engage pto (this enables arm control and disables turning in drive) 
+- Driver starts climbing
 */
 
 const driverProfile controls[4] = {
@@ -208,26 +198,86 @@ enum DriveMode {
     MODE_COMP,
     MODE_COMP_CLIMB
 };
+DriveMode activeProfile = MODE_SOLO;
 
-void teleOp(Ring::Color ringToKeep) {
+void updateRobotSystems(DriveMode newMode, string msg, Ring::Color botSide) {
+    ctrler.rumble("...");
+    delay(100);
+    ctrler.clear_line(3);
+    delay(100);
+    ctrler.print(0, 0, msg.c_str());
+    delay(650);
+
+    switch (newMode) {
+        case MODE_SOLO:
+            pneumatics.leftClimbWing.retract();
+            pneumatics.rightClimbWing.retract();
+            pneumatics.innerClimbArms.retract();
+            pneumatics.outerClimbArms.retract();
+            pneumatics.climbPTO.retract();
+            chassis->changeDriveMode(controls[activeProfile].driveMode);
+            // Enable color sort
+            break;
+        case MODE_SOLO_CLIMB:
+            pneumatics.mogoClamp.extend();
+            pneumatics.leftMogoRushArm.retract();
+            pneumatics.rightMogoRushArm.retract();
+            pneumatics.mogoRushTeeth.retract();
+            pneumatics.intakeLift.retract();
+            delay(500);
+            pneumatics.intakeLock.extend();
+            pneumatics.innerClimbArms.extend();
+            // Disable color sort
+            break;
+        case MODE_COMP:
+            pneumatics.intakeLock.retract();
+            pneumatics.intakeLift.retract();
+            pneumatics.leftClimbWing.retract();
+            pneumatics.rightClimbWing.retract();
+            pneumatics.innerClimbArms.retract();
+            pneumatics.outerClimbArms.retract();
+            pneumatics.climbPTO.retract();
+            chassis->changeDriveMode(controls[activeProfile].driveMode);
+            // Enable color sort (Driver Preference)
+            break;
+        case MODE_COMP_CLIMB:
+            pneumatics.mogoClamp.extend();
+            pneumatics.leftMogoRushArm.retract();
+            pneumatics.rightMogoRushArm.retract();
+            pneumatics.mogoRushTeeth.retract();
+            pneumatics.intakeLift.retract();
+            delay(500);
+            pneumatics.intakeLock.extend();
+            pneumatics.innerClimbArms.extend();
+            if (botSide == Ring::Color::BLUE) {
+                pneumatics.leftClimbWing.extend();
+                pneumatics.rightClimbWing.retract();
+            } else if (botSide == Ring::Color::RED) {
+                pneumatics.leftClimbWing.retract();
+                pneumatics.rightClimbWing.extend();
+            }
+            // Disable color sort
+            break;  
+    }
+}
+
+void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
     chassis->loop(true);
-    DriveMode activeProfile = MODE_SOLO;
+    // actions.setRingColor(ringToKeep);
 
-    if (!pros::competition::is_connected()) {
+    if (!pros::competition::is_connected() && !forceCompMode) {
         activeProfile = MODE_SOLO;
-        controllerMsg("Solo - Drive");
+        updateRobotSystems(activeProfile, "Solo - Drive", ringToKeep);
     } else {
         activeProfile = MODE_COMP;
-        controllerMsg("Comp - Drive");
+        updateRobotSystems(activeProfile, "Comp - Drive", ringToKeep);
     }
 
     while(1) {
 
         switch (activeProfile) {
             case MODE_SOLO:
-                //////////////////
-                /*    INTAKE    */
-                //////////////////
+                /// INTAKE ///
                 if(ctrler.get_digital(controls[activeProfile].intakeIn)) {
                     actions.setIntakeSpeed(1);
                 } else if(ctrler.get_digital(controls[activeProfile].intakeOut)) {
@@ -236,14 +286,10 @@ void teleOp(Ring::Color ringToKeep) {
                     actions.setIntakeSpeed(0);
                 }
 
-                ///////////////
-                /*    ARM    */
-                ///////////////
+                /// ARM ///
                 /** @todo Rishi */
 
-                //////////////////
-                /*  Pneumatics  */
-                //////////////////
+                /// PNEUMATICS ///
                 if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {
                     pneumatics.mogoClamp.toggle();
                     if(pneumatics.mogoClamp.is_extended()) {
@@ -272,15 +318,45 @@ void teleOp(Ring::Color ringToKeep) {
                 // Mode Change //
                 if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
                     activeProfile = MODE_SOLO_CLIMB;
-                    controllerMsg("Solo - Climb");
+                    updateRobotSystems(activeProfile, "Solo - Climb", ringToKeep);
                 }
                 break;
             case MODE_SOLO_CLIMB:
+                /// ARM ///
+                /** @todo Rishi */
+
+                /// PNEUMATICS ///
+                if (ctrler.get_digital_new_press(controls[activeProfile].intakeLock)) {
+                    pneumatics.intakeLock.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile].intakeLiftToggle)) {
+                    pneumatics.intakeLift.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile].leftWingToggle)) {
+                    pneumatics.leftClimbWing.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile].rightWingToggle)) {
+                    pneumatics.rightClimbWing.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile].innerClimbArmsToggle)) {
+                    pneumatics.innerClimbArms.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile].outerClimbArmsToggle)) {
+                    pneumatics.outerClimbArms.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile].climbPTOToggle)) {
+                    pneumatics.climbPTO.toggle();
+                    if (pneumatics.climbPTO.is_extended()) {
+                        // chassis->stopDrive();
+                    } else {
+                        chassis->changeDriveMode(controls[MODE_COMP].driveMode);
+                    }
+                }          
 
                 // Mode Change //
                 if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
                     activeProfile = MODE_SOLO;
-                    controllerMsg("Solo - Drive");
+                    updateRobotSystems(activeProfile, "Solo - Drive", ringToKeep);
                 }
                 break;
             case MODE_COMP:
@@ -288,7 +364,7 @@ void teleOp(Ring::Color ringToKeep) {
                 // Mode Change //
                 if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
                     activeProfile = MODE_COMP_CLIMB;
-                    controllerMsg("Comp - Climb");
+                    updateRobotSystems(activeProfile, "Comp - Climb", ringToKeep);
                 }
                 break;
             case MODE_COMP_CLIMB:
@@ -296,7 +372,7 @@ void teleOp(Ring::Color ringToKeep) {
                 // Mode Change //
                 if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
                     activeProfile = MODE_COMP;
-                    controllerMsg("Comp - Drive");
+                    updateRobotSystems(activeProfile, "Comp - Drive", ringToKeep);
                 }
                 break;
         }

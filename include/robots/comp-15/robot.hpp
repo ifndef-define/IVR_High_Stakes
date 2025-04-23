@@ -11,5 +11,7 @@
 extern pros::Controller ctrler;
 
 extern drive *chassis;
+extern drive *climbChassis;
 
+extern odom *robotOdom;
 extern DualIMU imu;
