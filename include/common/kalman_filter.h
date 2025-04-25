@@ -1,6 +1,4 @@
 #pragma once
-#include <functional>
-#include <cmath> // Added for std::fabs
 
 class KalmanFilter {
 private:
