@@ -19,7 +19,8 @@ Y Enc Calc Offset: -0.625
 const double odom::WHEEL_DIAMETER = 1.36;
 const double odom::TICKS_PER_ROTATION = 8192.0;
 const double odom::WHEEL_CIRCUMFERENCE = odom::WHEEL_DIAMETER * M_PI;
-const double odom::DISPLACEMENT_CONSTANT = WHEEL_CIRCUMFERENCE / TICKS_PER_ROTATION;
+double odom::X_DISPLACEMENT_CONSTANT = WHEEL_CIRCUMFERENCE / TICKS_PER_ROTATION;
+double odom::Y_DISPLACEMENT_CONSTANT = WHEEL_CIRCUMFERENCE / TICKS_PER_ROTATION;
 // const double odom::TICKS_PER_INCH = odom::TICKS_PER_ROTATION / odom::WHEEL_CIRCUMFERENCE;
 bool odom::debugMode = true;
 bool odom::isThread = false;
@@ -46,11 +47,19 @@ odom::odom(pros::adi::Encoder *x_enc, pros::adi::Encoder *y_enc, pros::IMU *imu,
     _imu = imu;
     _dual_imu = nullptr;
     
-    _x_enc->reset();
-    _y_enc->reset();
+    if (_x_enc != nullptr && _y_enc != nullptr) {
+        _x_enc->reset();
+        _y_enc->reset();
+    } else {
+        pros::lcd::print(0, "Odom: Encoder not found!");
+        debugMode = false;
+        return;
+    }
 
-    X_ENC_OFFSET = x_off * x_tune;
-    Y_ENC_OFFSET = y_off * y_tune;
+    X_ENC_OFFSET = x_off;
+    Y_ENC_OFFSET = y_off;
+    X_DISPLACEMENT_CONSTANT *= x_tune;
+    Y_DISPLACEMENT_CONSTANT *= y_tune;
     
     // Clear all values
     currentEnc = {0, 0, 0};
@@ -67,11 +76,19 @@ odom::odom(pros::adi::Encoder *x_enc, pros::adi::Encoder *y_enc, DualIMU *imu, r
     _imu = nullptr;
     _dual_imu = imu;
     
-    _x_enc->reset();
-    _y_enc->reset();
+    if (_x_enc != nullptr && _y_enc != nullptr) {
+        _x_enc->reset();
+        _y_enc->reset();
+    } else {
+        pros::lcd::print(0, "Odom: Encoder not found!");
+        debugMode = false;
+        return;
+    }
 
-    X_ENC_OFFSET = x_off * x_tune;
-    Y_ENC_OFFSET = y_off * y_tune;
+    X_ENC_OFFSET = x_off;
+    Y_ENC_OFFSET = y_off;
+    X_DISPLACEMENT_CONSTANT *= x_tune;
+    Y_DISPLACEMENT_CONSTANT *= y_tune;
     
     // Clear all values
     currentEnc = {0, 0, 0};
@@ -84,6 +101,9 @@ odom::odom(pros::adi::Encoder *x_enc, pros::adi::Encoder *y_enc, DualIMU *imu, r
 
 void odom::update() {
     do {
+        if (_dual_imu != nullptr) {
+            _dual_imu->update();
+        }
 
         // Get the current encoder values and heading
         currentEnc.x = _x_enc->get_value();
@@ -96,56 +116,16 @@ void odom::update() {
         // Update last encoder values
         lastEnc = currentEnc;
     
-        /**
-         * There are two ways that odom can be calculated:
-         * - Use given IMU heading
-         * - Calculate heading from encoder values
-         */
-    
-        // Assume given IMU heading
-    
+        // Assume given IMU heading 
         // Calculate the distance traveled
-        deltaDisp.x = (DISPLACEMENT_CONSTANT * deltaEnc.x) - X_ENC_OFFSET * deltaEnc.theta;
-        deltaDisp.y = (DISPLACEMENT_CONSTANT * deltaEnc.y) - Y_ENC_OFFSET * deltaEnc.theta;
+        deltaDisp.x = (X_DISPLACEMENT_CONSTANT * deltaEnc.x) - X_ENC_OFFSET * deltaEnc.theta;
+        deltaDisp.y = (Y_DISPLACEMENT_CONSTANT * deltaEnc.y) - Y_ENC_OFFSET * deltaEnc.theta;
         deltaDisp.theta = NAN; // This is not used
     
         // Update the global position of the robot
         currentPos.x = lastPos.x + (deltaDisp.x * cos(currentPos.theta) - (deltaDisp.y * sin(currentPos.theta)));
         currentPos.y = lastPos.y + (deltaDisp.x * sin(currentPos.theta) + (deltaDisp.y * cos(currentPos.theta)));
-        currentPos.theta += convert::radToDeg(deltaEnc.theta); // Raw IMU value is the heading
-    
-        // Calculate the heading in Odom
-    
-        // // Calculate the distance traveled
-        // deltaDisp.x = DISPLACEMENT_CONSTANT * (deltaEnc.l_y+deltaEnc.r_y) / 2;
-        // deltaDisp.y = DISPLACEMENT_CONSTANT * (deltaEnc.x - X_ENC_OFFSET * (deltaEnc.r_y - deltaEnc.l_y) / (1.25*2));
-        // // deltaDisp.theta = DISPLACEMENT_CONSTANT * (deltaEnc.r_y - deltaEnc.l_y) / (1.25*2);
-        // deltaDisp.theta = deltaEnc.theta;
-    
-    
-        // deltaDisp.x = (DISPLACEMENT_CONSTANT * (deltaEnc.l_x + deltaEnc.r_x) - (RX_ENC_OFFSET - LX_ENC_OFFSET) * deltaEnc.theta) / 2.0;
-        // deltaDisp.y = (DISPLACEMENT_CONSTANT * deltaEnc.y - Y_ENC_OFFSET * deltaEnc.theta);
-        // deltaDisp.theta = deltaEnc.theta;
-        
-        // // Update the global position of the robot
-        // currentPos.x = lastPos.x + (deltaDisp.x * cos(lastPos.theta) - (deltaDisp.y * sin(lastPos.theta)));
-        // currentPos.y = lastPos.y + (deltaDisp.x * sin(lastPos.theta) + (deltaDisp.y * cos(lastPos.theta)));
-        // currentPos.theta = lastPos.theta + deltaDisp.theta;
-    
-        // deltaDist.x = ((M_PI * WHEEL_DIAMETER) / TICKS_PER_ROTATION) * deltaEnc.x;
-        // deltaDist.y = ((M_PI * WHEEL_DIAMETER) / TICKS_PER_ROTATION) * deltaEnc.y;
-        // deltaDist.theta = NAN; // This is not used
-    
-        // Calculate the displacement of the robot since the last update
-        // displacement.x = deltaDist.x - (HORIZONTAL_OFFSET * convert::degToRad(deltaEnc.theta));
-        // displacement.y = deltaDist.y - (VERTICAL_OFFSET * convert::degToRad(deltaEnc.theta));
-        // displacement.theta = deltaEnc.theta; // These changes are the same
-    
-        // Find field position given the displacement
-        // currentPos.x = lastPos.x + (displacement.x * cos(convert::degToRad(lastPos.theta)) - (displacement.y * sin(convert::degToRad(lastPos.theta))));
-        // currentPos.y = lastPos.y + (displacement.x * sin(convert::degToRad(lastPos.theta)) + (displacement.y * cos(convert::degToRad(lastPos.theta))));
-        // currentPos.theta = currentEnc.theta; // Raw IMU value is the heading
-    
+        currentPos.theta += convert::radToDeg(deltaEnc.theta); // Raw IMU value is the heading    
     
         // Update last position
         lastPos = currentPos;
@@ -162,14 +142,23 @@ odom::r_coord odom::getPos() {
     return currentPos;
 }
 
+void odom::setPos(r_coord pos) {
+    currentPos = pos;
+    lastPos = pos;
+    currentEnc = {0, 0, 0};
+    lastEnc = {0, 0, 0};
+    deltaEnc = {0, 0, 0};
+    deltaDisp = {0, 0, 0};
+}
+
 void odom::debug() {
     lcd::print(0, "Odom Info:");
     lcd::print(1, "X Enc: %d", _x_enc->get_value());
     lcd::print(2, "Y Enc: %d", _y_enc->get_value());
-    lcd::print(3, "IMU Theta: %f", _imu->get_rotation());
+    lcd::print(3, "IMU Theta: %f", _imu == nullptr ? _dual_imu->get_rotation() : _imu->get_rotation());
     lcd::print(4, "X: %f", currentPos.x);
     lcd::print(5, "Y: %f", currentPos.y);
-    lcd::print(6, "Theta: %f", convert::radToDeg(currentPos.theta));
+    lcd::print(6, "Theta: %f", currentPos.theta);
 }
 
 void odom::start(bool thread) {

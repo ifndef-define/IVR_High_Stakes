@@ -37,6 +37,7 @@
 #include <fstream>
 #include <sstream>
 #include <initializer_list>
+#include <functional>
 ///////////////////////////////////////
 
 /**

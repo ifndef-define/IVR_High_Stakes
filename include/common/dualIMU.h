@@ -1,8 +1,6 @@
 #pragma once
-#include "pros/imu.hpp"
+#include "main.h"
 #include "common/kalman_filter.h"
-#include <cmath>
-#include <functional>
 
 /**
  * @class DualIMU

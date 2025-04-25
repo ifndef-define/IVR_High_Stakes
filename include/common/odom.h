@@ -14,6 +14,7 @@ class odom {
         static void start(bool thread=true);
         static void stop();
         static r_coord getPos();
+        static void setPos(r_coord pos);
 
         static odom* instance;
 
@@ -31,7 +32,8 @@ class odom {
         static const double TICKS_PER_ROTATION;
         static const double WHEEL_CIRCUMFERENCE;
         static const double TICKS_PER_INCH;
-        static const double DISPLACEMENT_CONSTANT;
+        static double X_DISPLACEMENT_CONSTANT;
+        static double Y_DISPLACEMENT_CONSTANT;
         
         static double X_ENC_OFFSET;
         static double Y_ENC_OFFSET;
