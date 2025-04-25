@@ -14,11 +14,6 @@ void Arm::update(){
         armRot.set_position(armStateAngles[0]); // Multiply by 100 because getAngle divides by 100
     }
     
-    // If limit switch is currently pressed, prevent moving backward
-    if(currentLimitState == 1 && error < 0) {
-        error = 0;
-    }
-    
     if(!override){ 
         error = armStateAngles[(int)curArmState] - getAngle();
         if(abs(error) < 20){
