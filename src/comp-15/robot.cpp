@@ -9,7 +9,7 @@ pros::MotorGroup rightClimbDrive({-2, 15, -14, 7, 10}, pros::MotorGears::blue);
 
 pros::adi::Encoder yEnc(3, 4, true);
 pros::adi::Encoder xEnc(1, 2, false);
-
+	
 drive *chassis = drive_builder(ctrler)
 	.with_drive_config(drive::drive_config_e::TANK_c)
 	.with_drive_motors(leftDrive, rightDrive)
@@ -19,7 +19,5 @@ drive *chassis = drive_builder(ctrler)
 	.add_ctrler_deadzone(3)
 	.build();
 
-// pros::Imu imu(12);
 DualIMU imu(11, 12, 2.5);
-odom *robotOdom = new odom(&xEnc, &yEnc, &imu, odom::r_coord(0, 0, 90), 
-	-1.25, 1.0001, -0.625, 1.0001);
+odom *robotOdom = new odom(&xEnc, &yEnc, &imu, odom::r_coord(0, 0, 90), 1.25, 1.0001, 0.625, 1.0001);
