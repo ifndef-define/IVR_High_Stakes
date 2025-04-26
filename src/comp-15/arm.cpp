@@ -1,18 +1,18 @@
 #include "robots/comp-15/arm.h"
-Arm::Arm(float kP, float kI, float kD, float kP2, float kI2, float kD2) : armMotor(3, pros::MotorGears::red), armRot(-8), armLimit(1), large(kP, kI, kD, 0, 0), small(kP2, kI2, kD2, 0, 0) {
+Arm::Arm(float kP, float kI, float kD, float kP2, float kI2, float kD2) : armMotor(3, pros::MotorGears::red), armRot(-6), armLimit({8,8}), large(kP, kI, kD, 0, 0), small(kP2, kI2, kD2, 0, 0) {
     armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
     armRot.set_position(-30);
 }
 
 void Arm::update(){
     // Get current limit switch state
-    currentLimitState = armLimit.get_value();
+    // currentLimitState = armLimit.get_value();
     
-    // Check if limit switch is NEWLY pressed (rising edge detection)
-    if(currentLimitState == 1 && prevLimitState == 0) {
-        // Reset position to match DOWN state angle only when first pressed
-        armRot.set_position(armStateAngles[0]); // Multiply by 100 because getAngle divides by 100
-    }
+    // // Check if limit switch is NEWLY pressed (rising edge detection)
+    // if(currentLimitState == 1 && prevLimitState == 0) {
+    //     // Reset position to match DOWN state angle only when first pressed
+    //     armRot.set_position(armStateAngles[0]); // Multiply by 100 because getAngle divides by 100
+    // }
     
     if(!override){ 
         error = armStateAngles[(int)curArmState] - getAngle();

@@ -43,8 +43,8 @@ Controllables:
 - Mogo Rush L
 - Mogo Rush Teeth
 - Intake Lock
+- Intake Lift 
 
-- Wings/Intake Lift
 - Inner Climb Arms
 - Outer Climb Arms
 - Climb PTO

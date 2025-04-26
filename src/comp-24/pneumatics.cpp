@@ -1,16 +1,16 @@
 #include "robots/comp-24/pneumatics.h"
 
 PneumaticsGroup::PneumaticsGroup(): 
-    mogoClamp(pros::adi::ext_adi_port_pair_t(8, 1), false),
-    leftMogoRushArm(pros::adi::ext_adi_port_pair_t(8, 2), false),
-    rightMogoRushArm(pros::adi::ext_adi_port_pair_t(8, 6), false),
-    mogoRushTeeth(pros::adi::ext_adi_port_pair_t(8, 3), false),
-    intakeLock(pros::adi::ext_adi_port_pair_t(8, 5), true),
-    intakeLift_Wings(pros::adi::ext_adi_port_pair_t(8, 4), false),
-    innerClimbArms(7, false),
-    outerClimbArms(7, false),
-    climbPTO(7, false),
-    paperLeft(7, false),
-    paperRight(7, false) {}
+    mogoClamp(pros::adi::ext_adi_port_pair_t(8, 1), false), // start retracted, 1 is extended
+    leftMogoRushArm(pros::adi::ext_adi_port_pair_t(8, 2), false), // start retracted, 1 is extended
+    rightMogoRushArm(pros::adi::ext_adi_port_pair_t(8, 6), false), // start retracted, 1 is extended
+    mogoRushTeeth(pros::adi::ext_adi_port_pair_t(8, 3), true, true), // start extended, 1 is retracted
+    intakeLock(pros::adi::ext_adi_port_pair_t(8, 5), true), // start retracted, 1 is extended
+    intakeLift(pros::adi::ext_adi_port_pair_t(8, 4), true, true), // start extended, 1 is retract
+    innerClimbArms(5, false), // start retracted, 1 is extended
+    outerClimbArms(6, false), // start retracted, 1 is extended
+    climbPTO(8, false), // start retracted, 1 is extended
+    paperLeft(99, false), // start retracted, 1 is extended
+    paperRight(99, false) {} // start retracted, 1 is extended
 // No other methods, just a grouping class
 PneumaticsGroup pneumatics;
