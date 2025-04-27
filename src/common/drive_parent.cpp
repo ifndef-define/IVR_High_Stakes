@@ -4,6 +4,7 @@
 drive *drive::instance_;
 motor_g *drive::left_side_;
 motor_g *drive::right_side_;
+odom *drive::odom_;
 drive::drive_mode_e drive::drive_mode_;
 drive::drive_config_e drive::drive_config_;
 drive::ctrler_axis_s drive::raw_axis;
@@ -362,8 +363,8 @@ drive_builder &drive_builder::add_sin_drive_scale(double scale) {
 
     return *this;
 }
-drive_builder &drive_builder::add_odom_config(/** @todo Need Odom class */) {
-    // Awaiting Odom class
+drive_builder &drive_builder::add_odom_config(odom &robot_odom) {
+    drive_->odom_ = &robot_odom;
 
     return *this;
 }

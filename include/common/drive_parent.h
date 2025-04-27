@@ -1,6 +1,7 @@
 #pragma once
 #include "main.h"
 #include "common/pid.hpp"
+#include "common/odom.h"
 
 // Aliases
 using motor = pros::Motor;
@@ -147,6 +148,8 @@ class drive {
 
         static PID drive_pid;
         static PID turn_pid;
+
+        static odom *odom_;
 
         // Drive configuration
         inline static short int drive_motor_count_ = 0;
@@ -311,8 +314,8 @@ class drive_builder {
          * @brief Set the odom config
          * @todo Need Odom class
          */
-        drive_builder &add_odom_config(/** @todo Need Odom class */);
-
+        drive_builder &add_odom_config(odom &robot_odom);
+    
         // /**
         //  * @brief Add uniform holonomic limiting
         //  */
