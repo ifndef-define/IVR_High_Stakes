@@ -133,7 +133,7 @@ void Drive::turnByPID(double angle, float turn_max_voltage, int timeout, bool as
     int start_time = pros::millis();
     double turnError = reduce_negative_180_to_180(angle - odom::getPos().theta);
     double output = 0;
-    while(motionInProgress && !isDone(start_time, timeout) && abs(turnError) > 0.25) {
+    while(motionInProgress && !isDone(start_time, timeout) && abs(turnError) > 0.5) {
         turnError = reduce_negative_180_to_180(angle - odom::getPos().theta);
         output = turn_pid.update(turnError);
         output = clamp(output, -turn_max_voltage, turn_max_voltage);
@@ -158,12 +158,14 @@ void Drive::moveByPID(float distance, float heading, float drive_max_voltage, fl
     int start_time = pros::millis();
     double heading_error = reduce_negative_180_to_180(heading - odom::getPos().theta);
     double drive_error = distance;
-    double start_position = odom_->getPos().x * cos(to_rad(odom::getPos().theta)) + odom_->getPos().y * sin(to_rad(odom::getPos().theta));
+    double start_position = odom_->getPos().x * cos(to_rad(heading)) + 
+                            odom_->getPos().y * sin(to_rad(heading));
     float drive_output = 0;
     float heading_output = 0;
     float cur_position = 0;
     while(motionInProgress && !isDone(start_time, timeout) || (abs(drive_error) > 0.25 || abs(heading_error) > 0.5)) {
-        cur_position = odom_->getPos().x * cos(to_rad(odom::getPos().theta)) + odom_->getPos().y * sin(to_rad(odom::getPos().theta));
+        cur_position = odom_->getPos().x * cos(to_rad(heading)) + 
+                        odom_->getPos().y * sin(to_rad(heading));
         drive_error = distance+start_position-cur_position;
         heading_error = reduce_negative_180_to_180(heading - odom::getPos().theta);
 
