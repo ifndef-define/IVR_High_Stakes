@@ -10,6 +10,6 @@
 // Robot Definitions //
 extern pros::Controller ctrler;
 
-extern drive *chassis;
+extern Drive *chassis;
 
 extern DualIMU imu;

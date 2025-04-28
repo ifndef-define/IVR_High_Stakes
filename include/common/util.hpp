@@ -171,6 +171,22 @@ float ema(float current, float previous, float smooth);
  * @param angle The angle to be reduced in degrees.
  * @return Reduced angle.
  */
- float reduce_negative_180_to_180(float angle);
+float reduce_negative_180_to_180(float angle);
 
- bool isDone(int start_time, int timeout);
+float reduce_negative_90_to_90(float angle);
+
+bool isDone(int start_time, int timeout);
+
+double to_deg(float angle);
+
+double to_rad(float angle);
+
+float clamp(float input, float min, float max);
+
+bool is_line_settled(float desired_X, float desired_Y, float desired_angle_deg, float current_X, float current_Y);
+
+float left_voltage_scaling(float drive_output, float heading_output);
+  
+float right_voltage_scaling(float drive_output, float heading_output);
+
+float clamp_min_voltage(float drive_output, float drive_min_voltage);

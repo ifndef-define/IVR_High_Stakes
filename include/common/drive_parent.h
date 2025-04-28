@@ -111,7 +111,7 @@ class Drive {
          * @param x Target x position in inches
          * @param async If true, will run in a separate thread
          */
-        static void moveByPID(double x, double y, double theta, int timeout, bool async=false);
+        static void moveByPID(double x, double y, double theta, float lead, float setback, float drive_min_voltage, float drive_max_voltage, float heading_max_voltage, int timeout=5000, bool async=false);
 
         /**
          * @brief Determines values to move the robot given a vector. This will compute 

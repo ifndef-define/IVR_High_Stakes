@@ -49,6 +49,14 @@ float ema(float current, float previous, float smooth) {
     return(angle);
 }
 
+float reduce_negative_90_to_90(float angle) {
+    while(!(angle >= -90 && angle < 90)) {
+      if( angle < -90 ) { angle += 180; }
+      if(angle >= 90) { angle -= 180; }
+    }
+    return(angle);
+}
+
 bool isDone(int start_time, int timeout) {
     return (pros::millis() - start_time) > timeout;
 }
@@ -65,3 +73,31 @@ bool isDone(int start_time, int timeout) {
 //     // return curvature
 //     return side * ((2 * x) / (d * d));
 // }
+
+double to_deg(float angle) {
+    return angle * 180 / M_PI;
+}
+   
+double to_rad(float angle) {
+    return angle * M_PI / 180;
+}
+
+float clamp(float input, float min, float max){
+    if( input > max ){ return(max); }
+    if(input < min){ return(min); }
+    return(input);
+}
+
+bool is_line_settled(float desired_X, float desired_Y, float desired_angle_deg, float current_X, float current_Y){
+    return( (desired_Y-current_Y) * cos(to_rad(desired_angle_deg)) <= -(desired_X-current_X) * sin(to_rad(desired_angle_deg)) );
+}
+
+float clamp_min_voltage(float drive_output, float drive_min_voltage){
+    if(drive_output < 0 && drive_output > -drive_min_voltage){
+        return -drive_min_voltage;
+    }
+    if(drive_output > 0 && drive_output < drive_min_voltage){
+      return drive_min_voltage;
+    }
+    return drive_output;
+}

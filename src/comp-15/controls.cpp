@@ -1,7 +1,7 @@
 #include "robots/comp-15/controls.h"
 
 struct driverProfile {
-    drive::drive_mode_e driveMode;
+    Drive::drive_mode_e driveMode;
 
     pros::controller_digital_e_t intakeIn;
     pros::controller_digital_e_t intakeOut;
@@ -29,7 +29,7 @@ struct driverProfile {
 };
 
 const driverProfile JesusPrimary = {
-    .driveMode = drive::drive_mode_e::SPLIT_ARCADE_PL,
+    .driveMode = Drive::drive_mode_e::SPLIT_ARCADE_PL,
     
     .intakeIn = BUTTON_R1,
     .intakeOut = BUTTON_R2,
@@ -57,7 +57,7 @@ const driverProfile JesusPrimary = {
 
 
 const driverProfile CompClimbMode = {
-    .driveMode = drive::drive_mode_e::CUSTOM_m,
+    .driveMode = Drive::drive_mode_e::CUSTOM_m,
     
     // .intakeIn = null, // no control
     // .intakeOut = null, // no control
@@ -86,7 +86,7 @@ const driverProfile CompClimbMode = {
 };
 
 const driverProfile SoloDriveMode = {
-    .driveMode = drive::drive_mode_e::SPLIT_ARCADE_PL,
+    .driveMode = Drive::drive_mode_e::SPLIT_ARCADE_PL,
 
     .intakeIn = BUTTON_R1,
     .intakeOut = BUTTON_R2,
@@ -114,7 +114,7 @@ const driverProfile SoloDriveMode = {
 };
 
 const driverProfile SoloClimbMode = {
-    .driveMode = drive::drive_mode_e::CUSTOM_m,
+    .driveMode = Drive::drive_mode_e::CUSTOM_m,
     
     // .intakeIn = null, // no control
     // .intakeOut = null, // no control
