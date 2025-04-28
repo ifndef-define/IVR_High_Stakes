@@ -260,25 +260,25 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                 }
 
                 /// ARM ///
-                // if(actions.getOverride()){
-                //     if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                //         actions.setArmSpeed(1);
-                //     } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-                //         actions.setArmSpeed(-1);
-                //     } else {
-                //         actions.setArmSpeed(0);
-                //     }
-                // } else {
-                //     if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageUp)) {
-                //         if(actions.getArmState()==Arm::State::READY) {
-                //             actions.setArmState(Arm::State::DOWN);
-                //         } else {
-                //             actions.setArmState(Arm::State::READY);
-                //         }
-                //     } else if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageDown)) {
-                //         actions.nextArmState();
-                //     }
-                // }
+                if(actions.getOverride()){
+                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                        actions.setArmSpeed(1);
+                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.setArmSpeed(-1);
+                    } else {
+                        actions.setArmSpeed(0);
+                    }
+                } else {
+                    if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageUp)) {
+                        if(actions.getArmState()==Arm::State::READY) {
+                            actions.setArmState(Arm::State::DOWN);
+                        } else {
+                            actions.setArmState(Arm::State::READY);
+                        }
+                    } else if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.nextArmState();
+                    }
+                }
 
                 /// PNEUMATICS ///
                 if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {
@@ -311,25 +311,25 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                 break;
             case MODE_SOLO_CLIMB:
                 /// ARM ///
-                // if(actions.getOverride()){
-                //     if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                //         actions.setArmSpeed(1);
-                //     } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-                //         actions.setArmSpeed(-1);
-                //     } else {
-                //         actions.setArmSpeed(0);
-                //     }
-                // } else {
-                //     if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageUp)) {
-                //         if(actions.getArmState()==Arm::State::READY) {
-                //             actions.setArmState(Arm::State::DOWN);
-                //         } else {
-                //             actions.setArmState(Arm::State::READY);
-                //         }
-                //     } else if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageDown)) {
-                //         actions.nextArmState();
-                //     }
-                // }
+                if(actions.getOverride()){
+                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                        actions.setArmSpeed(1);
+                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.setArmSpeed(-1);
+                    } else {
+                        actions.setArmSpeed(0);
+                    }
+                } else {
+                    if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageUp)) {
+                        if(actions.getArmState()==Arm::State::READY) {
+                            actions.setArmState(Arm::State::DOWN);
+                        } else {
+                            actions.setArmState(Arm::State::READY);
+                        }
+                    } else if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.nextArmState();
+                    }
+                }
 
                 /// PNEUMATICS ///
                 if (ctrler.get_digital_new_press(controls[activeProfile].intakeLift)) {
