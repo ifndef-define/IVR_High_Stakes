@@ -92,7 +92,7 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void turnByPID(double angle, int timeout, bool async=true);
+        static void turnByPID(double angle, float turn_max_voltage = 127, int timeout = 2500, bool async=true);
 
         /**
          * @brief Moves the robot given a target position and angle using PID. 
@@ -103,7 +103,7 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void moveByPID(double target, double angle=odom::getPos().theta, int timeout = 5000, bool async=true);
+        static void moveByPID(float distance, float heading = odom::getPos().theta, float drive_max_voltage = 127, float heading_max_voltage = 127, int timeout = 5000, bool async=true);
 
         /**
          * @brief Turns the robot to a target pose using PID.
@@ -111,7 +111,7 @@ class Drive {
          * @param x Target x position in inches
          * @param async If true, will run in a separate thread
          */
-        static void moveByPID(double x, double y, double theta, float lead, float setback, float drive_min_voltage = 0, float drive_max_voltage = 127, float heading_max_voltage = 127, int timeout=5000, bool async=false);
+        static void moveByPID(double x, double y, double theta = odom::getPos().theta, float lead = .5, float setback = 0, float drive_min_voltage = 0, float drive_max_voltage = 127, float heading_max_voltage = 127, int timeout=5000, bool async=false);
 
         /**
          * @brief Determines values to move the robot given a vector. This will compute 
