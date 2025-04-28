@@ -2,6 +2,7 @@
 #include "main.h"
 #include "common/pid.hpp"
 #include "common/odom.h"
+#include "common/util.hpp"
 
 // Aliases
 using motor = pros::Motor;
@@ -13,7 +14,7 @@ using motor_g = pros::MotorGroup;
  */
 // #define MULTITHREAD_DRIVE_LOOP
 
-class drive {
+class Drive {
     public:
         enum drive_mode_e {
             TANK_m = 1,             // Tank Drive
@@ -85,6 +86,34 @@ class drive {
         static void turnAtRPM(int rpm);
 
         /**
+         * @brief Turns the robot to a target angle using PID.
+         * 
+         * @param angle Target angle in degrees [-360, 360]
+         * @param timeout Timeout in milliseconds
+         * @param async If true, will run in a separate thread
+         */
+        static void turnByPID(double angle, int timeout, bool async=true);
+
+        /**
+         * @brief Moves the robot given a target position and angle using PID. 
+         * By default, we go forward to the target position while maintaining the current angle.
+         * 
+         * @param target Target position in inches
+         * @param angle Target angle in degrees [-360, 360], default is current angle
+         * @param timeout Timeout in milliseconds
+         * @param async If true, will run in a separate thread
+         */
+        static void moveByPID(double target, double angle=odom::getPos().theta, int timeout = 5000, bool async=true);
+
+        /**
+         * @brief Turns the robot to a target pose using PID.
+         * 
+         * @param x Target x position in inches
+         * @param async If true, will run in a separate thread
+         */
+        static void moveByPID(double x, double y, double theta, int timeout, bool async=false);
+
+        /**
          * @brief Determines values to move the robot given a vector. This will compute 
          *  the vector from the current position to the target position and move the robot
          * 
@@ -136,9 +165,9 @@ class drive {
 
 
     private:
-        drive() = default;
+        Drive() = default;
 
-        static drive *instance_;
+        static Drive *instance_;
 
         // Device pointers
         static controller *drive_ctrler_;
@@ -163,6 +192,8 @@ class drive {
         static drive_config_e drive_config_;
 
         static pros::Mutex multiDrive_mutex;
+        static bool motionInProgress;
+        static bool motionQueued;
 
         // Drive control variables
         struct ctrler_axis_s {
@@ -213,6 +244,14 @@ class drive {
          */
         static int sinScale(int axis);
 
+        static void requestMotionStart();
+        
+        static void endMotion();
+        
+        static void cancelMotion();
+        
+        static void cancelAllMotions();
+
     // Allow drive_builder to access private members
     friend class drive_builder;
 };
@@ -233,7 +272,7 @@ class drive_builder {
          * 
          * @param drive_config Drive configuration to use
          */
-        drive_builder &with_drive_config(drive::drive_config_e drive_config);
+        drive_builder &with_drive_config(Drive::drive_config_e drive_config);
 
         /**
          * @brief Set the drive motors
@@ -259,7 +298,7 @@ class drive_builder {
          * 
          * @param drive_mode Drive mode to use
          */
-        drive_builder &with_drive_mode(drive::drive_mode_e drive_mode);
+        drive_builder &with_drive_mode(Drive::drive_mode_e drive_mode);
 
         /**
          * @brief Set the max RPM. No use case yet
@@ -326,9 +365,9 @@ class drive_builder {
          * 
          * @return Built drive object
          */
-        drive *build();
+        Drive *build();
 
     private:
         uint8_t checkSum[2];
-        drive *drive_;
+        Drive *drive_;
 };

@@ -4,7 +4,7 @@
 
 class vf_motion {
     public:
-        vf_motion(drive *driveObject);
+        vf_motion(Drive *driveObject);
         
         /**
          * @brief Moves the robot using a vector field. This method requires a polynomial function to be

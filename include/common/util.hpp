@@ -5,6 +5,7 @@
 // #include "dualEnable.h"
 // #include "lemlib/chassis/chassis.hpp"
 // #include "lemlib/pose.hpp"
+#include "main.h"
 
 /**
  * @brief Slew rate limiter
@@ -163,3 +164,13 @@ float ema(float current, float previous, float smooth);
  * @endcode
  */
 // float getCurvature(Pose pose, Pose other);
+
+/**
+ * Converts an angle to an equivalent one in the range [-180, 180).
+ * 
+ * @param angle The angle to be reduced in degrees.
+ * @return Reduced angle.
+ */
+ float reduce_negative_180_to_180(float angle);
+
+ bool isDone(int start_time, int timeout);

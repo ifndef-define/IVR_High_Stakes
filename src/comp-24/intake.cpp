@@ -1,6 +1,6 @@
 #include "robots/comp-24/intake.h"
 
-Intake::Intake() : intakeMotor({-9, 10}, pros::MotorGears::blue), intakeRot(-12) {
+Intake::Intake() : intakeMotor({-9, 10}, pros::MotorGears::blue), intakeRot(-20) {
   intakeRot.reset_position();
 }
 

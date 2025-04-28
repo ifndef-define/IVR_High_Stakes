@@ -41,6 +41,18 @@ float ema(float current, float previous, float smooth) {
     return (current * smooth) + (previous * (1 - smooth));
 }
 
+ float reduce_negative_180_to_180(float angle) {
+    while(!(angle >= -180 && angle < 180)) {
+      if( angle < -180 ) { angle += 360; }
+      if(angle >= 180) { angle -= 360; }
+    }
+    return(angle);
+}
+
+bool isDone(int start_time, int timeout) {
+    return (pros::millis() - start_time) > timeout;
+}
+
 // float getCurvature(Pose pose, Pose other) {
 //     // calculate whether the pose is on the left or right side of the circle
 //     float side = sgn(std::sin(pose.theta) * (other.x - pose.x) - std::cos(pose.theta) * (other.y - pose.y));
