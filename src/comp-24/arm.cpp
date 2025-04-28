@@ -7,13 +7,13 @@ Arm::Arm(float kP, float kI, float kD, float kP2, float kI2, float kD2) : armMot
 
 void Arm::update(){
     // Get current limit switch state
-    // currentLimitState = armLimit.get_value();
+    currentLimitState = armLimit.get_value();
     
     // // Check if limit switch is NEWLY pressed (rising edge detection)
-    // if(currentLimitState == 1 && prevLimitState == 0) {
-    //     // Reset position to match DOWN state angle only when first pressed
-    //     armRot.set_position(armStateAngles[0]); // Multiply by 100 because getAngle divides by 100
-    // }
+    if(currentLimitState == 1 && prevLimitState == 0) {
+        // Reset position to match DOWN state angle only when first pressed
+        armRot.set_position(10*100); // Multiply by 100 because getAngle divides by 100
+    }
     
     if(!override){ 
         error =  armStateAngles[(int)curArmState] - getAngle();

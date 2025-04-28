@@ -10,14 +10,14 @@ pros::MotorGroup rightClimbDrive({4, -11, 13, -16, 15}, pros::MotorGears::blue);
 pros::adi::Encoder yEnc(1, 2, true);
 pros::adi::Encoder xEnc(3, 4, false);
 	
-drive *chassis = drive_builder(ctrler)
-	.with_drive_config(drive::drive_config_e::TANK_c)
+Drive *chassis = drive_builder(ctrler)
+	.with_drive_config(Drive::drive_config_e::TANK_c)
 	.with_drive_motors(leftDrive, rightDrive)
-	.with_drive_mode(drive::drive_mode_e::SPLIT_ARCADE_PL)
+	.with_drive_mode(Drive::drive_mode_e::SPLIT_ARCADE_PL)
 	.add_max_rpm(600)
 	// .add_straight_drive_scale(0.93,1)
 	.add_ctrler_deadzone(3)
 	.build();
 
-DualIMU imu(11, 12, 2.5);
+DualIMU imu(2, 14, 2.5);
 odom *robotOdom = new odom(&xEnc, &yEnc, &imu, odom::r_coord(0, 0, 0), 1.25, 1.0001, 0.625, 1.0001);
