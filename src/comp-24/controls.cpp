@@ -98,10 +98,10 @@ const driverProfile SoloDriveMode = {
     .backpackCycleStageDown = BUTTON_L2,
     .adiSpecial = false,
 
-    .mogoClampToggle = BUTTON_DOWN,
+    .mogoClampToggle = BUTTON_Y,
     .rightMogoRushCycle = BUTTON_RIGHT,
     .leftMogoRushCycle = BUTTON_LEFT,
-    .mogoRushTeethToggle = BUTTON_Y,
+    .mogoRushTeethToggle = BUTTON_DOWN,
     .intakeLockToggle = BUTTON_A,
     .intakeLiftToggle = BUTTON_B,
 
@@ -258,7 +258,7 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
     actions.setAutonControlFlag(false);
     actions.setRunColorSort(false);
     actions.setArmState(Arm::State::DOWN);
-    actions.setRunAutoMogoClamp(true);
+    actions.setRunAutoMogoClamp(false);
     actions.setRunArm(true);
 
     while(1) {

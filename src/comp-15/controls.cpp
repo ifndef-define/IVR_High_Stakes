@@ -227,7 +227,7 @@ void updateRobotSystems(DriveMode newMode, Ring::Color botSide) {
 
     delay(500); // bounce time
 }
-
+pros::Motor armTemp(3, pros::MotorGear::red);
 void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
     chassis->loop(true);
     bool onceLock = false;
@@ -243,10 +243,12 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
     actions.setRingColor(ringToKeep);
     actions.setAutonControlFlag(false);
     actions.setRunColorSort(false);
+    actions.setRunAutoMogoClamp(false);
+    actions.setRunArm(true);
     // actions.setArmState(Arm::State::DOWN);
 
     while(1) {
-        // actions.runSubsystemFSM();
+        actions.runSubsystemFSM();
 
         switch (activeProfile) {
             case MODE_SOLO:
@@ -279,6 +281,13 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                         actions.nextArmState();
                     }
                 }
+                // if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                //     armTemp.move(127);
+                // } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                //     armTemp.move(-127);
+                // } else {
+                //     armTemp.brake();
+                // }
 
                 /// PNEUMATICS ///
                 if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {

@@ -19,5 +19,5 @@ Drive *chassis = drive_builder(ctrler)
 	.add_ctrler_deadzone(3)
 	.build();
 
-DualIMU imu(11, 12, 2.5);
+DualIMU imu(2, 14, 2.5);
 odom *robotOdom = new odom(&xEnc, &yEnc, &imu, odom::r_coord(0, 0, 0), 1.25, 1.0001, 0.625, 1.0001);
