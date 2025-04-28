@@ -1,6 +1,6 @@
 #include "robots/comp-15/intake.h"
 
-Intake::Intake() : intakeMotor({15, -17}, pros::MotorGears::blue), intakeRot(-5) {
+Intake::Intake() : intakeMotor({15, -17}, pros::MotorGears::blue), intakeRot(-20) {
   intakeRot.reset_position();
 }
 
@@ -12,7 +12,7 @@ double Intake::getAngle(){ return intakeRot.get_position()/100; }
 
 void Intake::resetAngle(){ intakeRot.reset_position(); }
 
-ColorDetector::ColorDetector() : colorSensor(11) {
+ColorDetector::ColorDetector() : colorSensor(19) {
   colorSensor.set_led_pwm(100);
   colorSensor.set_integration_time(10);
 }
