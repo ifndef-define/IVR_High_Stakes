@@ -193,19 +193,20 @@ void Drive::moveByPID(double x, double y, double angle, float lead, float setbac
         pros::delay(10); // delay to give the task time to start
         return;
     }
-    float target_distance = hypot(x-odom::getPos().x,y-odom::getPos().y);
-    bool line_settled = is_line_settled(x, y, angle, odom::getPos().x, odom::getPos().y);
+    bool line_settled = 0;
     bool prev_line_settled = is_line_settled(x, y, angle, odom::getPos().x, odom::getPos().y);
     bool crossed_center_line = false;
     bool center_line_side = is_line_settled(x, y, angle+90, odom::getPos().x, odom::getPos().y);
     bool prev_center_line_side = center_line_side;
-    int start_time = pros::millis();
+    float target_distance = hypot(x-odom::getPos().x,y-odom::getPos().y);
     float carrot_X = x - sin(to_rad(angle)) * (lead * target_distance + setback);
     float carrot_Y = y - cos(to_rad(angle)) * (lead * target_distance + setback);
     float drive_error = hypot(carrot_X-odom::getPos().x,carrot_Y-odom::getPos().y);
     float heading_error = reduce_negative_180_to_180(to_deg(atan2(carrot_X-odom::getPos().x,carrot_Y-odom::getPos().y))-odom::getPos().theta);
     float drive_output = 0;
     float heading_output = 0;
+    float heading_scale_factor = 0;
+    int start_time = pros::millis();
     while(motionInProgress && !isDone(start_time, timeout) || (abs(drive_error) > 0.25 || abs(heading_error) > 0.5)) {
         line_settled = is_line_settled(x, y, angle, odom::getPos().x, odom::getPos().y);
         if(line_settled && !prev_line_settled){ break; }
@@ -231,7 +232,7 @@ void Drive::moveByPID(double x, double y, double angle, float lead, float setbac
         
         drive_output = drive_pid.update(drive_error);
 
-        float heading_scale_factor = cos(to_rad(heading_error));
+        heading_scale_factor = cos(to_rad(heading_error));
         drive_output*=heading_scale_factor;
         heading_error = reduce_negative_90_to_90(heading_error);
         heading_output = turn_pid.update(heading_error);
