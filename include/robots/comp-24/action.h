@@ -15,6 +15,7 @@ class Action {
     private:
         ActionState currentState;
         IntakeManager intakeManager;
+        Distance *mogoSensor_;
         Arm arm;
         Climb climb;
         bool isAuton;
@@ -28,6 +29,10 @@ class Action {
         bool runColorSort = true;
         bool autoResumeFlag = false;
         bool runClimb = false;
+        bool runAutoMogoClamp = false;
+        bool ringDetected = false;
+        bool runArm = false;
+        bool reclamp = false;
 
         EjectPhase ejectPhase = EjectPhase::IDLE;
         double ejectStartPos = 0;
@@ -40,10 +45,11 @@ class Action {
         int tierSubstate = 0;  // For tracking progress within each tier
 
     public:
-        Action(bool isAuton, Ring::Color ringToKeep, PneumaticsGroup& p);
+        Action(bool isAuton, Ring::Color ringToKeep, PneumaticsGroup& p, int mogoSensorPort);
         void runSubsystemFSM();
         void stateControl();
         void climbControl();
+        void autoMogo();
 
         void releaseIntake(bool inv=false);
         void intakeState();
@@ -187,6 +193,8 @@ class Action {
 
         void setRunClimb(bool flag);
         bool getRunClimb();
+        void setRunAutoMogoClamp(bool flag);
+        void setRunArm(bool flag);
 };
 
 extern Action actions;

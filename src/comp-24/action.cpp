@@ -7,9 +7,10 @@
  * 
  * Sets the initial state of the arm to DOWN and the initial state of the Action to IDLE.
  */
-Action::Action(bool isAuton, Ring::Color ringToKeep, PneumaticsGroup& p): arm(2.5,0,0, 4,0,0), currentState(ActionState::IDLE), intakeManager(), climb(p, 1,0,0) { 
+Action::Action(bool isAuton, Ring::Color ringToKeep, PneumaticsGroup& p, int mogoSensorPort): arm(2.5,0,0, 4,0,0), currentState(ActionState::IDLE), intakeManager(), climb(p, 1,0,0) { 
     intakeManager.setFilterColor(ringToKeep);
     this->isAuton = isAuton;
+    mogoSensor_ = new pros::Distance(mogoSensorPort);
 }
 
 void Action::runSubsystemFSM() {
@@ -26,6 +27,8 @@ void Action::runSubsystemFSM() {
     }
     // Run state control
     stateControl();
+
+    autoMogo();
     
     // // Check if tier changed - reset state initialization flag
     // if (lastTier != climb.getTier()) {
@@ -43,8 +46,25 @@ void Action::runSubsystemFSM() {
     // }
     
     // Update arm with new state
-    lastArmState = arm.getState();
-    arm.update();
+    if (runArm) {
+        lastArmState = arm.getState();
+        arm.update();
+    }
+}
+
+void Action::autoMogo() {
+    if(runAutoMogoClamp){
+        if(!pneumatics.mogoClamp.is_extended() && (mogoSensor_->get_distance() < 13) && !reclamp) {
+            pneumatics.mogoClamp.extend();
+            reclamp = true;
+        }
+
+        if (!pneumatics.mogoClamp.is_extended() && reclamp) {
+            if (mogoSensor_->get_distance() > 100) {
+                reclamp = false;
+            }
+        }
+    }
 }
 
 void Action::stateControl() {
@@ -311,5 +331,12 @@ bool Action::getRunClimb(){
     return runClimb;
 }
 
+void Action::setRunAutoMogoClamp(bool runAutoMogoClamp){
+    this->runAutoMogoClamp = runAutoMogoClamp;
+}
 
-Action actions(0, Ring::Color::NONE, pneumatics);
+void Action::setRunArm(bool runArm){
+    this->runArm = runArm;
+}
+
+Action actions(0, Ring::Color::NONE, pneumatics, 13); // Initialize Action object with default values
