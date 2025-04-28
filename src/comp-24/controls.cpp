@@ -258,6 +258,8 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
     actions.setAutonControlFlag(false);
     actions.setRunColorSort(false);
     actions.setArmState(Arm::State::DOWN);
+    actions.setRunAutoMogoClamp(true);
+    actions.setRunArm(true);
 
     while(1) {
         actions.runSubsystemFSM();
