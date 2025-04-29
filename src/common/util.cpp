@@ -101,3 +101,19 @@ float clamp_min_voltage(float drive_output, float drive_min_voltage){
     }
     return drive_output;
 }
+
+float left_voltage_scaling(float drive_output, float heading_output){
+    float ratio = std::max(std::fabs(drive_output+heading_output), std::fabs(drive_output-heading_output))/127.0;
+    if (ratio > 1) {
+      return (drive_output+heading_output)/ratio;
+    }
+    return drive_output+heading_output;
+  }
+
+  float right_voltage_scaling(float drive_output, float heading_output){
+    float ratio = std::max(std::fabs(drive_output+heading_output), std::fabs(drive_output-heading_output))/127.0;
+    if (ratio > 1) {
+      return (drive_output-heading_output)/ratio;
+    }
+    return drive_output-heading_output;
+  }
