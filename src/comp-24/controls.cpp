@@ -253,306 +253,292 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
         updateRobotSystems(activeProfile, ringToKeep);
     }
 
-    // chassis->turnByPID(180,127,10000,false);
-    // chassis->moveByPID(24, 0, 127, 127, 10000, false);
-    // double maxVelo = 0;
-    // double currentVelo = 0;
-    // while(1) {
-    //     if (fabs(currentVelo = chassis->getLeftDrive()->get_actual_velocity()) > fabs(maxVelo)) {
-    //         maxVelo = currentVelo;
-    //     }
-    //     lcd::print(0, "%f", currentVelo);
-    //     lcd::print(1, "%f", maxVelo);
+    actions.setRingColor(ringToKeep);
+    actions.setAutonControlFlag(false);
+    actions.setRunColorSort(false);
+    actions.setArmState(Arm::State::DOWN);
+    actions.setRunAutoMogoClamp(false);
+    actions.setRunArm(true);
 
-    //     delay(10);
-    // }
+    while(1) {
+        // pros::lcd::print(7,"Error: %f",reduce_negative_180_to_180(90 - odom::getPos().theta));
+        actions.runSubsystemFSM();
 
-    // actions.setRingColor(ringToKeep);
-    // actions.setAutonControlFlag(false);
-    // actions.setRunColorSort(false);
-    // actions.setArmState(Arm::State::DOWN);
-    // actions.setRunAutoMogoClamp(false);
-    // actions.setRunArm(true);
+        switch (activeProfile) {
+            case MODE_SOLO:
+                /// INTAKE ///
+                if(ctrler.get_digital(controls[activeProfile].intakeIn)) {
+                    actions.setIntakeSpeed(1);
+                } else if(ctrler.get_digital(controls[activeProfile].intakeOut)) {
+                    actions.setIntakeSpeed(-1);
+                } else {
+                    actions.setIntakeSpeed(0);
+                }
 
-    // while(1) {
-    //     // pros::lcd::print(7,"Error: %f",reduce_negative_180_to_180(90 - odom::getPos().theta));
-    //     actions.runSubsystemFSM();
+                /// ARM ///
+                if(actions.getOverride()){
+                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                        actions.setArmSpeed(1);
+                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.setArmSpeed(-1);
+                    } else {
+                        actions.setArmSpeed(0);
+                    }
+                } else {
+                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.setArmState(Arm::State::DESCORE);
+                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                        actions.setArmState(Arm::State::READY);
+                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.setArmState(Arm::State::SCORE);
+                    } else {
+                        actions.setArmState(Arm::State::DOWN);
+                    }
+                }
 
-    //     switch (activeProfile) {
-    //         case MODE_SOLO:
-    //             /// INTAKE ///
-    //             if(ctrler.get_digital(controls[activeProfile].intakeIn)) {
-    //                 actions.setIntakeSpeed(1);
-    //             } else if(ctrler.get_digital(controls[activeProfile].intakeOut)) {
-    //                 actions.setIntakeSpeed(-1);
-    //             } else {
-    //                 actions.setIntakeSpeed(0);
-    //             }
+                // if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                //     armTemp.move(127);
+                // } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown) && armLimitTemp.get_value() != 1) {
+                //     armTemp.move(-127);
+                // } else {
+                //     armTemp.brake();
+                // }
 
-    //             /// ARM ///
-    //             if(actions.getOverride()){
-    //                 if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-    //                     actions.setArmSpeed(1);
-    //                 } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-    //                     actions.setArmSpeed(-1);
-    //                 } else {
-    //                     actions.setArmSpeed(0);
-    //                 }
-    //             } else {
-    //                 if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-    //                     actions.setArmState(Arm::State::DESCORE);
-    //                 } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-    //                     actions.setArmState(Arm::State::READY);
-    //                 } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-    //                     actions.setArmState(Arm::State::SCORE);
-    //                 } else {
-    //                     actions.setArmState(Arm::State::DOWN);
-    //                 }
-    //             }
-
-    //             // if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-    //             //     armTemp.move(127);
-    //             // } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown) && armLimitTemp.get_value() != 1) {
-    //             //     armTemp.move(-127);
-    //             // } else {
-    //             //     armTemp.brake();
-    //             // }
-
-    //             /// PNEUMATICS ///
-    //             if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {
-    //                 pneumatics.mogoClamp.toggle();
-    //                 if(pneumatics.mogoClamp.is_extended()) {
-    //                     ctrler.rumble("..");
-    //                 } else {
-    //                     ctrler.rumble("--");
-    //                 }
-    //             }
+                /// PNEUMATICS ///
+                if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {
+                    pneumatics.mogoClamp.toggle();
+                    if(pneumatics.mogoClamp.is_extended()) {
+                        ctrler.rumble("..");
+                    } else {
+                        ctrler.rumble("--");
+                    }
+                }
                 
-    //             if(ctrler.get_digital_new_press(controls[activeProfile].rightMogoRushCycle)) {
-    //                 pneumatics.rightMogoRushArm.toggle();
-    //             }
-    //             if(ctrler.get_digital_new_press(controls[activeProfile].leftMogoRushCycle)) {
-    //                 pneumatics.leftMogoRushArm.toggle();
-    //             }
-    //             if(ctrler.get_digital_new_press(controls[activeProfile].mogoRushTeethToggle)) {
-    //                 pneumatics.mogoRushTeeth.toggle();
-    //             }
-    //             if(ctrler.get_digital_new_press(controls[activeProfile].intakeLiftToggle)) {
-    //                 pneumatics.intakeLift.toggle();
-    //             }
-    //             if(ctrler.get_digital_new_press(controls[activeProfile].intakeLockToggle)) {
-    //                 pneumatics.intakeLock.toggle();
-    //             }
+                if(ctrler.get_digital_new_press(controls[activeProfile].rightMogoRushCycle)) {
+                    pneumatics.rightMogoRushArm.toggle();
+                }
+                if(ctrler.get_digital_new_press(controls[activeProfile].leftMogoRushCycle)) {
+                    pneumatics.leftMogoRushArm.toggle();
+                }
+                if(ctrler.get_digital_new_press(controls[activeProfile].mogoRushTeethToggle)) {
+                    pneumatics.mogoRushTeeth.toggle();
+                }
+                if(ctrler.get_digital_new_press(controls[activeProfile].intakeLiftToggle)) {
+                    pneumatics.intakeLift.toggle();
+                }
+                if(ctrler.get_digital_new_press(controls[activeProfile].intakeLockToggle)) {
+                    pneumatics.intakeLock.toggle();
+                }
 
-    //             // Mode Change //
-    //             if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
-    //                 activeProfile = MODE_SOLO_CLIMB;
-    //                 updateRobotSystems(activeProfile, ringToKeep);
-    //             }
-    //             break;
-    //         case MODE_SOLO_CLIMB:
-    //             /// ARM ///
-    //             if(actions.getOverride()){
-    //                 if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-    //                     actions.setArmSpeed(1);
-    //                 } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-    //                     actions.setArmSpeed(-1);
-    //                 } else {
-    //                     actions.setArmSpeed(0);
-    //                 }
-    //             } else {
-    //                 if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-    //                     actions.setArmState(Arm::State::DESCORE);
-    //                 } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-    //                     actions.setArmState(Arm::State::READY);
-    //                 } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-    //                     actions.setArmState(Arm::State::SCORE);
-    //                 } else {
-    //                     actions.setArmState(Arm::State::DOWN);
-    //                 }
-    //             }
-    //             // if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-    //             //     armTemp.move(127);
-    //             // } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-    //             //     armTemp.move(-127);
-    //             // } else {
-    //             //     armTemp.brake();
-    //             // }
-
-    //             /// PNEUMATICS ///
-    //             if (ctrler.get_digital_new_press(controls[activeProfile].intakeLockToggle)) {
-    //                 pneumatics.intakeLock.toggle();
-    //             }
-    //             if (ctrler.get_digital_new_press(controls[activeProfile].intakeLiftToggle)) {
-    //                 pneumatics.intakeLift.toggle();
-    //             }
-    //             if (ctrler.get_digital_new_press(controls[activeProfile].innerClimbArmsToggle)) {
-    //                 pneumatics.innerClimbArms.toggle();
-    //             }
-    //             if (ctrler.get_digital_new_press(controls[activeProfile].outerClimbArmsToggle)) {
-    //                 pneumatics.outerClimbArms.toggle();
-    //             }
-    //             if (ctrler.get_digital_new_press(controls[activeProfile].climbPTOToggle)) {
-    //                 pneumatics.climbPTO.toggle();
-    //                 if (pneumatics.climbPTO.is_extended()) {
-    //                     // chassis->stopLoop();
-    //                     chassis->changeDriveMotors(leftClimbDrive, rightClimbDrive);
-    //                     chassis->changeDriveMode(controls[activeProfile].driveMode);
-    //                     chassis->setBrakeMode(BRAKE_BRAKE); // switch to hold?
-    //                     // chassis->loop(true);
-    //                 } else {
-    //                     chassis->changeDriveMode(controls[MODE_SOLO].driveMode);
-    //                     chassis->changeDriveMotors(leftDrive, rightDrive);
-    //                     chassis->setBrakeMode(BRAKE_COAST);
-    //                 }
-    //             }        
-    //             if(ctrler.get_digital_new_press(controls[activeProfile].leftPaperToggle)) {
-    //                 pneumatics.paperLeft.toggle();
-    //             }
-    //             if(ctrler.get_digital_new_press(controls[activeProfile].rightPaperToggle)) {
-    //                 pneumatics.paperRight.toggle();
-    //             }  
-
-    //             // Mode Change //
-    //             if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
-    //                 activeProfile = MODE_SOLO;
-    //                 updateRobotSystems(activeProfile, ringToKeep);
-    //             }
-    //             break;
-    //         case MODE_COMP:
-    //             /// INTAKE ///
-    //             if(ctrler.get_digital(controls[activeProfile].intakeIn)) {
-    //                 actions.setIntakeSpeed(1);
-    //             } else if(ctrler.get_digital(controls[activeProfile].intakeOut)) {
-    //                 actions.setIntakeSpeed(-1);
-    //             } else {
-    //                 actions.setIntakeSpeed(0);
-    //             }
-
-    //             /// ARM ///
-    //             if(actions.getOverride()){
-    //                 if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-    //                     actions.setArmSpeed(1);
-    //                 } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-    //                     actions.setArmSpeed(-1);
-    //                 } else {
-    //                     actions.setArmSpeed(0);
-    //                 }
-    //             } else {
-    //                 if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageUp)) {
-    //                     if(actions.getArmState()==Arm::State::READY) {
-    //                         actions.setArmState(Arm::State::DOWN);
-    //                     } else {
-    //                         actions.setArmState(Arm::State::READY);
-    //                     }
-    //                 } else if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageDown)) {
-    //                     actions.nextArmState();
-    //                 }
-    //             }
+                // Mode Change //
+                if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
+                    activeProfile = MODE_SOLO_CLIMB;
+                    updateRobotSystems(activeProfile, ringToKeep);
+                }
+                break;
+            case MODE_SOLO_CLIMB:
+                /// ARM ///
+                if(actions.getOverride()){
+                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                        actions.setArmSpeed(1);
+                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.setArmSpeed(-1);
+                    } else {
+                        actions.setArmSpeed(0);
+                    }
+                } else {
+                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.setArmState(Arm::State::DESCORE);
+                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                        actions.setArmState(Arm::State::READY);
+                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.setArmState(Arm::State::SCORE);
+                    } else {
+                        actions.setArmState(Arm::State::DOWN);
+                    }
+                }
+                // if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                //     armTemp.move(127);
+                // } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                //     armTemp.move(-127);
+                // } else {
+                //     armTemp.brake();
+                // }
 
     //             /// PNEUMATICS ///
-    //             if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {
-    //                 pneumatics.mogoClamp.toggle();
-    //                 if(pneumatics.mogoClamp.is_extended()) {
-    //                     ctrler.rumble("..");
-    //                 } else {
-    //                     ctrler.rumble("--");
-    //                 }
-    //             }
+                if (ctrler.get_digital_new_press(controls[activeProfile].intakeLockToggle)) {
+                    pneumatics.intakeLock.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile].intakeLiftToggle)) {
+                    pneumatics.intakeLift.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile].innerClimbArmsToggle)) {
+                    pneumatics.innerClimbArms.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile].outerClimbArmsToggle)) {
+                    pneumatics.outerClimbArms.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile].climbPTOToggle)) {
+                    pneumatics.climbPTO.toggle();
+                    if (pneumatics.climbPTO.is_extended()) {
+                        // chassis->stopLoop();
+                        chassis->changeDriveMotors(leftClimbDrive, rightClimbDrive);
+                        chassis->changeDriveMode(controls[activeProfile].driveMode);
+                        chassis->setBrakeMode(BRAKE_BRAKE); // switch to hold?
+                        // chassis->loop(true);
+                    } else {
+                        chassis->changeDriveMode(controls[MODE_SOLO].driveMode);
+                        chassis->changeDriveMotors(leftDrive, rightDrive);
+                        chassis->setBrakeMode(BRAKE_COAST);
+                    }
+                }        
+                if(ctrler.get_digital_new_press(controls[activeProfile].leftPaperToggle)) {
+                    pneumatics.paperLeft.toggle();
+                }
+                if(ctrler.get_digital_new_press(controls[activeProfile].rightPaperToggle)) {
+                    pneumatics.paperRight.toggle();
+                }  
+
+                // Mode Change //
+                if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
+                    activeProfile = MODE_SOLO;
+                    updateRobotSystems(activeProfile, ringToKeep);
+                }
+                break;
+            case MODE_COMP:
+                /// INTAKE ///
+                if(ctrler.get_digital(controls[activeProfile].intakeIn)) {
+                    actions.setIntakeSpeed(1);
+                } else if(ctrler.get_digital(controls[activeProfile].intakeOut)) {
+                    actions.setIntakeSpeed(-1);
+                } else {
+                    actions.setIntakeSpeed(0);
+                }
+
+                /// ARM ///
+                if(actions.getOverride()){
+                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                        actions.setArmSpeed(1);
+                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.setArmSpeed(-1);
+                    } else {
+                        actions.setArmSpeed(0);
+                    }
+                } else {
+                    if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageUp)) {
+                        if(actions.getArmState()==Arm::State::READY) {
+                            actions.setArmState(Arm::State::DOWN);
+                        } else {
+                            actions.setArmState(Arm::State::READY);
+                        }
+                    } else if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.nextArmState();
+                    }
+                }
+
+                /// PNEUMATICS ///
+                if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {
+                    pneumatics.mogoClamp.toggle();
+                    if(pneumatics.mogoClamp.is_extended()) {
+                        ctrler.rumble("..");
+                    } else {
+                        ctrler.rumble("--");
+                    }
+                }
                 
-    //             if (ringToKeep == Ring::Color::RED) {
-    //                 if(ctrler.get_digital_new_press(controls[activeProfile].leftMogoRushCycle)) {
-    //                     pneumatics.leftMogoRushArm.toggle();
-    //                 }
-    //             } else if (ringToKeep == Ring::Color::BLUE) {
-    //                 if(ctrler.get_digital_new_press(controls[activeProfile].rightMogoRushCycle)) {
-    //                     pneumatics.rightMogoRushArm.toggle();
-    //                 }
-    //             }
-    //             if(ctrler.get_digital_new_press(controls[activeProfile].mogoRushTeethToggle)) {
-    //                 pneumatics.mogoRushTeeth.toggle();
-    //             }
+                if (ringToKeep == Ring::Color::RED) {
+                    if(ctrler.get_digital_new_press(controls[activeProfile].leftMogoRushCycle)) {
+                        pneumatics.leftMogoRushArm.toggle();
+                    }
+                } else if (ringToKeep == Ring::Color::BLUE) {
+                    if(ctrler.get_digital_new_press(controls[activeProfile].rightMogoRushCycle)) {
+                        pneumatics.rightMogoRushArm.toggle();
+                    }
+                }
+                if(ctrler.get_digital_new_press(controls[activeProfile].mogoRushTeethToggle)) {
+                    pneumatics.mogoRushTeeth.toggle();
+                }
 
-    //             // Mode Change //
-    //             if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
-    //                 activeProfile = MODE_COMP_CLIMB;
-    //                 updateRobotSystems(activeProfile, ringToKeep);
-    //             }
-    //             break;
-    //         case MODE_COMP_CLIMB:
-    //             /// ARM ///
-    //             if(actions.getOverride()){
-    //                 if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-    //                     actions.setArmSpeed(1);
-    //                 } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-    //                     actions.setArmSpeed(-1);
-    //                 } else {
-    //                     actions.setArmSpeed(0);
-    //                 }
-    //             } else {
-    //                 if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageUp)) {
-    //                     if(actions.getArmState()==Arm::State::READY) {
-    //                         actions.setArmState(Arm::State::DOWN);
-    //                     } else {
-    //                         actions.setArmState(Arm::State::READY);
-    //                     }
-    //                 } else if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageDown)) {
-    //                     actions.nextArmState();
-    //                 }
-    //             }
+                // Mode Change //
+                if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
+                    activeProfile = MODE_COMP_CLIMB;
+                    updateRobotSystems(activeProfile, ringToKeep);
+                }
+                break;
+            case MODE_COMP_CLIMB:
+                /// ARM ///
+                if(actions.getOverride()){
+                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                        actions.setArmSpeed(1);
+                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.setArmSpeed(-1);
+                    } else {
+                        actions.setArmSpeed(0);
+                    }
+                } else {
+                    if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageUp)) {
+                        if(actions.getArmState()==Arm::State::READY) {
+                            actions.setArmState(Arm::State::DOWN);
+                        } else {
+                            actions.setArmState(Arm::State::READY);
+                        }
+                    } else if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.nextArmState();
+                    }
+                }
 
-    //             /// PNEUMATICS ///
-    //             // if (ctrler.get_digital_new_press(controls[activeProfile].intake_wingsToggle)) {
-    //             //     if(!pneumatics.intakeLift_Wings.is_extended()) {
-    //             //         pneumatics.intakeLock.retract();
-    //             //         delay(150);
-    //             //         pneumatics.intakeLift_Wings.toggle();
-    //             //     } else {
-    //             //         pneumatics.intakeLift_Wings.toggle();
-    //             //         delay(350);
-    //             //         pneumatics.intakeLock.extend();
-    //             //     }
-    //             // }
-    //             // if (ctrler.get_digital_new_press(controls[activeProfile].innerClimbArmsToggle)) {
-    //             //     pneumatics.innerClimbArms.toggle();
-    //             // }
-    //             // if (ctrler.get_digital_new_press(controls[activeProfile].outerClimbArmsToggle)) {
-    //             //     pneumatics.outerClimbArms.toggle();
-    //             // }
-    //             // if (ctrler.get_digital_new_press(controls[activeProfile].climbPTOToggle)) {
-    //             //     pneumatics.climbPTO.toggle();
-    //             //     if (pneumatics.climbPTO.is_extended() && !onceLock) {
-    //             //         onceLock = true;
-    //             //         // chassis->stopLoop();
-    //             //         chassis->changeDriveMotors(leftClimbDrive, rightClimbDrive);
-    //             //         chassis->changeDriveMode(controls[activeProfile].driveMode);
-    //             //         chassis->setBrakeMode(BRAKE_BRAKE); // switch to hold?
-    //             //         // chassis->loop(true);
-    //             //     } else if (!(pneumatics.climbPTO.is_extended() && !onceLock)) {
-    //             //         chassis->changeDriveMode(controls[MODE_SOLO].driveMode);
-    //             //         chassis->changeDriveMotors(leftDrive, rightDrive);
-    //             //         chassis->setBrakeMode(BRAKE_COAST);
-    //             //     }
-    //             // }
-    //             // if (pneumatics.intakeLift_Wings.is_extended()) { // prevents paper use if side climbing
-    //             //     if (ctrler.get_digital_new_press(controls[activeProfile].leftPaperToggle)) {
-    //             //         pneumatics.paperLeft.toggle();
-    //             //     }
-    //             //     if (ctrler.get_digital_new_press(controls[activeProfile].rightPaperToggle)) {
-    //             //         pneumatics.paperRight.toggle();
-    //             //     }
-    //             // }
+                /// PNEUMATICS ///
+                // if (ctrler.get_digital_new_press(controls[activeProfile].intake_wingsToggle)) {
+                //     if(!pneumatics.intakeLift_Wings.is_extended()) {
+                //         pneumatics.intakeLock.retract();
+                //         delay(150);
+                //         pneumatics.intakeLift_Wings.toggle();
+                //     } else {
+                //         pneumatics.intakeLift_Wings.toggle();
+                //         delay(350);
+                //         pneumatics.intakeLock.extend();
+                //     }
+                // }
+                // if (ctrler.get_digital_new_press(controls[activeProfile].innerClimbArmsToggle)) {
+                //     pneumatics.innerClimbArms.toggle();
+                // }
+                // if (ctrler.get_digital_new_press(controls[activeProfile].outerClimbArmsToggle)) {
+                //     pneumatics.outerClimbArms.toggle();
+                // }
+                // if (ctrler.get_digital_new_press(controls[activeProfile].climbPTOToggle)) {
+                //     pneumatics.climbPTO.toggle();
+                //     if (pneumatics.climbPTO.is_extended() && !onceLock) {
+                //         onceLock = true;
+                //         // chassis->stopLoop();
+                //         chassis->changeDriveMotors(leftClimbDrive, rightClimbDrive);
+                //         chassis->changeDriveMode(controls[activeProfile].driveMode);
+                //         chassis->setBrakeMode(BRAKE_BRAKE); // switch to hold?
+                //         // chassis->loop(true);
+                //     } else if (!(pneumatics.climbPTO.is_extended() && !onceLock)) {
+                //         chassis->changeDriveMode(controls[MODE_SOLO].driveMode);
+                //         chassis->changeDriveMotors(leftDrive, rightDrive);
+                //         chassis->setBrakeMode(BRAKE_COAST);
+                //     }
+                // }
+                // if (pneumatics.intakeLift_Wings.is_extended()) { // prevents paper use if side climbing
+                //     if (ctrler.get_digital_new_press(controls[activeProfile].leftPaperToggle)) {
+                //         pneumatics.paperLeft.toggle();
+                //     }
+                //     if (ctrler.get_digital_new_press(controls[activeProfile].rightPaperToggle)) {
+                //         pneumatics.paperRight.toggle();
+                //     }
+                // }
             
     //             // Mode Change //
-    //             if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
-    //                 activeProfile = MODE_COMP;
-    //                 updateRobotSystems(activeProfile, ringToKeep);
-    //             }
-    //             break;
-    //     }
+                if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
+                    activeProfile = MODE_COMP;
+                    updateRobotSystems(activeProfile, ringToKeep);
+                }
+                break;
+        }
 
-    //     delay(10);
-    // }
+        delay(10);
+    }
 }
 
 // void teleOp(Ring::Color ringToKeep) {
@@ -655,10 +641,10 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
 //             rushState = rushState == 2 ? 0 : rushState + 1;
 //         }
 
-//         //Print out data for 
-//         // pros::lcd::print(1, "%f", actions.getArmAngle());
-//         // pros::lcd::print(2, "%d", actions.getPullbackFlag());
-//         // pros::lcd::print(3, "%d", int(actions.getState()));
-//         // pros::delay(10);
+        //Print out data for 
+        // pros::lcd::print(1, "%f", actions.getArmAngle());
+        // pros::lcd::print(2, "%d", actions.getPullbackFlag());
+        // pros::lcd::print(3, "%d", int(actions.getState()));
+        // pros::delay(10);
 //     }
 // }
