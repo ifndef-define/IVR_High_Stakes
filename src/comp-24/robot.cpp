@@ -12,6 +12,9 @@ pros::adi::Encoder xEnc(1, 2, false);
 DualIMU imu(12, 16, 2.5);
 odom robotOdom(&xEnc, &yEnc, &imu, odom::r_coord(0, 0, 0), 1.25, 0.9817, 0.625, 0.975);
 
+PID drive_pid(0,0,0,60,0);
+PID turn_pid(2.6,0,4,1);
+
 Drive *chassis = drive_builder(ctrler)
 	.with_drive_config(Drive::drive_config_e::TANK_c)
 	.with_drive_motors(leftDrive, rightDrive)
@@ -20,4 +23,6 @@ Drive *chassis = drive_builder(ctrler)
 	// .add_straight_drive_scale(0.93,1)
 	.add_ctrler_deadzone(3)
 	.add_odom_config(robotOdom)
+	.add_lat_pid(drive_pid)
+	.add_turn_pid(turn_pid)
 	.build();

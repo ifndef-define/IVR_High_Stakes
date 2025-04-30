@@ -111,7 +111,7 @@ class Drive {
          * @param x Target x position in inches
          * @param async If true, will run in a separate thread
          */
-        static void moveByPID(double x, double y, double theta = odom::getPos().theta, float lead = .5, float setback = 3, float drive_min_voltage = 0, float drive_max_voltage = 127, float heading_max_voltage = 127, int timeout=5000, bool async=false);
+        static void moveByPID(double x, double y, double theta, float lead = .5, float setback = 3, float drive_min_voltage = 0, float drive_max_voltage = 127, float heading_max_voltage = 127, int timeout=5000, bool async=false);
 
         /**
          * @brief Determines values to move the robot given a vector. This will compute 
@@ -175,8 +175,8 @@ class Drive {
         static motor_g *left_side_;
         static motor_g *right_side_;
 
-        static PID drive_pid;
-        static PID turn_pid;
+        static PID *drive_pid;
+        static PID *turn_pid;
 
         static odom *odom_;
 
@@ -340,25 +340,25 @@ class drive_builder {
          */
         drive_builder &add_sin_drive_scale(double scale);
 
-        // /**
-        //  * @brief Add acceleration limiting
-        //  * 
-        //  * @param limitFactor Factor to limit acceleration by
-        //  * @param ignoredDomain Range to ignore acceleration limiting
-        //  *  The domain will be [-ignoredDomain, ignoredDomain]
-        //  */
-        // drive_builder &add_acceleration_limiting(double limitFactor, double ignoredDomain);
-
         /**
          * @brief Set the odom config
          * @todo Need Odom class
          */
         drive_builder &add_odom_config(odom &robot_odom);
-    
-        // /**
-        //  * @brief Add uniform holonomic limiting
-        //  */
-        // drive_builder &add_uniform_holomoic_limiting();
+
+        /**
+         * @brief Set the drive PID
+         * 
+         * @param lat_pid the lateral PID object
+         */
+        drive_builder &add_lat_pid(PID &lat_pid);
+
+        /**
+         * @brief Set the turn PID
+         * 
+         * @param turn_pid the turn PID object
+         */
+        drive_builder &add_turn_pid(PID &turn_pid);
 
         /**
          * @brief Build the drive object

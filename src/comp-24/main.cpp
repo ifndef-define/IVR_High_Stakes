@@ -10,9 +10,12 @@ void initialize() {
 	
 	imu.reset(true);
 	actions.setRingColor(ringToKeep);
-
-	// chassis.calibrate(true);
-	// chassis.setPose(0, 0, 0);
+	robotOdom.start(true);
+	
+	// robotOdom.setPos(odom::r_coord(0, 0, 0));
+	// robotOdom.start(true);
+	// chassis->calibrate(true);
+	// chassis->setPose(0, 0, 0);
 	// pros::Task screen_task([&]() {
     //     while (true) {
     //         // print robot location to the brain screen
@@ -30,11 +33,8 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
 	auton(ringToKeep);
 }
 void opcontrol() {
 	teleOp(ringToKeep, false);
-	// robotOdom.setPos(odom::r_coord(0, 0, 0));
-	// robotOdom.start(true);
 }

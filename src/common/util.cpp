@@ -41,12 +41,12 @@ float ema(float current, float previous, float smooth) {
     return (current * smooth) + (previous * (1 - smooth));
 }
 
- float reduce_negative_180_to_180(float angle) {
-    while(!(angle >= -180 && angle < 180)) {
-      if( angle < -180 ) { angle += 360; }
-      if(angle >= 180) { angle -= 360; }
-    }
-    return(angle);
+float reduce_negative_180_to_180(float angle) {
+  while(!(angle >= -180 && angle < 180)) {
+    if( angle < -180 ) { angle += 360; }
+    if(angle >= 180) { angle -= 360; }
+  }
+  return(angle);
 }
 
 float reduce_negative_90_to_90(float angle) {
@@ -75,45 +75,45 @@ bool isDone(int start_time, int timeout) {
 // }
 
 double to_deg(float angle) {
-    return angle * 180 / M_PI;
+  return angle * 180 / M_PI;
 }
    
 double to_rad(float angle) {
-    return angle * M_PI / 180;
+  return angle * M_PI / 180;
 }
 
 float clamp(float input, float min, float max){
-    if( input > max ){ return(max); }
-    if(input < min){ return(min); }
-    return(input);
+  if( input > max ){ return(max); }
+  if(input < min){ return(min); }
+  return(input);
 }
 
 bool is_line_settled(float desired_X, float desired_Y, float desired_angle_deg, float current_X, float current_Y){
-    return( (desired_Y-current_Y) * cos(to_rad(desired_angle_deg)) <= -(desired_X-current_X) * sin(to_rad(desired_angle_deg)) );
+  return( (desired_Y-current_Y) * cos(to_rad(desired_angle_deg)) <= -(desired_X-current_X) * sin(to_rad(desired_angle_deg)) );
 }
 
 float clamp_min_voltage(float drive_output, float drive_min_voltage){
-    if(drive_output < 0 && drive_output > -drive_min_voltage){
-        return -drive_min_voltage;
-    }
-    if(drive_output > 0 && drive_output < drive_min_voltage){
-      return drive_min_voltage;
-    }
-    return drive_output;
+  if(drive_output < 0 && drive_output > -drive_min_voltage){
+      return -drive_min_voltage;
+  }
+  if(drive_output > 0 && drive_output < drive_min_voltage){
+    return drive_min_voltage;
+  }
+  return drive_output;
 }
 
 float left_voltage_scaling(float drive_output, float heading_output){
-    float ratio = std::max(std::fabs(drive_output+heading_output), std::fabs(drive_output-heading_output))/127.0;
-    if (ratio > 1) {
-      return (drive_output+heading_output)/ratio;
-    }
-    return drive_output+heading_output;
+  float ratio = std::max(std::fabs(drive_output+heading_output), std::fabs(drive_output-heading_output))/127.0;
+  if (ratio > 1) {
+    return (drive_output+heading_output)/ratio;
   }
+  return drive_output+heading_output;
+}
 
-  float right_voltage_scaling(float drive_output, float heading_output){
-    float ratio = std::max(std::fabs(drive_output+heading_output), std::fabs(drive_output-heading_output))/127.0;
-    if (ratio > 1) {
-      return (drive_output-heading_output)/ratio;
-    }
-    return drive_output-heading_output;
+float right_voltage_scaling(float drive_output, float heading_output){
+  float ratio = std::max(std::fabs(drive_output+heading_output), std::fabs(drive_output-heading_output))/127.0;
+  if (ratio > 1) {
+    return (drive_output-heading_output)/ratio;
   }
+  return drive_output-heading_output;
+}

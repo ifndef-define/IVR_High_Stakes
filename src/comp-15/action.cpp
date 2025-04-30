@@ -28,7 +28,7 @@ void Action::runSubsystemFSM() {
     // Run state control
     stateControl();
 
-    autoMogo();
+    // autoMogo();
     
     // // Check if tier changed - reset state initialization flag
     // if (lastTier != climb.getTier()) {

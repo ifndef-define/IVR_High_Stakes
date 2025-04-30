@@ -152,7 +152,7 @@ void odom::setPos(r_coord pos) {
 }
 
 void odom::debug() {
-    lcd::print(0, "Odom Info:");
+    // lcd::print(0, "Odom Info:");
     lcd::print(1, "X Enc: %d", _x_enc->get_value());
     lcd::print(2, "Y Enc: %d", _y_enc->get_value());
     lcd::print(3, "IMU Theta: %f", _imu == nullptr ? _dual_imu->get_rotation() : _imu->get_rotation());

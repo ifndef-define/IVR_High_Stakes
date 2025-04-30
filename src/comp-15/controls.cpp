@@ -229,6 +229,7 @@ void updateRobotSystems(DriveMode newMode, Ring::Color botSide) {
 }
 pros::Motor armTemp(3, pros::MotorGear::red);
 void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
+
     chassis->loop(true);
     bool onceLock = false;
 

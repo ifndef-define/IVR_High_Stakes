@@ -5,6 +5,8 @@ Drive *Drive::instance_;
 motor_g *Drive::left_side_;
 motor_g *Drive::right_side_;
 odom *Drive::odom_;
+PID *Drive::drive_pid;
+PID *Drive::turn_pid;
 bool Drive::motionInProgress;
 bool Drive::motionQueued;
 Drive::drive_mode_e Drive::drive_mode_;
@@ -15,9 +17,6 @@ controller *Drive::drive_ctrler_;
 motor *Drive::driveMotors[8];
 pros::Task *Drive::drive_task;
 pros::Mutex Drive::multiDrive_mutex;
-
-PID Drive::drive_pid(0,0,0,10,0);
-PID Drive::turn_pid(0,0,0,5,0);
 
 void Drive::driveLoop() {
     // High Stakes Specific, prevent multiple threads from running
@@ -122,27 +121,30 @@ void Drive::moveAtRPM(int rpm) {
 }
 
 void Drive::turnByPID(double angle, float turn_max_voltage, int timeout, bool async) {
-    requestMotionStart();
-    if (!motionInProgress) return;
     if(async) {
         pros::Task task([&](){ turnByPID(angle, false); });
-        endMotion();
         pros::delay(10); // delay to give the task time to start
         return;
     }
+    requestMotionStart();
+    if (!motionInProgress) return;
     int start_time = pros::millis();
     double turnError = reduce_negative_180_to_180(angle - odom::getPos().theta);
-    double output = 0;
-    while(motionInProgress && !isDone(start_time, timeout) && abs(turnError) > 0.5) {
+    double output = 9;
+    while(motionInProgress && !isDone(start_time, timeout)) {
+        if(abs(output) < 8 && abs(turnError) < 0.25){ break; }
         turnError = reduce_negative_180_to_180(angle - odom::getPos().theta);
-        output = turn_pid.update(turnError);
+        // lcd::print(3, "od: %f", odom::getPos().theta);
+        // lcd::print(0, "TE: %f", turnError);
+        output = turn_pid->update(turnError);
+        // lcd::print(1, "TOi: %f", output);
         output = clamp(output, -turn_max_voltage, turn_max_voltage);
-        left_side_->move(output);
-        right_side_->move(-output);
+        // lcd::print(2, "TOf: %f", output);
+        left_side_->move(-output);
+        right_side_->move(output);
         pros::delay(10);
     }
-    left_side_->move(0);
-    right_side_->move(0);
+    brake();
     endMotion();
 }
 
@@ -169,8 +171,8 @@ void Drive::moveByPID(float distance, float heading, float drive_max_voltage, fl
         drive_error = distance+start_position-cur_position;
         heading_error = reduce_negative_180_to_180(heading - odom::getPos().theta);
 
-        drive_output = drive_pid.update(drive_error);
-        heading_output = turn_pid.update(heading_error);
+        drive_output = drive_pid->update(drive_error);
+        heading_output = turn_pid->update(heading_error);
     
         drive_output = clamp(drive_output, -drive_max_voltage, drive_max_voltage);
         heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
@@ -230,12 +232,12 @@ void Drive::moveByPID(double x, double y, double angle, float lead, float setbac
             drive_error = target_distance;
         }
         
-        drive_output = drive_pid.update(drive_error);
+        drive_output = drive_pid->update(drive_error);
 
         heading_scale_factor = cos(to_rad(heading_error));
         drive_output*=heading_scale_factor;
         heading_error = reduce_negative_90_to_90(heading_error);
-        heading_output = turn_pid.update(heading_error);
+        heading_output = turn_pid->update(heading_error);
 
         drive_output = clamp(drive_output, -fabs(heading_scale_factor)*drive_max_voltage, fabs(heading_scale_factor)*drive_max_voltage);
         heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
@@ -526,6 +528,18 @@ drive_builder &drive_builder::add_sin_drive_scale(double scale) {
 }
 drive_builder &drive_builder::add_odom_config(odom &robot_odom) {
     drive_->odom_ = &robot_odom;
+
+    return *this;
+}
+
+drive_builder &drive_builder::add_lat_pid(PID &lat_pid) {
+    drive_->drive_pid = &lat_pid;
+
+    return *this;
+}
+
+drive_builder &drive_builder::add_turn_pid(PID &turn_pid) {
+    drive_->turn_pid = &turn_pid;
 
     return *this;
 }
