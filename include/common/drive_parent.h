@@ -99,7 +99,7 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void turnByPID(double angle, float turn_max_voltage = 127, int timeout = 2500, bool async=true);
+        static void turnByPID(double angle, int timeout = 2500, double turn_settle_error = .25, double turn_max_voltage = 127, bool async=true);
 
         /**
          * @brief Moves the robot given a target position and angle using PID. 
@@ -110,15 +110,23 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void moveByPID(float distance, float heading = odom::getPos().theta, float drive_max_voltage = 127, float heading_max_voltage = 127, int timeout = 5000, bool async=true);
+        static void moveByPID(double distance, double heading = odom::getPos().theta, int timeout=5000, double drive_settle_error = .25, double turn_settle_error = .25, double drive_max_voltage = 127, double heading_max_voltage = 127, bool async=true);
 
         /**
          * @brief Turns the robot to a target pose using PID.
          * 
          * @param x Target x position in inches
+         * @param y Target y position in inches
+         * @param theta Target angle in degrees [-360, 360]
+         * @param lead Lead distance in inches
+         * @param setback Setback distance in inches
+         * @param drive_min_voltage Minimum drive voltage
+         * @param drive_max_voltage Maximum drive voltage
+         * @param heading_max_voltage Maximum heading voltage
+         * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void moveByPID(double x, double y, double theta, float lead = .5, float setback = 3, float drive_min_voltage = 0, float drive_max_voltage = 127, float heading_max_voltage = 127, int timeout=5000, bool async=false);
+        static void moveByPID(double x, double y, double theta, int timeout=5000, double drive_settle_error = .25, double turn_settle_error = .25, double lead = .5, double setback = 3, float drive_min_voltage = 0, float drive_max_voltage = 127, float heading_max_voltage = 127, bool async=false);
 
         /**
          * @brief Determines values to move the robot given a vector. This will compute 
