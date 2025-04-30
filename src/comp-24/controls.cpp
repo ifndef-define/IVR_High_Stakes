@@ -253,7 +253,19 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
         updateRobotSystems(activeProfile, ringToKeep);
     }
 
-    chassis->turnByPID(-90,127,10000,false);
+    // chassis->turnByPID(180,127,10000,false);
+    // chassis->moveByPID(24, 0, 127, 127, 10000, false);
+    // double maxVelo = 0;
+    // double currentVelo = 0;
+    // while(1) {
+    //     if (fabs(currentVelo = chassis->getLeftDrive()->get_actual_velocity()) > fabs(maxVelo)) {
+    //         maxVelo = currentVelo;
+    //     }
+    //     lcd::print(0, "%f", currentVelo);
+    //     lcd::print(1, "%f", maxVelo);
+
+    //     delay(10);
+    // }
 
     // actions.setRingColor(ringToKeep);
     // actions.setAutonControlFlag(false);

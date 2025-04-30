@@ -86,6 +86,13 @@ class Drive {
         static void turnAtRPM(int rpm);
 
         /**
+         * @brief Gets the current RPM of the robot
+         * 
+         * @return A vector of doubles containing the left and right RPM
+         */
+        static std::pair<double, double> getRPM();
+
+        /**
          * @brief Turns the robot to a target angle using PID.
          * 
          * @param angle Target angle in degrees [-360, 360]

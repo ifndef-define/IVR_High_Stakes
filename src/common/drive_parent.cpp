@@ -117,7 +117,8 @@ void Drive::cancelAllMotions() {
 }
 
 void Drive::moveAtRPM(int rpm) {
-    stopLoop();
+    left_side_->move_velocity(rpm);
+    right_side_->move_velocity(rpm);
 }
 
 void Drive::turnByPID(double angle, float turn_max_voltage, int timeout, bool async) {
@@ -129,17 +130,21 @@ void Drive::turnByPID(double angle, float turn_max_voltage, int timeout, bool as
     requestMotionStart();
     if (!motionInProgress) return;
     int start_time = pros::millis();
+    
     double turnError = reduce_negative_180_to_180(angle - odom::getPos().theta);
     double output = 9;
+    std::pair<double, double> rpm = getRPM();
     while(motionInProgress && !isDone(start_time, timeout)) {
-        if(abs(output) < 8 && abs(turnError) < 0.25){ break; }
+        if(abs(output) < 5 && abs(turnError) < 0.25 && ((rpm.first+rpm.second)/2) < 10) 
+            break;
+
         turnError = reduce_negative_180_to_180(angle - odom::getPos().theta);
-        // lcd::print(3, "od: %f", odom::getPos().theta);
-        // lcd::print(0, "TE: %f", turnError);
+        // lcd::print(0, "od: %f", odom::getPos().theta);
+        // lcd::print(1, "TE: %f", turnError);
         output = turn_pid->update(turnError);
-        // lcd::print(1, "TOi: %f", output);
+        // lcd::print(2, "TOi: %f", output);
         output = clamp(output, -turn_max_voltage, turn_max_voltage);
-        // lcd::print(2, "TOf: %f", output);
+        // lcd::print(3, "TOf: %f", output);
         left_side_->move(-output);
         right_side_->move(output);
         pros::delay(10);
@@ -152,37 +157,46 @@ void Drive::moveByPID(float distance, float heading, float drive_max_voltage, fl
     requestMotionStart();
     if (!motionInProgress) return;
     if(async) {
-        pros::Task task([&](){ moveByPID(distance, heading, drive_max_voltage, heading_max_voltage, false); });
+        pros::Task task([&](){ moveByPID(distance, heading, drive_max_voltage, heading_max_voltage, timeout, false); });
         endMotion();
         pros::delay(10); // delay to give the task time to start
         return;
     }
     int start_time = pros::millis();
+    
     double heading_error = reduce_negative_180_to_180(heading - odom::getPos().theta);
     double drive_error = distance;
     double start_position = odom_->getPos().x * cos(to_rad(heading)) + 
                             odom_->getPos().y * sin(to_rad(heading));
-    float drive_output = 0;
-    float heading_output = 0;
+lcd::print(0, "sp: %f", start_position);
+    float drive_output = 6;
+    float heading_output = 6;
     float cur_position = 0;
-    while(motionInProgress && !isDone(start_time, timeout) || (abs(drive_error) > 0.25 || abs(heading_error) > 0.5)) {
+    std::pair<double, double> rpm = getRPM();
+    // while (motionInProgress && !isDone(start_time, timeout)) {
+    while (1) {
+        // if(abs(drive_output) < 5 && abs(heading_error) < 0.25 && abs(drive_error) < 0.25 &&
+        //     ((rpm.first+rpm.second)/2) < 10)
+        //     break;
         cur_position = odom_->getPos().x * cos(to_rad(heading)) + 
                         odom_->getPos().y * sin(to_rad(heading));
+lcd::print(1, "cp: %f", cur_position);
         drive_error = distance+start_position-cur_position;
+lcd::print(2, "de: %f", drive_error);
         heading_error = reduce_negative_180_to_180(heading - odom::getPos().theta);
-
+// lcd::print(3, "he: %f", heading_error);
         drive_output = drive_pid->update(drive_error);
         heading_output = turn_pid->update(heading_error);
-    
+lcd::print(4, "do: %f", drive_output);
+// lcd::print(5, "ho: %f", heading_output);
         drive_output = clamp(drive_output, -drive_max_voltage, drive_max_voltage);
         heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
     
-        left_side_->move(drive_output+heading_output);
-        right_side_->move(drive_output-heading_output);
+        // left_side_->move(drive_output-heading_output);
+        // right_side_->move(drive_output+heading_output);
         pros::delay(10);
     }
-    left_side_->move(0);
-    right_side_->move(0);
+    brake();
     endMotion();
 }
 
@@ -254,7 +268,24 @@ void Drive::moveByPID(double x, double y, double angle, float lead, float setbac
 }
 
 void Drive::turnAtRPM(int rpm) {
-    /** @todo Will add Post-River Bots */
+    left_side_->move_velocity(rpm);
+    right_side_->move_velocity(-rpm);
+}
+
+std::pair<double, double> Drive::getRPM() {
+    std::pair<double, double> rpm = {0, 0};
+    double avg_rpm = 0;
+    for (auto motor : left_side_->get_actual_velocity_all()) {
+        avg_rpm += fabs(motor);
+        avg_rpm /= drive_motor_count_;
+    }
+    rpm.first = avg_rpm;
+    for (auto motor : right_side_->get_actual_velocity_all()) {
+        avg_rpm += fabs(motor);
+        avg_rpm /= drive_motor_count_;
+    }
+    rpm.second = avg_rpm;
+    return rpm;
 }
 
 void Drive::brake() {    
