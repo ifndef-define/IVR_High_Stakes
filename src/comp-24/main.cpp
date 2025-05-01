@@ -6,11 +6,12 @@
 Ring::Color ringToKeep = Ring::Color::BLUE;
 
 void initialize() {
-	pros::lcd::initialize();
+	// pros::lcd::initialize();
 	
-	imu.reset(true);
+	imu.reset(false);
+	ui::init("comp-24");
 	actions.setRingColor(ringToKeep);
-	robotOdom.start(true);
+	// robotOdom.start(true);
 	
 	// robotOdom.setPos(odom::r_coord(0, 0, 0));
 	// robotOdom.start(true);
@@ -33,7 +34,7 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-	auton(ringToKeep);
+	// auton(ringToKeep);
 }
 void opcontrol() {
 	teleOp(ringToKeep, false);

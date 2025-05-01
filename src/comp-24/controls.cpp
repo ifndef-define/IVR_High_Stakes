@@ -174,8 +174,6 @@ enum DriveMode {
 DriveMode activeProfile = MODE_SOLO;
 
 extern pros::MotorGroup leftDrive, rightDrive, rightClimbDrive, leftClimbDrive;
-// pros::Motor armTemp(3, pros::MotorGear::red);
-// pros::adi::Button armLimitTemp(pros::adi::ext_adi_port_pair_t(8, 8));
 void updateRobotSystems(DriveMode newMode, Ring::Color botSide) {
     ctrler.rumble("...");
     delay(100);
@@ -243,7 +241,7 @@ void updateRobotSystems(DriveMode newMode, Ring::Color botSide) {
 }
 
 void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
-    // chassis->loop(true);
+    chassis->loop(true);
 
     if (!pros::competition::is_connected() && !forceCompMode) {
         activeProfile = MODE_SOLO;
@@ -295,14 +293,6 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                         actions.setArmState(Arm::State::DOWN);
                     }
                 }
-
-                // if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                //     armTemp.move(127);
-                // } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown) && armLimitTemp.get_value() != 1) {
-                //     armTemp.move(-127);
-                // } else {
-                //     armTemp.brake();
-                // }
 
                 /// PNEUMATICS ///
                 if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {
