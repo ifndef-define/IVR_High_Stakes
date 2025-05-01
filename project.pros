@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "worldsTest",
+    "project_name": "drivetester",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -256,9 +256,9 @@
       }
     },
     "upload_options": {
-      "icon": "pizza",
+      "icon": "ufo",
       "slot": 2,
-      "after": "screen"
+      "after": "run"
     },
     "use_early_access": true
   }

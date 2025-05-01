@@ -5,7 +5,6 @@
 #include "./pid.hpp"
 #include "./motion.h"
 #include "./odom.h"
-#include "./gui.h"
 // #include "common/dual_imu.h"
 // #include "common/kalman_filter.h"
 // #include "common/localization_filter.h"
