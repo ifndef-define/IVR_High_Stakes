@@ -41,14 +41,14 @@ const driverProfile AdiPrimary = {
     .backpackCycleStageDown = BUTTON_L2,
     .adiSpecial = false,
 
-    .mogoClampToggle = BUTTON_RIGHT,
-    .rightMogoRushCycle = BUTTON_B,
-    .leftMogoRushCycle = BUTTON_B,
-    .mogoRushTeethToggle = BUTTON_Y,
+    .mogoClampToggle = BUTTON_Y,
+    .rightMogoRushCycle = BUTTON_A,
+    .leftMogoRushCycle = BUTTON_A,
+    .mogoRushTeethToggle = BUTTON_UP,
     // .intakeLock = null,  // retracted
 
-    .climbMode_1 = BUTTON_UP,
-    .climbMode_2 = BUTTON_X,
+    .climbMode_1 = BUTTON_B,
+    .climbMode_2 = BUTTON_DOWN,
 
     // .intake_wingsToggle = null, // dropped and folded
     // .innerClimbArmsToggle = null, // stowed
