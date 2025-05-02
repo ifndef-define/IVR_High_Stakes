@@ -23,7 +23,14 @@ void autonomous() {
 }
 
 void opcontrol() {
-	// chassis->turnByPID(90, 10000, 0.4, 127, false);
-	chassis->moveByPID(24, 10000, 0.5, 127, false);
+	// chassis->turnToAngle(90, 10000, 127, 0.3, false);
+	// chassis->swingToAngle(90, Drive::DriveSide::RIGHT, 10000, 127, 0.3, false);
+	// chassis->turnToPoint(-25, -25, 10000, 127, 0.3, false);
+	// chassis->swingToPoint(-25, -25, Drive::DriveSide::RIGHT, 10000, 127, 0.3, false);
+	// chassis->translateBy(24, 10000, 0.5, 127, false);
+
+
+	chassis->moveToPose(25, -25, 0, 10000, 35, 127, 100, 0.3, 0.3, 0.5, 3, false);
+
 	teleOp(ringToKeep, false);
 }
