@@ -116,6 +116,8 @@ void Drive::cancelAllMotions() {
     pros::delay(10);
 }
 
+bool Drive::isInMotion() { return motionInProgress; }
+
 void Drive::moveAtRPM(int rpm) {
     left_side_->move_velocity(rpm);
     right_side_->move_velocity(rpm);
@@ -132,20 +134,20 @@ void Drive::turnToAngle(double angle, int timeout, double turn_max_voltage, doub
     }
     int start_time = pros::millis();
     
-    double turnError = reduce_negative_180_to_180(angle - odom::getPos().theta);
+    double turn_error = reduce_negative_180_to_180(angle - odom::getPos().theta);
     double output = 9;
     std::pair<double, double> rpm = getRPM();
-    while(motionInProgress && !isDone(start_time, timeout)) {
-        if(abs(output) < 5 && abs(turnError) < turn_settle_error) 
+    while(motionInProgress && !isDone(start_time, timeout) && ((rpm.first+rpm.second)/2) < 10) {
+        if(abs(output) < 5 && abs(turn_error) < turn_settle_error) 
             break;
 
-        turnError = reduce_negative_180_to_180(angle - odom::getPos().theta);
-        // lcd::print(0, "od: %f", odom::getPos().theta);
-        // lcd::print(1, "TE: %f", turnError);
-        output = turn_pid->update(turnError);
-        // lcd::print(2, "TOi: %f", output);
+        turn_error = reduce_negative_180_to_180(angle - odom::getPos().theta);
+        lcd::print(0, "od: %f", odom::getPos().theta);
+        lcd::print(1, "TE: %f", turn_error);
+        output = turn_pid->update(turn_error);
+        lcd::print(2, "TOi: %f", output);
         output = clamp(output, -turn_max_voltage, turn_max_voltage);
-        // lcd::print(3, "TOf: %f", output);
+        lcd::print(3, "TOf: %f", output);
         left_side_->move(-output);
         right_side_->move(output);
         pros::delay(10);
