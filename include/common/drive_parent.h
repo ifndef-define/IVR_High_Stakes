@@ -314,6 +314,8 @@ class Drive {
         
         static void cancelAllMotions();
 
+        static bool isInMotion();
+
     // Allow drive_builder to access private members
     friend class drive_builder;
 };
