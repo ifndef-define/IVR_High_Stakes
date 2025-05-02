@@ -153,6 +153,44 @@ void Drive::turnByPID(double angle, int timeout, double turn_settle_error, doubl
     endMotion();
 }
 
+void Drive::swingByPID(double angle, DriveSide lockedSide, int timeout, double turn_settle_error, double turn_max_voltage, bool async) {
+    if(async) {
+        pros::Task task([&](){ turnByPID(angle, timeout, turn_settle_error, turn_max_voltage, false); });
+        pros::delay(10); // delay to give the task time to start
+        return;
+    }
+    requestMotionStart();
+    if (!motionInProgress) return;
+    int start_time = pros::millis();
+    
+    double turnError = reduce_negative_180_to_180(angle - odom::getPos().theta);
+    double output = 9;
+    std::pair<double, double> rpm = getRPM();
+    while(motionInProgress && !isDone(start_time, timeout)) {
+        if(abs(output) < 5 && abs(turnError) < turn_settle_error && ((rpm.first+rpm.second)/2) < 10) 
+            break;
+
+        turnError = reduce_negative_180_to_180(angle - odom::getPos().theta);
+        // lcd::print(0, "od: %f", odom::getPos().theta);
+        // lcd::print(1, "TE: %f", turnError);
+        output = turn_pid->update(turnError);
+        // lcd::print(2, "TOi: %f", output);
+        output = clamp(output, -turn_max_voltage, turn_max_voltage);
+        // lcd::print(3, "TOf: %f", output);
+
+        if(lockedSide == DriveSide::LEFT) {
+            left_side_->move(0);
+            right_side_->move(output);
+        } else {
+            left_side_->move(-output);
+            right_side_->move(0);
+        }
+        pros::delay(10);
+    }
+    brake();
+    endMotion();
+}
+
 void Drive::moveByPID(double distance, double angle, int timeout, double drive_settle_error, double turn_settle_error, double drive_max_voltage, double heading_max_voltage, bool async) {
     requestMotionStart();
     if (!motionInProgress) return;
@@ -178,7 +216,7 @@ lcd::print(0, "sp: %f", start_position);
         abs(drive_error) < drive_settle_error && ((rpm.first+rpm.second)/2) < 10){
             break;
         }
-        
+
         cur_position = odom_->getPos().x * cos(to_rad(angle)) + 
                         odom_->getPos().y * sin(to_rad(angle));
 lcd::print(1, "cp: %f", cur_position);
