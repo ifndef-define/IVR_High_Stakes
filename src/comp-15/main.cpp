@@ -10,6 +10,7 @@ void initialize() {
 	
 	imu.reset(true);
 	actions.setRingColor(ringToKeep);
+	robotOdom->start(true);
 }
 
 void disabled() {}
@@ -22,5 +23,7 @@ void autonomous() {
 }
 
 void opcontrol() {
+	// chassis->turnByPID(90, 10000, 0.4, 127, false);
+	chassis->moveByPID(24, 10000, 0.5, 127, false);
 	teleOp(ringToKeep, false);
 }

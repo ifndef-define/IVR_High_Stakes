@@ -22,7 +22,7 @@ const double odom::WHEEL_CIRCUMFERENCE = odom::WHEEL_DIAMETER * M_PI;
 double odom::X_DISPLACEMENT_CONSTANT = WHEEL_CIRCUMFERENCE / TICKS_PER_ROTATION;
 double odom::Y_DISPLACEMENT_CONSTANT = WHEEL_CIRCUMFERENCE / TICKS_PER_ROTATION;
 // const double odom::TICKS_PER_INCH = odom::TICKS_PER_ROTATION / odom::WHEEL_CIRCUMFERENCE;
-bool odom::debugMode = true;
+bool odom::debugMode = false;
 bool odom::isThread = false;
 pros::Task* odom::odom_task = nullptr;
 
@@ -125,7 +125,7 @@ void odom::update() {
         // Update the global position of the robot
         currentPos.x = lastPos.x + (deltaDisp.x * cos(currentPos.theta) - (deltaDisp.y * sin(currentPos.theta)));
         currentPos.y = lastPos.y + (deltaDisp.x * sin(currentPos.theta) + (deltaDisp.y * cos(currentPos.theta)));
-        currentPos.theta += convert::radToDeg(deltaEnc.theta); // Raw IMU value is the heading    
+        currentPos.theta += deltaEnc.theta;
     
         // Update last position
         lastPos = currentPos;
@@ -139,7 +139,7 @@ void odom::update() {
 }
 
 odom::r_coord odom::getPos() {
-    return currentPos;
+    return {currentPos.x, currentPos.y, convert::radToDeg(currentPos.theta)};
 }
 
 void odom::setPos(r_coord pos) {

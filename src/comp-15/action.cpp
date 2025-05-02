@@ -138,7 +138,7 @@ void Action::intakeState() {
             // Calculate rotation taking into account possible wrap-around
             currentRotation = intakeManager.getIntakeAngle();
         
-            pros::lcd::print(4, "D: %f, C: %f, S: %f", ejectStartPos - currentRotation, currentRotation, ejectStartPos);
+            // pros::lcd::print(4, "D: %f, C: %f, S: %f", ejectStartPos - currentRotation, currentRotation, ejectStartPos);
 
             // Check if we've rotated the required amount
             if (std::abs(ejectStartPos - currentRotation) >= 20) {

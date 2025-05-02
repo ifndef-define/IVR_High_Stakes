@@ -231,7 +231,6 @@ pros::Motor armTemp(3, pros::MotorGear::red);
 void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
 
     chassis->loop(true);
-    bool onceLock = false;
 
     if (!pros::competition::is_connected() && !forceCompMode) {
         activeProfile = MODE_SOLO;
@@ -379,14 +378,13 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
 
                 if (ctrler.get_digital_new_press(controls[activeProfile].climbPTOToggle)) {
                     pneumatics.climbPTO.toggle();
-                    if (pneumatics.climbPTO.is_extended() && !onceLock) {
-                        onceLock = true;
+                    if (pneumatics.climbPTO.is_extended()) {
                         // chassis->stopLoop();
                         chassis->changeDriveMotors(leftClimbDrive, rightClimbDrive);
                         chassis->changeDriveMode(controls[activeProfile].driveMode);
                         chassis->setBrakeMode(BRAKE_BRAKE); // switch to hold?
                         // chassis->loop(true);
-                    } else if (!(pneumatics.climbPTO.is_extended() && !onceLock)) {
+                    } else if (!(pneumatics.climbPTO.is_extended())) {
                         chassis->changeDriveMode(controls[MODE_SOLO].driveMode);
                         chassis->changeDriveMotors(leftDrive, rightDrive);
                         chassis->setBrakeMode(BRAKE_COAST);
@@ -501,15 +499,14 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                 }
                 if (ctrler.get_digital_new_press(controls[activeProfile].climbPTOToggle)) {
                     pneumatics.climbPTO.toggle();
-                    if (pneumatics.climbPTO.is_extended() && !onceLock) {
-                        onceLock = true;
+                    if (pneumatics.climbPTO.is_extended()) {
                         // chassis->stopLoop();
                         chassis->changeDriveMotors(leftClimbDrive, rightClimbDrive);
                         chassis->changeDriveMode(controls[activeProfile].driveMode);
                         chassis->setBrakeMode(BRAKE_BRAKE); // switch to hold?
                         // chassis->loop(true);
-                    } else if (!(pneumatics.climbPTO.is_extended() && !onceLock)) {
-                        chassis->changeDriveMode(controls[MODE_SOLO].driveMode);
+                    } else if (!(pneumatics.climbPTO.is_extended())) {
+                        chassis->changeDriveMode(controls[MODE_COMP].driveMode);
                         chassis->changeDriveMotors(leftDrive, rightDrive);
                         chassis->setBrakeMode(BRAKE_COAST);
                     }

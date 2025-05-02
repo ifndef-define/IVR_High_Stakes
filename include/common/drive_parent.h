@@ -110,7 +110,7 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void moveByPID(double distance, double heading = odom::getPos().theta, int timeout=5000, double drive_settle_error = .25, double turn_settle_error = .25, double drive_max_voltage = 127, double heading_max_voltage = 127, bool async=true);
+        static void moveByPID(double distance, int timeout=5000, double drive_settle_error = .25, double drive_max_voltage = 127, bool async=true);
 
         /**
          * @brief Turns the robot to a target pose using PID.
@@ -126,7 +126,7 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void moveByPID(double x, double y, double theta, int timeout=5000, double drive_settle_error = .25, double turn_settle_error = .25, double lead = .5, double setback = 3, float drive_min_voltage = 0, float drive_max_voltage = 127, float heading_max_voltage = 127, bool async=false);
+        // static void moveByPID(double x, double y, double theta, int timeout=5000, double drive_settle_error = .25, double turn_settle_error = .25, double lead = .5, double setback = 3, float drive_min_voltage = 0, float drive_max_voltage = 127, float heading_max_voltage = 127, bool async=false);
 
         /**
          * @brief Determines values to move the robot given a vector. This will compute 
@@ -220,6 +220,18 @@ class Drive {
 
         static pros::Task *drive_task;
         inline static bool isThread = false;
+
+        // struct driveMoveConstants {
+        //     double kV;
+        //     double kA;
+        //     double a_des;
+        //     double mVps_decrease;
+        //     double mVps_increase;
+        //     double ignore_slew;
+        //     double maintain_angle_voltage;
+        // };
+
+        // static driveMoveConstants *dConsts;
 
         static void errorMsg(int err_num);
 
@@ -374,6 +386,13 @@ class drive_builder {
          * @param turn_pid the turn PID object
          */
         drive_builder &add_turn_pid(PID &turn_pid);
+
+        // /**
+        //  * @brief Set the drive move constants
+        //  * 
+        //  * @param constants Drive move constants to set
+        //  */
+        // drive_builder &add_drive_move_constants(Drive::driveMoveConstants constants);
 
         /**
          * @brief Build the drive object

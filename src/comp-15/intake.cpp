@@ -60,8 +60,8 @@ void IntakeManager::update() {
     if(filter != Ring::Color::NONE) {
       curRing = detector.getColor();
       eject = ((curRing != filter) && (curRing != Ring::Color::NONE));
-      pros::lcd::set_text(5, "Ring Color: " + std::to_string((int)curRing));
-      pros::lcd::print(6, "eject: %d", eject);
+      // pros::lcd::set_text(5, "Ring Color: " + std::to_string((int)curRing));
+      // pros::lcd::print(6, "eject: %d", eject);
       // if(eject) { 
       //   delay(500); 
       //   eject = false;
