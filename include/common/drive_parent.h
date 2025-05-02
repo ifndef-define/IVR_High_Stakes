@@ -123,7 +123,7 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void turnToPoint(double angle, int timeout = 2500, double turn_max_voltage = 127, double turn_settle_error = .25, bool async=true);
+        static void turnToPoint(double x, double y, int timeout = 2500, double turn_max_voltage = 127, double turn_settle_error = .25, bool async=true);
 
         /**
          * @brief Turns the robot to a target angle using PID.
@@ -132,7 +132,7 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void swingToPoint(double angle, DriveSide lockedSide, int timeout = 2500, double turn_max_voltage = 127, double turn_settle_error = .25, bool async=true);
+        static void swingToPoint(double x, double y, DriveSide lockedSide, int timeout = 2500, double turn_max_voltage = 127, double turn_settle_error = .25, bool async=true);
 
         /**
          * @brief Moves the robot given a target position and angle using PID. 

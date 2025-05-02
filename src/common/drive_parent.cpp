@@ -191,6 +191,14 @@ void Drive::swingToAngle(double angle, Drive::DriveSide lockedSide, int timeout,
     endMotion();
 }
 
+void Drive::turnToPoint(double x, double y, int timeout, double turn_max_voltage, double turn_settle_error, bool async) {
+    turnToAngle(to_deg(atan2(x-odom_->getPos().x, y-odom_->getPos().y)), timeout, turn_max_voltage, turn_settle_error, async);
+}
+
+void Drive::swingToPoint(double x, double y, Drive::DriveSide lockedSide, int timeout, double turn_max_voltage, double turn_settle_error, bool async) {
+    swingToAngle(to_deg(atan2(x-odom_->getPos().x, y-odom_->getPos().y)), lockedSide, timeout, turn_max_voltage, turn_settle_error, async);
+}
+
 void Drive::moveToTarget(double distance, double angle, int timeout, double drive_max_voltage, double heading_max_voltage, double drive_settle_error, double turn_settle_error, bool async) {
     requestMotionStart();
     if (!motionInProgress) return;
