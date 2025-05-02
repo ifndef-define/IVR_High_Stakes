@@ -337,8 +337,8 @@ void Drive::moveToPose(double x, double y, double theta, int timeout, double dri
     bool prev_center_line_side = center_line_side;
     
     while(motionInProgress && !isDone(start_time, timeout)) {
-        if(abs(drive_output) < 5 && abs(heading_error) && abs(heading_output) < 5 
-        && abs(drive_error) < 0.25 && ((getRPM().first+getRPM().second)/2) < 10){
+        if(abs(drive_output) < 5 && abs(heading_error) < turn_settle_error && abs(heading_output) < 5 
+        && abs(drive_error) < drive_settle_error && ((getRPM().first+getRPM().second)/2) < 10){
             break;
         }
 
@@ -364,12 +364,12 @@ void Drive::moveToPose(double x, double y, double theta, int timeout, double dri
         drive_error = target_distance;
         }
         
-        float drive_output = drive_pid->update(drive_error);
+        drive_output = drive_pid->update(drive_error);
 
         float heading_scale_factor = cos(to_rad(heading_error));
         drive_output*=heading_scale_factor;
         heading_error = reduce_negative_90_to_90(heading_error);
-        float heading_output = turn_pid->update(heading_error);
+        heading_output = turn_pid->update(heading_error);
 
         drive_output = clamp(drive_output, -fabs(heading_scale_factor)*drive_max_voltage, fabs(heading_scale_factor)*drive_max_voltage);
         heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
