@@ -52,6 +52,11 @@ class Drive {
             HOLONOMIC,
             CUSTOM_c
         };
+
+        enum DriveSide {
+            LEFT = 0,
+            RIGHT = 1
+        };
         
         /**
          * @brief Used by driver control to move the robot
@@ -99,7 +104,37 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void turnByPID(double angle, int timeout = 2500, double turn_settle_error = .25, double turn_max_voltage = 127, bool async=true);
+        static void turnToAngle(double angle, int timeout = 2500, double turn_max_voltage = 127, double turn_settle_error = .25, bool async=true);
+
+        /**
+         * @brief Turns the robot to a target angle using PID.
+         * 
+         * @param angle Target angle in degrees [-360, 360]
+         * @param timeout Timeout in milliseconds
+         * @param async If true, will run in a separate thread
+         */
+        static void swingToAngle(double angle, DriveSide lockedSide, int timeout = 2500, double turn_max_voltage = 127, double turn_settle_error = .25, bool async=true);
+
+
+        /**
+         * @brief Turns the robot to a target angle using PID.
+         * 
+         * @param angle Target angle in degrees [-360, 360]
+         * @param timeout Timeout in milliseconds
+         * @param async If true, will run in a separate thread
+         */
+        static void turnToPoint(double x, double y, int timeout = 2500, double turn_max_voltage = 127, double turn_settle_error = .25, bool async=true);
+
+        /**
+         * @brief Turns the robot to a target angle using PID.
+         * 
+         * @param angle Target angle in degrees [-360, 360]
+         * @param timeout Timeout in milliseconds
+         * @param async If true, will run in a separate thread
+         */
+        static void swingToPoint(double x, double y, DriveSide lockedSide, int timeout = 2500, double turn_max_voltage = 127, double turn_settle_error = .25, bool async=true);
+
+        static void moveToTarget(double distance, double angle, int timeout, double drive_max_voltage, double heading_max_voltage, double drive_settle_error, double turn_settle_error, bool async);
 
         /**
          * @brief Moves the robot given a target position and angle using PID. 
@@ -126,7 +161,7 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        // static void moveByPID(double x, double y, double theta, int timeout=5000, double drive_settle_error = .25, double turn_settle_error = .25, double lead = .5, double setback = 3, float drive_min_voltage = 0, float drive_max_voltage = 127, float heading_max_voltage = 127, bool async=false);
+        static void moveToPose(double x, double y, double theta, int timeout=5000, double drive_min_voltage = 0, double drive_max_voltage = 127, double heading_max_voltage = 127, double drive_settle_error = .25, double turn_settle_error = .25, double lead = .5, double setback = 3, bool async=false);
 
         /**
          * @brief Determines values to move the robot given a vector. This will compute 

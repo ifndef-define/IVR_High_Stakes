@@ -26,6 +26,8 @@ struct driverProfile {
     pros::controller_digital_e_t climbPTOToggle;
 
     pros::controller_digital_e_t toggleColorSort;
+
+    pros::controller_digital_e_t shift;
 };
 
 const driverProfile JesusPrimary = {
@@ -111,6 +113,7 @@ const driverProfile SoloDriveMode = {
     // .climbPTOToggle = null, // disengaged
 
     // .toggleColorSort = null // on by default
+    .shift = BUTTON_RIGHT
 };
 
 const driverProfile SoloClimbMode = {
@@ -262,6 +265,7 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                 }
 
                 /// ARM ///
+                actions.setOverride(ctrler.get_digital(controls[activeProfile].shift));
                 if(actions.getOverride()){
                     if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
                         actions.setArmSpeed(1);
@@ -271,35 +275,16 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                         actions.setArmSpeed(0);
                     }
                 } else {
-                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-                        actions.setArmState(Arm::State::DESCORE);
-                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                        actions.setArmState(Arm::State::READY);
-                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-                        actions.setArmState(Arm::State::SCORE);
-                    } else {
-                        actions.setArmState(Arm::State::DOWN);
+                    if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageUp)) {
+                        if(actions.getArmState()==Arm::State::READY) {
+                            actions.setArmState(Arm::State::DOWN);
+                        } else {
+                            actions.setArmState(Arm::State::READY);
+                        }
+                    } else if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageDown)) {
+                        actions.nextArmState();
                     }
                 }
-                // if(actions.getOverride()){
-                //     if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                //         actions.setArmSpeed(1);
-                //     } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-                //         actions.setArmSpeed(-1);
-                //     } else {
-                //         actions.setArmSpeed(0);
-                //     }
-                // } else {
-                //     if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageUp)) {
-                //         if(actions.getArmState()==Arm::State::READY) {
-                //             actions.setArmState(Arm::State::DOWN);
-                //         } else {
-                //             actions.setArmState(Arm::State::READY);
-                //         }
-                //     } else if(ctrler.get_digital_new_press(controls[activeProfile].backpackCycleStageDown)) {
-                //         actions.nextArmState();
-                //     }
-                // }
                 // if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
                 //     armTemp.move(127);
                 // } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
