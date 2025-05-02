@@ -195,7 +195,7 @@ void updateRobotSystems(DriveMode newMode, Ring::Color botSide) {
             pneumatics.climbPTO.retract();
             chassis->changeDriveMode(controls[activeProfile].driveMode);
             chassis->changeDriveMotors(leftDrive, rightDrive);
-            actions.setRunColorSort(true);
+            actions.setRunColorSort(false);
             break;
         case MODE_SOLO_CLIMB:
             ctrler.print(0, 0, "Solo - Climb");
@@ -243,7 +243,7 @@ void updateRobotSystems(DriveMode newMode, Ring::Color botSide) {
 }
 
 void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
-    // chassis->loop(true);
+    chassis->loop(true);
 
     if (!pros::competition::is_connected() && !forceCompMode) {
         activeProfile = MODE_SOLO;
