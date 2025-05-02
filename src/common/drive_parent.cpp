@@ -325,7 +325,6 @@ void Drive::moveToPose(double x, double y, double theta, int timeout, double dri
     int start_time = pros::millis();
     float heading_output = 6;
     float drive_output = 6;
-    std::pair<double, double> rpm = getRPM();
 
     float target_distance = hypot(x-odom::getPos().x,y-odom::getPos().y);
     float drive_error = target_distance;
@@ -335,7 +334,11 @@ void Drive::moveToPose(double x, double y, double theta, int timeout, double dri
     bool crossed_center_line = false;
     bool center_line_side = is_line_settled(x, y, theta+90, odom::getPos().x, odom::getPos().y);
     bool prev_center_line_side = center_line_side;
-    
+
+    float carrot_X = 0;
+    float carrot_Y = 0;
+    float heading_scale_factor = 0;
+
     while(motionInProgress && !isDone(start_time, timeout)) {
         if(abs(drive_output) < 5 && abs(heading_error) < turn_settle_error && abs(heading_output) < 5 
         && abs(drive_error) < drive_settle_error && ((getRPM().first+getRPM().second)/2) < 10){
@@ -348,25 +351,25 @@ void Drive::moveToPose(double x, double y, double theta, int timeout, double dri
 
         center_line_side = is_line_settled(x, y, theta+90, odom::getPos().x, odom::getPos().y);
         if(center_line_side != prev_center_line_side){
-        crossed_center_line = true;
+            crossed_center_line = true;
         }
 
         target_distance = hypot(x-odom::getPos().x,y-odom::getPos().y);
 
-        float carrot_X = x - sin(to_rad(theta)) * (lead * target_distance + setback);
-        float carrot_Y = y - cos(to_rad(theta)) * (lead * target_distance + setback);
+        carrot_X = x - sin(to_rad(theta)) * (lead * target_distance + setback);
+        carrot_Y = y - cos(to_rad(theta)) * (lead * target_distance + setback);
 
-        drive_error = hypot(carrot_X-odom::getPos().x,carrot_Y-odom::getPos().x);
+        drive_error = hypot(carrot_X-odom::getPos().x,carrot_Y-odom::getPos().y);
         heading_error = reduce_negative_180_to_180(to_deg(atan2(carrot_X-odom::getPos().x,carrot_Y-odom::getPos().y))-odom::getPos().theta);
 
         if (drive_error<drive_settle_error || crossed_center_line || drive_error < setback) { 
-        heading_error = reduce_negative_180_to_180(theta-odom::getPos().theta); 
-        drive_error = target_distance;
+            heading_error = reduce_negative_180_to_180(theta-odom::getPos().theta); 
+            drive_error = target_distance;
         }
         
         drive_output = drive_pid->update(drive_error);
 
-        float heading_scale_factor = cos(to_rad(heading_error));
+        heading_scale_factor = cos(to_rad(heading_error));
         drive_output*=heading_scale_factor;
         heading_error = reduce_negative_90_to_90(heading_error);
         heading_output = turn_pid->update(heading_error);
