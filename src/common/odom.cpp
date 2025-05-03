@@ -66,8 +66,8 @@ odom::odom(pros::adi::Encoder *x_enc, pros::adi::Encoder *y_enc, pros::IMU *imu,
     lastEnc = {0, 0, 0};
     deltaEnc = {0, 0, 0};
     deltaDisp = {0, 0, 0};
-    currentPos = startPos;
-    lastPos = startPos;
+    currentPos = {startPos.x, startPos.y, convert::degToRad(startPos.theta)};
+    lastPos = {startPos.x, startPos.y, convert::degToRad(startPos.theta)};
 }
 
 odom::odom(pros::adi::Encoder *x_enc, pros::adi::Encoder *y_enc, DualIMU *imu, r_coord startPos, double x_off, double x_tune, double y_off, double y_tune) {
@@ -95,8 +95,8 @@ odom::odom(pros::adi::Encoder *x_enc, pros::adi::Encoder *y_enc, DualIMU *imu, r
     lastEnc = {0, 0, 0};
     deltaEnc = {0, 0, 0};
     deltaDisp = {0, 0, 0};
-    currentPos = startPos;
-    lastPos = startPos;
+    currentPos = {startPos.x, startPos.y, convert::degToRad(startPos.theta)};
+    lastPos = {startPos.x, startPos.y, convert::degToRad(startPos.theta)};
 }
 
 void odom::update() {

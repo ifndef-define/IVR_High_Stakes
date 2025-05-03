@@ -30,7 +30,10 @@ void opcontrol() {
 	// chassis->translateBy(24, 10000, 0.5, 127, false);
 
 
-	chassis->moveToPose(25, -25, 0, 10000, 35, 127, 100, 0.3, 0.3, 0.5, 3, false);
+	chassis->moveToPose(25, 35, 90, true, 100000, 0, 127, 1120, 0.5, 0.5, 1.5, 8.2, false);
+	// chassis->moveToPose(25, 25, 0, 1000000, 0, 80, 100, 0.3, 0.3, false);
+	// chassis->moveByVector(25, -25, 100);
+	delay(3000);
 
 	teleOp(ringToKeep, false);
 }

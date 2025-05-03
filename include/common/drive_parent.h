@@ -159,16 +159,16 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void moveToPose(double x, double y, double theta, int timeout=5000, double drive_min_voltage = 0, double drive_max_voltage = 127, double heading_max_voltage = 127, double drive_settle_error = .25, double turn_settle_error = .25, double lead = .5, double setback = 3, bool async=false);
-
-        // /**
-        //  * @brief Determines values to move the robot given a vector. This will compute 
-        //  *  the vector from the current position to the target position and move the robot
-        //  * 
-        //  * @param x X component of the vector [0,144] inches
-        //  * @param y Y component of the vector [0,144] inches
-        //  */
-        // static void moveByVector(double x, double y, double min_speed, double max_speed);
+        static void moveToPose(double x, double y, double theta=999, bool reverse=false, int timeout=5000, double drive_min_voltage = 0, double drive_max_voltage = 127, double heading_max_voltage = 110, double drive_settle_error = .5, double turn_settle_error = .5, double lead = 1.5, double position_threshold=8.2, bool async=false);
+        // static void moveToPose(double x, double y, double theta, int timeout=5000, double drive_min_voltage = 0, double drive_max_voltage = 127, double heading_max_voltage = 127, double drive_settle_error = .25, double turn_settle_error = .25, bool async=false);
+        /**
+         * @brief Determines values to move the robot given a vector. This will compute 
+         *  the vector from the current position to the target position and move the robot
+         * 
+         * @param x X component of the vector [0,144] inches
+         * @param y Y component of the vector [0,144] inches
+         */
+        static void moveByVector(double x, double y, double atSpeed=65);
 
         /**
          * @brief Moves the robot given a normalized left and right drive power value.

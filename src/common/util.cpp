@@ -107,7 +107,7 @@ float left_voltage_scaling(float drive_output, float heading_output){
   if (ratio > 1) {
     return (drive_output+heading_output)/ratio;
   }
-  return drive_output+heading_output;
+  return drive_output-heading_output;
 }
 
 float right_voltage_scaling(float drive_output, float heading_output){
@@ -115,5 +115,5 @@ float right_voltage_scaling(float drive_output, float heading_output){
   if (ratio > 1) {
     return (drive_output-heading_output)/ratio;
   }
-  return drive_output-heading_output;
+  return drive_output+heading_output;
 }

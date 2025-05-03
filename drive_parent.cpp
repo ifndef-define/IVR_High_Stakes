@@ -142,12 +142,12 @@ void Drive::turnToAngle(double angle, int timeout, double turn_max_voltage, doub
             break;
 
         turn_error = reduce_negative_180_to_180(angle - odom::getPos().theta);
-        // lcd::print(0, "od: %f", odom::getPos().theta);
-        // lcd::print(1, "TE: %f", turn_error);
+        lcd::print(0, "od: %f", odom::getPos().theta);
+        lcd::print(1, "TE: %f", turn_error);
         output = turn_pid->update(turn_error);
-        // lcd::print(2, "TOi: %f", output);
+        lcd::print(2, "TOi: %f", output);
         output = clamp(output, -turn_max_voltage, turn_max_voltage);
-        // lcd::print(3, "TOf: %f", output);
+        lcd::print(3, "TOf: %f", output);
         left_side_->move(-output);
         right_side_->move(output);
         pros::delay(10);
@@ -224,7 +224,7 @@ const double tb_a_des = 20;
 const double tb_mVps_decrease = 15;
 const double tb_mVps_increase = 35;
 const double tb_ignore_slew = 1.5;
-const double tb_maintain_angle_voltage = 60;
+const double tb_maintain_angle_voltage = 30;
 const double tb_turn_settle_error = 0.25;
 
 void Drive::translateBy(double distance, int timeout, double drive_settle_error, double drive_max_voltage, bool async) {
@@ -266,12 +266,11 @@ void Drive::translateBy(double distance, int timeout, double drive_settle_error,
                         odom_->getPos().y * sin(to_rad(initial_heading));
 // lcd::print(1, "cur_pos: %f", cur_position);
         drive_error = distance+start_position-cur_position;
-lcd::print(2, "drive_error: %f", drive_error);
+// lcd::print(2, "drive_error: %f", drive_error);
         heading_error = reduce_negative_180_to_180(initial_heading - odom::getPos().theta);
 // lcd::print(3, "heading_error: %f", heading_error);
         drive_output = drive_pid->update(drive_error);
         heading_output = turn_pid->update(heading_error);
-        heading_output *= 1.5;
 // lcd::print(4, "drive_output: %f", drive_output);
 // lcd::print(5, "heading_output: %f", heading_output);
 // lcd::print(6, "%f, %f", kV, kA);
@@ -295,6 +294,87 @@ lcd::print(2, "drive_error: %f", drive_error);
     endMotion();
 }
 
+// void Drive::moveByPID(double distance, double angle, int timeout, double drive_settle_error, double turn_settle_error, double drive_max_voltage, double heading_max_voltage, bool async) {
+//     requestMotionStart();
+//     if (!motionInProgress) return;
+//     if(async) {
+//         pros::Task task([&](){ moveByPID(distance, angle, timeout, drive_settle_error, turn_settle_error, drive_max_voltage, heading_max_voltage, false); });
+//         endMotion();
+//         pros::delay(10); // delay to give the task time to start
+//         return;
+//     }
+//     int start_time = pros::millis();
+    
+//     // Initially keep current heading
+//     double initial_heading = odom::getPos().theta;
+//     double heading_error = 0;
+//     double drive_error = distance;
+//     double start_position = odom_->getPos().x * cos(to_rad(initial_heading)) + 
+//                             odom_->getPos().y * sin(to_rad(initial_heading));
+// lcd::print(0, "start_pos: %f", start_position);
+
+//     float drive_output = 6;
+//     float heading_output = 6;
+//     float cur_position = 0;
+//     std::pair<double, double> rpm = getRPM();
+//     const double kV = 0.15;
+//     const double kA = 0.002;
+//     const double a_des = 20;
+//     const double turn_start_distance = 12.0; // Start turning when within this distance of target
+//     const double overshoot_factor = 1.05; // Allow 5% overshoot to prevent backing up
+//     double dt, previous_time, v_des, drive_pid_output, drive_ff_output, drive_cmd, prev_drive_cmd = 0;
+    
+//     while (motionInProgress && !isDone(start_time, timeout)) {
+//         if(abs(drive_output) < 5 && abs(heading_error) < turn_settle_error && 
+//         abs(drive_error) < drive_settle_error && ((rpm.first+rpm.second)/2) < 10) {
+//             break;
+//         }
+
+//         dt = (pros::millis() - previous_time) / 1000;
+//         previous_time = pros::millis();
+//         v_des = copysign( std::sqrt(2 * a_des * std::fabs(drive_error)), drive_error);
+        
+//         cur_position = odom_->getPos().x * cos(to_rad(initial_heading)) + 
+//                         odom_->getPos().y * sin(to_rad(initial_heading));
+// lcd::print(1, "cur_pos: %f", cur_position);
+//         drive_error = (distance * overshoot_factor + start_position) - cur_position; // Apply overshoot factor
+// lcd::print(2, "drive_error: %f", drive_error);
+
+//         // Calculate blend factor based on distance to target
+//         double blend_factor = std::max(0.0, std::min(1.0, 1.0 - (std::abs(drive_error) / turn_start_distance)));
+//         double current_heading_error = reduce_negative_180_to_180(initial_heading - odom::getPos().theta);
+//         double target_heading_error = reduce_negative_180_to_180(angle - odom::getPos().theta);
+        
+//         // Blend between maintaining current heading and turning to target angle
+//         heading_error = (1.0 - blend_factor) * current_heading_error + 
+//                        (blend_factor * 2.0) * target_heading_error; // Doubled weight for final angle
+
+// lcd::print(3, "heading_error: %f", heading_error);
+//         drive_output = drive_pid->update(drive_error);
+//         heading_output = turn_pid->update(heading_error);
+// lcd::print(4, "drive_output: %f", drive_output);
+// lcd::print(5, "heading_output: %f", heading_output);
+//         if (abs(drive_error) > 1.5) {
+//             drive_ff_output = kV * v_des + kA * (v_des - prev_drive_cmd/kV) / dt;
+//             drive_cmd = drive_output + drive_ff_output;
+//             drive_cmd = std::clamp(drive_cmd,prev_drive_cmd - 15, prev_drive_cmd + 35);
+//         } else {
+//             drive_cmd = drive_output;
+//         }
+//         prev_drive_cmd = drive_cmd;
+// lcd::print(6, "drive_cmd: %f", drive_cmd);
+//         drive_output = clamp(drive_cmd, -drive_max_voltage, drive_max_voltage);
+//         heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
+// lcd::print(7, "drive_output: %f", drive_output);
+//         left_side_->move(drive_output-heading_output);
+//         right_side_->move(drive_output+heading_output);
+//         pros::delay(10);
+//     }
+//     brake();
+//     endMotion();
+// }
+
+
 const double mp_kV = 0.2;
 const double mp_kA = 0.0025;
 const double mp_a_des = 20;
@@ -302,11 +382,11 @@ const double mp_mVps_decrease = 15;
 const double mp_mVps_increase = 35;
 const double mp_ignore_slew = 1.5;
 
-void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeout, double drive_min_voltage, double drive_max_voltage, double heading_max_voltage, double drive_settle_error, double turn_settle_error, double lead, double position_threshold, bool async) {
+void Drive::moveToPose(double x, double y, double theta, int timeout, double drive_min_voltage, double drive_max_voltage, double heading_max_voltage, double drive_settle_error, double turn_settle_error, double lead, double position_threshold, bool async) {
     requestMotionStart();
     if (!motionInProgress) return;
     if(async) {
-        pros::Task task([&](){ moveToPose(x, y, theta, timeout, reverse, drive_settle_error, turn_settle_error, lead, drive_min_voltage, drive_max_voltage, heading_max_voltage, position_threshold, false); });
+        pros::Task task([&](){ moveToPose(x, y, theta, timeout, drive_settle_error, turn_settle_error, lead, drive_min_voltage, drive_max_voltage, heading_max_voltage, position_threshold, false); });
         endMotion();
         pros::delay(10); // delay to give the task time to start
         return;
@@ -315,14 +395,10 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
     int start_time = pros::millis();
 
     double straight_angle = to_deg(atan2(y - odom_->getPos().y, x - odom_->getPos().x));
-    if (reverse) {
-        // flip the path direction 180°
-        straight_angle += 180;
-    }
     double initial_distance = hypot(x - odom_->getPos().x, y - odom_->getPos().y);
     double target_distance = initial_distance;
     double heading1_Error = reduce_negative_180_to_180(straight_angle - odom_->getPos().theta);
-    double heading2_Error = reduce_negative_180_to_180(theta+180 - odom_->getPos().theta); // Final heading error
+    double heading2_Error = reduce_negative_180_to_180(theta - odom_->getPos().theta); // Final heading error
     double x_error = x - odom_->getPos().x;
     double y_error = y - odom_->getPos().y;
     double x_pid, y_pid = 0;
@@ -375,12 +451,12 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
         
         // Update heading2_Error if ending angle is provided
         if (theta != 999) {
-            heading2_Error = reduce_negative_180_to_180(theta+180 - odom_->getPos().theta);
+            heading2_Error = reduce_negative_180_to_180(theta - odom_->getPos().theta);
         } else {
             heading2_Error = heading1_Error;
         }
         
-        // calculate drive and heading outputs
+        // Calculate drive output
         x_pid = drive_pid->update(x_error);
         y_pid = drive_pid->update(y_error*1.3);
         drive_output = x_pid * cos(to_rad(straight_angle)) + y_pid * sin(to_rad(straight_angle));
@@ -396,7 +472,7 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
             
             // Debug info when entering final phase
             if (!in_final_angle_phase) {
-                // lcd::print(7, "Early Turn: X=%.1f, Y=%.1f", x_error, y_error);
+                lcd::print(7, "Early Turn: X=%.1f, Y=%.1f", x_error, y_error);
             }
             
             // Calculate how much to prioritize angle vs. position based on remaining distance
@@ -411,13 +487,13 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
             double position_factor = std::min(1.0, distance / 2.0);
             drive_output *= position_factor * (1.0 - angle_priority * 0.6);
             
-            // lcd::print(6, "Phase: Final Angle");
+            lcd::print(6, "Phase: Final Angle");
         } else {
             // Use heading1_Error for path following
             heading_output = turn_pid->update(heading1_Error);
             
             if (progress <= 0.7 || theta == 999) {
-                // lcd::print(6, "Phase: %s", progress < first_turn_end ? "Carrot" : "Target");
+                lcd::print(6, "Phase: %s", progress < first_turn_end ? "Carrot" : "Target");
             }
         }
         
@@ -446,15 +522,15 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
         right_output = clamp(right_output, -drive_max_voltage, drive_max_voltage);
 
         // Debug output
-        // lcd::print(0, "X: %.1f, Y: %.1f, T: %.1f", odom_->getPos().x, odom_->getPos().y, odom_->getPos().theta);
-        // lcd::print(1, "Tgt: %.1f, %.1f, Dst: %.1f", x, y, distance);
-        // lcd::print(2, "Prog: %.2f, HErr: %.1f", progress, heading1_Error);
-        // lcd::print(3, "DOut: %.1f, HOut: %.1f", drive_output, heading_output);
-        // lcd::print(4, "SAng: %.1f, FAng: %.1f", straight_angle, reverse ? theta + 180 : theta);
-        // lcd::print(5, "L: %.1f, R: %.1f", left_output, right_output);
-        // if (progress <= 0.85 || theta == 999) {
-        //     lcd::print(6, "Phase: %s", progress < first_turn_end ? "Carrot" : "Target");
-        // }
+        lcd::print(0, "X: %.1f, Y: %.1f, T: %.1f", odom_->getPos().x, odom_->getPos().y, odom_->getPos().theta);
+        lcd::print(1, "Tgt: %.1f, %.1f, Dst: %.1f", x, y, distance);
+        lcd::print(2, "Prog: %.2f, HErr: %.1f", progress, heading1_Error);
+        lcd::print(3, "DOut: %.1f, HOut: %.1f", drive_output, heading_output);
+        lcd::print(4, "SAng: %.1f, FAng: %.1f", straight_angle, theta);
+        lcd::print(5, "L: %.1f, R: %.1f", left_output, right_output);
+        if (progress <= 0.85 || theta == 999) {
+            lcd::print(6, "Phase: %s", progress < first_turn_end ? "Carrot" : "Target");
+        }
 
         // Move robot
         left_side_->move(left_output);
