@@ -463,9 +463,10 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
         pros::delay(10);
     }
    
-    brake();
-    endMotion();
+//     brake();
+//     endMotion();
 }
+
 
 
 void Drive::turnAtRPM(int rpm) {

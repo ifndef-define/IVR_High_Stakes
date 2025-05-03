@@ -6,9 +6,10 @@ class Arm {
         enum class State : int {
             DOWN = 0,   // index 0
             READY = 1,  // index 1
-            SCORE = 2,  // index 2
-            DESCORE = 3,  // index 3
-            NUM_ARM_STATES = 4 // count of states
+            CLIMB = 2,
+            SCORE = 3,  // index 2
+            DESCORE = 4,  // index 3
+            NUM_ARM_STATES = 5 // count of states
         };
     private:
         pros::Motor armMotor;
@@ -27,6 +28,7 @@ class Arm {
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             5,   // Angle for DOWN
             29,  // Angle for READY 
+            80,  // Angle for CLIMB
             215,   // Angle for SCORE
             350  // Angle for DESCORE
         };
@@ -66,7 +68,7 @@ class Arm {
          * 
          * @param power Speed to move arm [0,1]
          */
-        void setSpeed(int speed);
+        void setSpeed(double speed);
         
         /**
          * @brief Returns the current arm state position in degrees
@@ -79,4 +81,5 @@ class Arm {
          * 
          */
         State getState();
+        void setBrakeMode(pros::motor_brake_mode_e_t mode);
 };

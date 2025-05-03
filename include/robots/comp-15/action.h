@@ -17,7 +17,7 @@ class Action {
         IntakeManager intakeManager;
         Distance *mogoSensor_;
         Arm arm;
-        Climb climb;
+        // Climb climb;
         bool isAuton;
         bool override = false;
         Arm::State lastArmState = Arm::State::DOWN;
@@ -40,12 +40,12 @@ class Action {
         double currentRotation = 0;
 
         // Climb state tracking
-        Climb::Tier lastTier = Climb::Tier::IDLE;  
-        bool tierStateInitialized = false;
-        int tierSubstate = 0;  // For tracking progress within each tier
+        // Climb::Tier lastTier = Climb::Tier::IDLE;  
+        // bool tierStateInitialized = false;
+        // int tierSubstate = 0;  // For tracking progress within each tier
 
     public:
-        Action(bool isAuton, Ring::Color ringToKeep, PneumaticsGroup& p, int mogoSensorPort);
+        Action(bool isAuton, Ring::Color ringToKeep, int mogoSensorPort);
         void runSubsystemFSM();
         void stateControl();
         void climbControl();
@@ -91,7 +91,7 @@ class Action {
          * 
          * @param speed The speed of the arm
          */
-        void setArmSpeed(int speed);
+        void setArmSpeed(double speed);
 
         /**
          * @brief Sets the color to keep in the filter
@@ -122,7 +122,7 @@ class Action {
          * 
          * @param newState The state to set the climb to
          */
-        void setClimbState(Climb::State newState);
+        // void setClimbState(Climb::State newState);
 
         /**
          * @brief Set the arm to a specific state
@@ -195,6 +195,7 @@ class Action {
         bool getRunClimb();
         void setRunAutoMogoClamp(bool flag);
         void setRunArm(bool flag);
+        void setArmBrakeMode(pros::motor_brake_mode_e mode);
 };
 
 extern Action actions;
