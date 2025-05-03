@@ -10,21 +10,22 @@ void Arm::update(){
     
     // // Check if limit switch is NEWLY pressed (rising edge detection)
     // if(currentLimitState == 1 && prevLimitState == 0) {
-    //     // Reset position to match DOWN state angle only when first pressed
-    //     armRot.set_position(armStateAngles[0]); // Multiply by 100 because getAngle divides by 100
+        // Reset position to match DOWN state angle only when first pressed
+        armRot.set_position(10*100); // Multiply by 100 because getAngle divides by 100
     // }
     
     if(!override){ 
-        error = armStateAngles[(int)curArmState] - getAngle();
+        error =  armStateAngles[(int)curArmState] - getAngle();
         if(abs(error) < 20){
             armMotor.move(small.update(error));
         } else {
             armMotor.move(large.update(error));
         } 
     } 
-    
+    pros::lcd::print(0, "Arm State: %d", (int)curArmState);
+    pros::lcd::print(1, "Arm Angle: %f", getAngle());
     // Update previous limit switch state for next cycle
-    prevLimitState = currentLimitState;
+    // prevLimitState = currentLimitState;
 }
 
 void Arm::setState(State newState){ curArmState = newState; }
@@ -33,7 +34,7 @@ void Arm::nextState(){ curArmState = (State)((int(curArmState) + 1) % int(State:
 
 void Arm::prevState(){ curArmState = (State)((int(curArmState) + (int(State::NUM_ARM_STATES) - 1)) % int(State::NUM_ARM_STATES)); }
 
-void Arm::setSpeed(int speed){ 
+void Arm::setSpeed(double speed){ 
     override = speed!=0; 
     armMotor.move(speed*127); 
 }
@@ -41,3 +42,7 @@ void Arm::setSpeed(int speed){
 double Arm::getAngle(){ return armRot.get_position()/100; }
 
 Arm::State Arm::getState(){ return curArmState; }
+
+void Arm::setBrakeMode(pros::motor_brake_mode_e_t mode){
+    armMotor.set_brake_mode(mode);
+}

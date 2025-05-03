@@ -7,7 +7,7 @@
  * 
  * Sets the initial state of the arm to DOWN and the initial state of the Action to IDLE.
  */
-Action::Action(bool isAuton, Ring::Color ringToKeep, PneumaticsGroup& p, int mogoSensorPort): arm(2.5,0,0, 4,0,0), currentState(ActionState::IDLE), intakeManager(), climb(p, 1,0,0) { 
+Action::Action(bool isAuton, Ring::Color ringToKeep, int mogoSensorPort): arm(2.5,0,0, 4,0,0), currentState(ActionState::IDLE), intakeManager()/*, climb(p, 1,0,0)*/ { 
     intakeManager.setFilterColor(ringToKeep);
     this->isAuton = isAuton;
     mogoSensor_ = new pros::Distance(mogoSensorPort);
@@ -18,17 +18,21 @@ void Action::runSubsystemFSM() {
     intakeManager.update();
     
     // Branch based on intakeManager's decision (e.g. eject set true if wrong color)
-    if ((intakeManager.getEject() && getRunColorSort()) || getEjectFlag()) {
-        currentState = ActionState::SORTING;
-    } else if((arm.getAngle() > 50 && arm.getAngle() < 60 && ((int)lastArmState > (int)Arm::State::READY)) || getPullbackFlag()){
-        // currentState = ActionState::PULLBACK;
+    if(!getOverride()){
+        if ((intakeManager.getEject() && getRunColorSort()) || getEjectFlag()) {
+            currentState = ActionState::SORTING;
+        } else if((arm.getAngle() > 50 && arm.getAngle() < 60 && ((int)lastArmState > (int)Arm::State::READY)) || getPullbackFlag()){
+            currentState = ActionState::PULLBACK;
+        } else {
+            currentState = ActionState::IDLE;
+        }
     } else {
         currentState = ActionState::IDLE;
     }
     // Run state control
     stateControl();
 
-    // autoMogo();
+    autoMogo();
     
     // // Check if tier changed - reset state initialization flag
     // if (lastTier != climb.getTier()) {
@@ -138,7 +142,7 @@ void Action::intakeState() {
             // Calculate rotation taking into account possible wrap-around
             currentRotation = intakeManager.getIntakeAngle();
         
-            // pros::lcd::print(4, "D: %f, C: %f, S: %f", ejectStartPos - currentRotation, currentRotation, ejectStartPos);
+            pros::lcd::print(4, "D: %f, C: %f, S: %f", ejectStartPos - currentRotation, currentRotation, ejectStartPos);
 
             // Check if we've rotated the required amount
             if (std::abs(ejectStartPos - currentRotation) >= 20) {
@@ -170,93 +174,93 @@ void Action::intakeState() {
     }
 }
 
-void Action::climbState() {
-    climb.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-    switch(climb.getState()) {
-        case Climb::State::IDLE:
-            break;
-        case Climb::State::UP:
-            climb.addEvent([&](){climb.retractOuterArm();});
-            break;
-        case Climb::State::DOWN:
-            climb.addEvent([&](){climb.retractInnerArm();});
-            break;
-    }
-}
+// void Action::climbState() {
+//     climb.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+//     switch(climb.getState()) {
+//         case Climb::State::IDLE:
+//             break;
+//         case Climb::State::UP:
+//             climb.addEvent([&](){climb.retractOuterArm();});
+//             break;
+//         case Climb::State::DOWN:
+//             climb.addEvent([&](){climb.retractInnerArm();});
+//             break;
+//     }
+// }
 
-void Action::climbControl() {
-    if(climb.isOverride()){ 
-        climb.setTier(Climb::Tier::IDLE); 
-        return;
-    }
+// void Action::climbControl() {
+//     if(climb.isOverride()){ 
+//         climb.setTier(Climb::Tier::IDLE); 
+//         return;
+//     }
     
-    switch(climb.getTier()) {
-        case Climb::Tier::IDLE:
-            tierStateInitialized = false;
-            tierSubstate = 0;
-            break;
+//     switch(climb.getTier()) {
+//         case Climb::Tier::IDLE:
+//             tierStateInitialized = false;
+//             tierSubstate = 0;
+//             break;
             
-        case Climb::Tier::ZERO:
-            if (!tierStateInitialized) {
-                tierStateInitialized = true;
-                intakeManager.resetIntakeAngle();
-                climb.addEvent([&](){climb.extendPto();}, 100);
-                climb.addEvent([&](){climb.retractPto();});
-                climb.addEvent([&](){climb.extendInnerArm();}, 100);
-                climb.setTier(Climb::Tier::IDLE);
-            }
-            break;
+//         case Climb::Tier::ZERO:
+//             if (!tierStateInitialized) {
+//                 tierStateInitialized = true;
+//                 intakeManager.resetIntakeAngle();
+//                 climb.addEvent([&](){climb.extendPto();}, 100);
+//                 climb.addEvent([&](){climb.retractPto();});
+//                 climb.addEvent([&](){climb.extendInnerArm();}, 100);
+//                 climb.setTier(Climb::Tier::IDLE);
+//             }
+//             break;
             
-        case Climb::Tier::ONE:
-            // Only initialize actions once when entering this state
-            if (!tierStateInitialized) {
-                // Pull up to tier one
-                climb.setState(Climb::State::DOWN);
-                tierStateInitialized = true;
-            }
+//         case Climb::Tier::ONE:
+//             // Only initialize actions once when entering this state
+//             if (!tierStateInitialized) {
+//                 // Pull up to tier one
+//                 climb.setState(Climb::State::DOWN);
+//                 tierStateInitialized = true;
+//             }
             
-            // When PID target is reached, proceed to next tier
-            if (climb.isAtTargetPosition()) {
-                tierStateInitialized = false;
-                climb.setTier(Climb::Tier::TWO);
-            }
-            break;
+//             // When PID target is reached, proceed to next tier
+//             if (climb.isAtTargetPosition()) {
+//                 tierStateInitialized = false;
+//                 climb.setTier(Climb::Tier::TWO);
+//             }
+//             break;
             
-        case Climb::Tier::TWO:
-            // Use substates to track progress through this tier
-            if (!tierStateInitialized) {
-                climb.addEvent([&](){climb.setState(Climb::State::UP);});
-                tierStateInitialized = true;
-            }
+//         case Climb::Tier::TWO:
+//             // Use substates to track progress through this tier
+//             if (!tierStateInitialized) {
+//                 climb.addEvent([&](){climb.setState(Climb::State::UP);});
+//                 tierStateInitialized = true;
+//             }
             
-            // First wait for UP movement to complete
-            if (tierSubstate == 0 && climb.isAtTargetPosition()) {
-                climb.addEvent([&](){climb.setState(Climb::State::DOWN);});
-                tierSubstate = 1;
-            }
+//             // First wait for UP movement to complete
+//             if (tierSubstate == 0 && climb.isAtTargetPosition()) {
+//                 climb.addEvent([&](){climb.setState(Climb::State::DOWN);});
+//                 tierSubstate = 1;
+//             }
             
-            // Then wait for DOWN movement to complete
-            if (tierSubstate == 1 && climb.isAtTargetPosition()) {
-                tierSubstate = 0;
-                tierStateInitialized = false;
-                climb.setTier(Climb::Tier::THREE);
-            }
-            break;
+//             // Then wait for DOWN movement to complete
+//             if (tierSubstate == 1 && climb.isAtTargetPosition()) {
+//                 tierSubstate = 0;
+//                 tierStateInitialized = false;
+//                 climb.setTier(Climb::Tier::THREE);
+//             }
+//             break;
             
-        case Climb::Tier::THREE:
-            // Similar substate approach for the final tier
-            if (!tierStateInitialized) {
-                climb.setState(Climb::State::UP);
-                tierStateInitialized = true;
-            }
+//         case Climb::Tier::THREE:
+//             // Similar substate approach for the final tier
+//             if (!tierStateInitialized) {
+//                 climb.setState(Climb::State::UP);
+//                 tierStateInitialized = true;
+//             }
             
-            if (climb.isAtTargetPosition()) {
-                climb.setState(Climb::State::DOWN);
-                arm.setState(Arm::State::SCORE);
-            }
-            break;
-    }
-}
+//             if (climb.isAtTargetPosition()) {
+//                 climb.setState(Climb::State::DOWN);
+//                 arm.setState(Arm::State::SCORE);
+//             }
+//             break;
+//     }
+// }
 
 void Action::nextArmState() {
     arm.nextState();
@@ -266,9 +270,9 @@ void Action::prevArmState() {
     arm.prevState();
 }
 
-void Action::setClimbState(Climb::State newState) {
-    climb.setState(newState);
-}
+// void Action::setClimbState(Climb::State newState) {
+//     climb.setState(newState);
+// }
 
 void Action::setArmState(Arm::State newState) {
     arm.setState(newState);
@@ -282,7 +286,7 @@ double Action::getArmAngle() {
     return arm.getAngle();
 }
 
-void Action::setArmSpeed(int speed) {
+void Action::setArmSpeed(double speed) {
     arm.setSpeed(speed);
 }
 
@@ -339,4 +343,8 @@ void Action::setRunArm(bool runArm){
     this->runArm = runArm;
 }
 
-Action actions(0, Ring::Color::NONE, pneumatics, 13); // Initialize Action object with default values
+void Action::setArmBrakeMode(pros::motor_brake_mode_e_t mode){
+    arm.setBrakeMode(mode);
+}
+
+Action actions(0, Ring::Color::NONE, 13); // Initialize Action object with default values

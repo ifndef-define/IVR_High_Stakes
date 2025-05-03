@@ -298,19 +298,19 @@ void Drive::translateBy(double distance, int timeout, double drive_settle_error,
     endMotion();
 }
 
-void Drive::moveToPose(double x, double y, double theta, int timeout, double drive_min_voltage , double drive_max_voltage , double heading_max_voltage , double drive_settle_error , double turn_settle_error , double lead , double setback , bool async) {
-    requestMotionStart();
-    if (!motionInProgress) return;
-    if(async) {
-        pros::Task task([&](){ moveToPose(x, y, theta, timeout, drive_settle_error, turn_settle_error, lead, setback, drive_min_voltage, drive_max_voltage, heading_max_voltage, false); });
-        endMotion();
-        pros::delay(10); // delay to give the task time to start
-        return;
-    }
+// void Drive::moveToPose(double x, double y, double theta, int timeout, double drive_min_voltage , double drive_max_voltage , double heading_max_voltage , double drive_settle_error , double turn_settle_error , double lead , double setback , bool async) {
+//     requestMotionStart();
+//     if (!motionInProgress) return;
+//     if(async) {
+//         pros::Task task([&](){ moveToPose(x, y, theta, timeout, drive_settle_error, turn_settle_error, lead, setback, drive_min_voltage, drive_max_voltage, heading_max_voltage, false); });
+//         endMotion();
+//         pros::delay(10); // delay to give the task time to start
+//         return;
+//     }
    
-    brake();
-    endMotion();
-}
+//     brake();
+//     endMotion();
+// }
 
 
 void Drive::moveToPose(double x, double y, double theta, int timeout, double drive_min_voltage , double drive_max_voltage , double heading_max_voltage , double drive_settle_error , double turn_settle_error , double lead , double setback , bool async) {
