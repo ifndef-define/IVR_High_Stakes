@@ -3,91 +3,35 @@
 struct driverProfile {
     Drive::drive_mode_e driveMode;
 
+    // Pair Value //
+    // < Button, disableForComp > //
+
     pros::controller_digital_e_t intakeIn;
     pros::controller_digital_e_t intakeOut;
 
     pros::controller_digital_e_t backpackCycleStageUp;
     pros::controller_digital_e_t backpackCycleStageDown;
+    pros::controller_digital_e_t shift;
     bool jesusSpecial;
 
-    pros::controller_digital_e_t mogoClampToggle;
-    pros::controller_digital_e_t rightMogoRushCycle;
-    pros::controller_digital_e_t leftMogoRushCycle;
-    pros::controller_digital_e_t mogoRushTeethToggle;
-    pros::controller_digital_e_t intakeLift;
+    std::pair<pros::controller_digital_e_t, bool> mogoClampToggle;
+    std::pair<pros::controller_digital_e_t, bool> rightMogoRushCycle;
+    std::pair<pros::controller_digital_e_t, bool> leftMogoRushCycle;
+    std::pair<pros::controller_digital_e_t, bool> mogoRushTeethToggle;
+    std::pair<pros::controller_digital_e_t, bool> intakeLift;
 
     pros::controller_digital_e_t climbMode_1;
     pros::controller_digital_e_t climbMode_2;
 
-    pros::controller_digital_e_t leftWingToggle;
-    pros::controller_digital_e_t rightWingToggle;
     pros::controller_digital_e_t innerClimbArmsToggle;
     pros::controller_digital_e_t outerClimbArmsToggle;
     pros::controller_digital_e_t climbPTOToggle;
 
-    pros::controller_digital_e_t toggleColorSort;
+    std::pair<pros::controller_digital_e_t, bool> toggleColorSort;
 
-    pros::controller_digital_e_t shift;
 };
 
-const driverProfile JesusPrimary = {
-    .driveMode = Drive::drive_mode_e::SPLIT_ARCADE_PL,
-    
-    .intakeIn = BUTTON_R1,
-    .intakeOut = BUTTON_R2,
-
-    .backpackCycleStageUp = BUTTON_L1,
-    .backpackCycleStageDown = BUTTON_L2,
-    .jesusSpecial = false,
-
-    .mogoClampToggle = BUTTON_Y,
-    .rightMogoRushCycle = BUTTON_A,
-    .leftMogoRushCycle = BUTTON_A,
-    .mogoRushTeethToggle = BUTTON_UP,
-    // .intakeLock = BUTTON_A,  // retracted
-
-    .climbMode_1 = BUTTON_B,
-    .climbMode_2 = BUTTON_DOWN,
-
-    // .intake_wingsToggle = null, // dropped and folded
-    // .innerClimbArmsToggle = null, // stowed
-    // .outerClimbArmsToggle = null, // stowed
-    // .climbPTOToggle = null, // disengaged
-
-    // .toggleColorSort = null // off by default
-};
-
-
-const driverProfile CompClimbMode = {
-    .driveMode = Drive::drive_mode_e::CUSTOM_m,
-    
-    // .intakeIn = null, // no control
-    // .intakeOut = null, // no control
-
-    .backpackCycleStageUp = BUTTON_L1,
-    .backpackCycleStageDown = BUTTON_L2,
-    .jesusSpecial = false,
-
-    // .mogoClampToggle = null, // Lock clamped
-    // .rightMogoRushCycle = null, // stowed
-    // .leftMogoRushCycle = null, // stowed
-    // .mogoRushTeethToggle = null, // retracted
-    // .intakeLock = null, // automatic
-
-    .climbMode_1 = BUTTON_B,
-    .climbMode_2 = BUTTON_DOWN,
-
-    // .intake_wingsToggle = BUTTON_A, // this macros intakeLock
-    // .innerClimbArmsToggle = BUTTON_RIGHT,
-    // .outerClimbArmsToggle = BUTTON_LEFT,
-    // .leftPaperToggle = BUTTON_R1,
-    // .rightPaperToggle = BUTTON_R2,
-    // .climbPTOToggle = BUTTON_UP,
-
-    // .toggleColorSort = null // off
-};
-
-const driverProfile SoloDriveMode = {
+const driverProfile Drive = {
     .driveMode = Drive::drive_mode_e::SPLIT_ARCADE_PL,
 
     .intakeIn = BUTTON_R1,
@@ -95,28 +39,26 @@ const driverProfile SoloDriveMode = {
 
     .backpackCycleStageUp = BUTTON_L1,
     .backpackCycleStageDown = BUTTON_L2,
+    .shift = BUTTON_RIGHT,
     .jesusSpecial = false,
 
-    .mogoClampToggle = BUTTON_Y,
-    // .rightMogoRushCycle = BUTTON_RIGHT,
-    .leftMogoRushCycle = BUTTON_LEFT,
-    .mogoRushTeethToggle = BUTTON_DOWN,
-    .intakeLift = BUTTON_B,
+    .mogoClampToggle = {BUTTON_Y,false},
+    .rightMogoRushCycle = {BUTTON_B,false},
+    .leftMogoRushCycle = {BUTTON_B,false},
+    .mogoRushTeethToggle = {BUTTON_DOWN,false},
+    .intakeLift = {BUTTON_A,true},
 
     .climbMode_1 = BUTTON_UP,
     .climbMode_2 = BUTTON_X,
 
-    // .leftWingToggle = null, // folded
-    // .rightWingToggle = null, // folded
     // .innerClimbArmsToggle = null, // stowed
     // .outerClimbArmsToggle = null, // stowed
-    // .climbPTOToggle = null, // disengaged
+    // .climbPTOToggle = null,       // disengaged
 
-    // .toggleColorSort = null // on by default
-    .shift = BUTTON_RIGHT
+    .toggleColorSort = {BUTTON_LEFT,false}, // Ask if this is needed
 };
 
-const driverProfile SoloClimbMode = {
+const driverProfile Climb = {
     .driveMode = Drive::drive_mode_e::CUSTOM_m,
     
     // .intakeIn = null, // no control
@@ -124,19 +66,19 @@ const driverProfile SoloClimbMode = {
 
     .backpackCycleStageUp = BUTTON_L1,
     .backpackCycleStageDown = BUTTON_L2,
+    // .shift = null,   // no control
     .jesusSpecial = false,
 
     // .mogoClampToggle = null, // Lock clamped
     // .rightMogoRushCycle = null, // stowed
     // .leftMogoRushCycle = null, // stowed
     // .mogoRushTeethToggle = null, // disabled
-    .intakeLift = BUTTON_A, // automatic
+    .intakeLift = {BUTTON_A,true}, // automatic
 
     .climbMode_1 = BUTTON_UP,
     .climbMode_2 = BUTTON_X,
 
-    .leftWingToggle = BUTTON_R1,
-    .rightWingToggle = BUTTON_R2,
+    .innerClimbArmsToggle = {BUTTON_RIGHT, false},
     .innerClimbArmsToggle = BUTTON_RIGHT,
     .outerClimbArmsToggle = BUTTON_LEFT,
     .climbPTOToggle = BUTTON_Y,

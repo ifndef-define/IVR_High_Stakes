@@ -80,12 +80,7 @@ void Drive::errorMsg(int err_num) {
 
 void Drive::stopLoop() {
     brake();
-
-    if (Drive::drive_task != nullptr) {
-        Drive::drive_task->remove();
-        Drive::drive_task = nullptr;
-        isThread = false;
-    }
+    isThread = false;
 }
 
 void Drive::requestMotionStart() {
@@ -123,6 +118,7 @@ void Drive::moveAtRPM(int rpm) {
     right_side_->move_velocity(rpm);
 }
 
+const bool debug_turnToAngle = false;
 void Drive::turnToAngle(double angle, int timeout, double turn_max_voltage, double turn_settle_error, bool async) {
     requestMotionStart();
     if (!motionInProgress) return;
@@ -137,25 +133,28 @@ void Drive::turnToAngle(double angle, int timeout, double turn_max_voltage, doub
     double turn_error = reduce_negative_180_to_180(angle - odom::getPos().theta);
     double output = 9;
     std::pair<double, double> rpm = getRPM();
+
     while(motionInProgress && !isDone(start_time, timeout) && ((rpm.first+rpm.second)/2) < 10) {
         if(abs(output) < 5 && abs(turn_error) < turn_settle_error) 
             break;
 
+                    if (debug_turnToAngle) { lcd::print(0, "od: %.2f", odom::getPos().theta); }
         turn_error = reduce_negative_180_to_180(angle - odom::getPos().theta);
-        // lcd::print(0, "od: %f", odom::getPos().theta);
-        // lcd::print(1, "TE: %f", turn_error);
+                    if (debug_turnToAngle) { lcd::print(1, "TE: %.2f", turn_error); } 
         output = turn_pid->update(turn_error);
-        // lcd::print(2, "TOi: %f", output);
+                    if (debug_turnToAngle) { lcd::print(2, "TOi: %.2f", output); }
         output = clamp(output, -turn_max_voltage, turn_max_voltage);
-        // lcd::print(3, "TOf: %f", output);
+                    if (debug_turnToAngle) { lcd::print(3, "TOf: %.2f", output); }
         left_side_->move(-output);
         right_side_->move(output);
+                    if (debug_turnToAngle) { lcd::print(4, "L: %.2f | R: %.2f", -output, output); }
         pros::delay(10);
     }
     brake();
     endMotion();
 }
 
+const bool debug_swingToAngle = false;
 void Drive::swingToAngle(double angle, Drive::DriveSide lockedSide, int timeout, double turn_max_voltage, double turn_settle_error, bool async) {
     requestMotionStart();
     if (!motionInProgress) return;
@@ -173,28 +172,29 @@ void Drive::swingToAngle(double angle, Drive::DriveSide lockedSide, int timeout,
     } else {
         right_side_->set_brake_mode(BRAKE_HOLD);
     }
-    
+                if (debug_swingToAngle) { lcd::print(0, "locked: %s", lockedSide == DriveSide::LEFT ? "Left" : "Right"); }
     double heading_error = reduce_negative_180_to_180(angle - odom::getPos().theta);
     double output = 6;
     std::pair<double, double> rpm = getRPM();
+    
     while(motionInProgress && !isDone(start_time, timeout)) {
         if(abs(output) < 5 && abs(heading_error) < turn_settle_error && ((rpm.first+rpm.second)/2) < 10) 
             break;
 
         heading_error = reduce_negative_180_to_180(angle - odom::getPos().theta);
-        // lcd::print(0, "od: %f", odom::getPos().theta);
-        // lcd::print(1, "TE: %f", heading_error);
+                    if (debug_swingToAngle) { lcd::print(1, "TE: %.2f", heading_error); }
         output = turn_pid->update(heading_error);
-        // lcd::print(2, "TOi: %f", output);
+                    if (debug_swingToAngle) { lcd::print(2, "TOi: %.2f", output); }
         output = clamp(output, -turn_max_voltage, turn_max_voltage);
-        // lcd::print(3, "TOf: %f", output);
-
+                    if (debug_swingToAngle) { lcd::print(3, "TOf: %.2f", output); }
         if(lockedSide == DriveSide::LEFT) {
             left_side_->brake();
             right_side_->move(output);
+                    if (debug_swingToAngle) { lcd::print(4, "L: %.2f | R: %.2f", 0.0, output); }
         } else {
             left_side_->move(-output);
             right_side_->brake();
+                    if (debug_swingToAngle) { lcd::print(4, "L: %.2f | R: %.2f", -output, 0.0); }
         }
         pros::delay(10);
     }
@@ -226,7 +226,7 @@ const double tb_mVps_increase = 35;
 const double tb_ignore_slew = 1.5;
 const double tb_maintain_angle_voltage = 60;
 const double tb_turn_settle_error = 0.25;
-
+const bool debug_translateBy = false;
 void Drive::translateBy(double distance, int timeout, double drive_settle_error, double drive_max_voltage, bool async) {
     requestMotionStart();
     if (!motionInProgress) return;
@@ -237,44 +237,38 @@ void Drive::translateBy(double distance, int timeout, double drive_settle_error,
         return;
     }
     int start_time = pros::millis();
-    
-    // Initially keep current heading
+
     double initial_heading = odom::getPos().theta;
     double heading_error = 0;
     double drive_error = distance;
     double start_position = odom_->getPos().x * cos(to_rad(initial_heading)) + 
                             odom_->getPos().y * sin(to_rad(initial_heading));
-// lcd::print(0, "start_pos: %f", start_position);
-
+                if (debug_translateBy) { lcd::print(1, "start_pos: %f", start_position); }
     float drive_output = 6;
     float heading_output = 6;
     float cur_position = 0;
     std::pair<double, double> rpm = getRPM();
-    double dt, previous_time, v_des, drive_pid_output, drive_ff_output, drive_cmd, prev_drive_cmd = 0;
+    double dt, previous_time, v_des, drive_ff_output, drive_cmd, prev_drive_cmd = 0;
     
     while (motionInProgress && !isDone(start_time, timeout)) {
         if(abs(drive_output) < 5 && abs(heading_error) < tb_turn_settle_error && 
             abs(drive_error) < drive_settle_error && ((rpm.first+rpm.second)/2) < 10) {
             break;
         }
-
+                    if (debug_translateBy) { lcd::print(0, "X: %.2f | Y: %.2f | T: %.2f", odom_->getPos().x, odom_->getPos().y, odom_->getPos().theta); }
         dt = (pros::millis() - previous_time) / 1000;
         previous_time = pros::millis();
         v_des = copysign( std::sqrt(2 * tb_a_des * std::fabs(drive_error)), drive_error);
         
         cur_position = odom_->getPos().x * cos(to_rad(initial_heading)) + 
                         odom_->getPos().y * sin(to_rad(initial_heading));
-// lcd::print(1, "cur_pos: %f", cur_position);
+                    if (debug_translateBy) { lcd::print(2, "CPos: %f", cur_position); }
         drive_error = distance+start_position-cur_position;
-lcd::print(2, "drive_error: %f", drive_error);
         heading_error = reduce_negative_180_to_180(initial_heading - odom::getPos().theta);
-// lcd::print(3, "heading_error: %f", heading_error);
+                    if (debug_translateBy) { lcd::print(3, "DErr: %f | HErr: %f", drive_error, heading_error); }
         drive_output = drive_pid->update(drive_error);
         heading_output = turn_pid->update(heading_error);
         heading_output *= 1.5;
-// lcd::print(4, "drive_output: %f", drive_output);
-// lcd::print(5, "heading_output: %f", heading_output);
-// lcd::print(6, "%f, %f", kV, kA);
         if (abs(drive_error) > tb_ignore_slew) {
             drive_ff_output = tb_kV * v_des + tb_kA * (v_des - prev_drive_cmd/tb_kV) / dt;
             drive_cmd = drive_output + drive_ff_output;
@@ -283,12 +277,15 @@ lcd::print(2, "drive_error: %f", drive_error);
             drive_cmd = drive_output;
         }
         prev_drive_cmd = drive_cmd;
-// lcd::print(6, "drive_cmd: %f", drive_cmd);
-        drive_output = clamp(drive_cmd, -drive_max_voltage, drive_max_voltage);
         heading_output = clamp(heading_output, -tb_maintain_angle_voltage, tb_maintain_angle_voltage);
-// lcd::print(7, "drive_output: %f", drive_output);
-        left_side_->move(drive_output-heading_output);
-        right_side_->move(drive_output+heading_output);
+                    if (debug_translateBy) { lcd::print(4, "DO: %f | HO: %f", drive_output, heading_output); }
+        double left_side_output = drive_output - heading_output;
+        double right_side_output = drive_output + heading_output;
+        left_side_output = clamp(left_side_output, -drive_max_voltage, drive_max_voltage);
+        right_side_output = clamp(right_side_output, -drive_max_voltage, drive_max_voltage);
+                    if (debug_translateBy) { lcd::print(5, "L: %f | R: %f", left_side_output, right_side_output); }
+        left_side_->move(left_side_output);
+        right_side_->move(right_side_output);
         pros::delay(10);
     }
     brake();
@@ -301,7 +298,8 @@ const double mp_a_des = 20;
 const double mp_mVps_decrease = 15;
 const double mp_mVps_increase = 35;
 const double mp_ignore_slew = 1.5;
-
+const double end_angle_voltage = 60;
+const bool debug_moveToPose = false;
 void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeout, double drive_min_voltage, double drive_max_voltage, double heading_max_voltage, double drive_settle_error, double turn_settle_error, double lead, double position_threshold, bool async) {
     requestMotionStart();
     if (!motionInProgress) return;
@@ -315,10 +313,7 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
     int start_time = pros::millis();
 
     double straight_angle = to_deg(atan2(y - odom_->getPos().y, x - odom_->getPos().x));
-    if (reverse) {
-        // flip the path direction 180°
-        straight_angle += 180;
-    }
+    if (reverse) { straight_angle += 180; }
     double initial_distance = hypot(x - odom_->getPos().x, y - odom_->getPos().y);
     double target_distance = initial_distance;
     double heading1_Error = reduce_negative_180_to_180(straight_angle - odom_->getPos().theta);
@@ -326,24 +321,21 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
     double x_error = x - odom_->getPos().x;
     double y_error = y - odom_->getPos().y;
     double x_pid, y_pid = 0;
-
     double drive_output = 6;
     double heading_output = 6;
     double distance = 0;
-
+    
     // Motion tuning parameters
     double first_turn_end = 0.55;
     double second_turn_start = 0.75;
-
-    double dt, previous_time, v_des, drive_pid_output, drive_ff_output, drive_cmd, prev_drive_cmd, progress = 0;
+    double dt, previous_time, v_des, drive_ff_output, drive_cmd, prev_drive_cmd, progress = 0;
     double carrotX = 0, carrotY = 0;
     bool in_final_angle_phase = false;
-
     while (motionInProgress && !isDone(start_time, timeout)) {
         if (abs(drive_output) < 5 && abs(heading1_Error) < turn_settle_error && abs(target_distance) < drive_settle_error) {
             break;
         }
-
+                    if (debug_moveToPose) { lcd::print(0, "X: %.2f, Y: %.2f, T: %.2f", odom_->getPos().x, odom_->getPos().y, odom_->getPos().theta); }
         // Update target calculations
         distance = hypot(x - odom_->getPos().x, y - odom_->getPos().y);
         x_error = x - odom_->getPos().x;
@@ -361,6 +353,7 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
             progress = 1.0;
         }
         progress = std::min(1.0, std::max(0.0, progress)); // Clamp between 0 and 1
+                    if (debug_moveToPose) { lcd::print(2, "Dis: %.2f | Prog: %.2f", distance, progress); }
 
         // During initial phase: use carrot follower
         if (progress < first_turn_end) {
@@ -369,8 +362,10 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
             carrotX = curX + cos(to_rad(straight_angle)) * lead;
             carrotY = curY + sin(to_rad(straight_angle)) * lead;
             heading1_Error = reduce_negative_180_to_180(to_deg(atan2(carrotY - curY, carrotX - curX)) - odom_->getPos().theta);
+                    if (debug_moveToPose) { lcd::print(7, "Mode: Carrot"); }
         } else { // After reaching the threshold: focus on the target position headin
             heading1_Error = reduce_negative_180_to_180(straight_angle - odom_->getPos().theta);
+                    if (debug_moveToPose) { lcd::print(7, "Mode: Target"); }
         }
         
         // Update heading2_Error if ending angle is provided
@@ -379,6 +374,9 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
         } else {
             heading2_Error = heading1_Error;
         }
+
+                    if (debug_moveToPose) { lcd::print(3, "XErr: %.2f, YErr: %.2f, HErr: %.1f", x_error, y_error, in_final_angle_phase ? heading2_Error : heading1_Error); }
+                    if (debug_moveToPose) { lcd::print(4, "SAng: %.1f, FAng: %.1f", straight_angle, reverse ? theta + 180 : theta); }
         
         // calculate drive and heading outputs
         x_pid = drive_pid->update(x_error);
@@ -387,41 +385,29 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
         drive_output = clamp(drive_output, -drive_max_voltage, drive_max_voltage);        
         
         // Position threshold that triggers final angle transition
-        // double position_threshold = 8.2; 
         bool start_early_turn = progress > 0.55 && distance < position_threshold * 2 && theta != 999;
         
         // If we're close to final position OR we've already started the final angle phase
         if ((start_early_turn && abs(x_error) < 6.0) || in_final_angle_phase) {
             in_final_angle_phase = true;
-            
-            // Debug info when entering final phase
-            if (!in_final_angle_phase) {
-                // lcd::print(7, "Early Turn: X=%.1f, Y=%.1f", x_error, y_error);
-            }
-            
-            // Calculate how much to prioritize angle vs. position based on remaining distance
+
             // Closer to target = more angle priority
             double angle_priority = distance < 2.0 ? 1.0 : 0.8;
             
             // Use heading2_Error for the final heading angle
             heading_output = turn_pid->update(heading2_Error);
             
-            // Reduce drive output gradually as we approach the target
-            // This helps prevent overshoot
+            // Reduce drive output gradually as we approach the target to avoid overshooting
             double position_factor = std::min(1.0, distance / 2.0);
             drive_output *= position_factor * (1.0 - angle_priority * 0.6);
             
-            // lcd::print(6, "Phase: Final Angle");
+            if (debug_moveToPose) { lcd::print(5, "APri: %.2f | PFact: %.2f", angle_priority, position_factor); }
         } else {
             // Use heading1_Error for path following
             heading_output = turn_pid->update(heading1_Error);
-            
-            if (progress <= 0.7 || theta == 999) {
-                // lcd::print(6, "Phase: %s", progress < first_turn_end ? "Carrot" : "Target");
-            }
+            if (debug_moveToPose) { lcd::print(5, "Target Mode"); }
         }
         
-        // Optional: Apply a minimum threshold to prevent tiny oscillations
         if (abs(heading_output) < 1.5 && distance < 3.0) {
             heading_output = 0;
         }
@@ -439,22 +425,12 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
 
         prev_drive_cmd = drive_cmd;
         
-        heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
-        double left_output = drive_output - heading_output;
-        double right_output = drive_output + heading_output;
+        double left_output = drive_cmd - heading_output;
+        double right_output = drive_cmd + heading_output;
         left_output = clamp(left_output, -drive_max_voltage, drive_max_voltage);
         right_output = clamp(right_output, -drive_max_voltage, drive_max_voltage);
+                    if (debug_moveToPose) { lcd::print(6, "DOut: %.1f, HOut: %.1f", drive_output, heading_output); }
 
-        // Debug output
-        // lcd::print(0, "X: %.1f, Y: %.1f, T: %.1f", odom_->getPos().x, odom_->getPos().y, odom_->getPos().theta);
-        // lcd::print(1, "Tgt: %.1f, %.1f, Dst: %.1f", x, y, distance);
-        // lcd::print(2, "Prog: %.2f, HErr: %.1f", progress, heading1_Error);
-        // lcd::print(3, "DOut: %.1f, HOut: %.1f", drive_output, heading_output);
-        // lcd::print(4, "SAng: %.1f, FAng: %.1f", straight_angle, reverse ? theta + 180 : theta);
-        // lcd::print(5, "L: %.1f, R: %.1f", left_output, right_output);
-        // if (progress <= 0.85 || theta == 999) {
-        //     lcd::print(6, "Phase: %s", progress < first_turn_end ? "Carrot" : "Target");
-        // }
 
         // Move robot
         left_side_->move(left_output);
@@ -463,8 +439,8 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
         pros::delay(10);
     }
    
-//     brake();
-//     endMotion();
+    brake();
+    endMotion();
 }
 
 

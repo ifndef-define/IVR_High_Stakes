@@ -15,8 +15,6 @@ class PneumaticsGroup {
         pros::adi::Pneumatics intakeLift;
         pros::adi::Pneumatics rightMogoRushArm;
         
-        pros::adi::Pneumatics leftClimbWing;
-        pros::adi::Pneumatics rightClimbWing;
         pros::adi::Pneumatics innerClimbArms;
         pros::adi::Pneumatics outerClimbArms;
         pros::adi::Pneumatics climbPTO;

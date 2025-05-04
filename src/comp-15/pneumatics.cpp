@@ -6,8 +6,6 @@ PneumaticsGroup::PneumaticsGroup():
     mogoRushTeeth(pros::adi::ext_adi_port_pair_t(9, 3), false),
     intakeLift(7, false),
     rightMogoRushArm(pros::adi::ext_adi_port_pair_t(9, 8), false),
-    leftClimbWing(99, false),
-    rightClimbWing(99, false),
     innerClimbArms(8, false),
     outerClimbArms(5, false),
     climbPTO(6, false) {}

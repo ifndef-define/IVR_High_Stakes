@@ -9,11 +9,6 @@ using motor = pros::Motor;
 using controller = pros::Controller;
 using motor_g = pros::MotorGroup;
 
-/**
- * Use this macro to enable multithreaded drive looping
- */
-// #define MULTITHREAD_DRIVE_LOOP
-
 class Drive {
     public:
         enum drive_mode_e {
@@ -160,7 +155,6 @@ class Drive {
          * @param async If true, will run in a separate thread
          */
         static void moveToPose(double x, double y, double theta=999, bool reverse=false, int timeout=5000, double drive_min_voltage = 0, double drive_max_voltage = 127, double heading_max_voltage = 110, double drive_settle_error = .5, double turn_settle_error = .5, double lead = 1.5, double position_threshold=8.2, bool async=false);
-        // static void moveToPose(double x, double y, double theta, int timeout=5000, double drive_min_voltage = 0, double drive_max_voltage = 127, double heading_max_voltage = 127, double drive_settle_error = .25, double turn_settle_error = .25, bool async=false);
         /**
          * @brief Determines values to move the robot given a vector. This will compute 
          *  the vector from the current position to the target position and move the robot
