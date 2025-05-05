@@ -347,4 +347,8 @@ void Action::setArmBrakeMode(pros::motor_brake_mode_e_t mode){
     arm.setBrakeMode(mode);
 }
 
+void Action::setArmClimb(bool climb){
+    arm.setClimb(climb);
+}
+
 Action actions(0, Ring::Color::NONE, 13); // Initialize Action object with default values

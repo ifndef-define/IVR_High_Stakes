@@ -2,6 +2,8 @@
 Arm::Arm(float kP, float kI, float kD, float kP2, float kI2, float kD2) : armMotor(3, pros::MotorGears::red), armRot(-5), armLimit({8,8}), large(kP, kI, kD, 0, 0), small(kP2, kI2, kD2, 0, 0) {
     armMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     armRot.set_position(-15);
+    smallConfig = {kP2, kI2, kD2};
+    largeConfig = {kP, kI, kD};
 }
 
 
@@ -46,4 +48,14 @@ Arm::State Arm::getState(){ return curArmState; }
 
 void Arm::setBrakeMode(pros::motor_brake_mode_e_t mode){
     armMotor.set_brake_mode(mode);
+}
+
+void Arm::setClimb(bool climb, int scale) {
+    if (climb) {
+        small.setConstants(smallConfig.kP*scale, smallConfig.kI*scale, smallConfig.kD*scale);
+        large.setConstants(largeConfig.kP*scale, largeConfig.kI*scale, largeConfig.kD*scale);
+    } else {
+        small.setConstants(smallConfig.kP, smallConfig.kI, smallConfig.kD);
+        large.setConstants(largeConfig.kP, largeConfig.kI, largeConfig.kD);
+    }
 }

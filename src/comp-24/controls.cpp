@@ -130,6 +130,7 @@ void updateRobotSystems(DriveMode newMode) {
             actions.setOverride(false);
             actions.setArmState(Arm::State::DOWN);
             actions.setRunArm(true);
+            actions.setArmClimb(false);
             break;
         case MODE_SOLO_CLIMB:
         case MODE_COMP_CLIMB:
@@ -149,7 +150,7 @@ void updateRobotSystems(DriveMode newMode) {
             actions.setRunColorSort(false);
             actions.setRunArm(true);
             actions.setArmState(Arm::State::CLIMB);
-            actions.setOverride(true);
+            actions.setArmClimb(true);
             break;
     }
 
@@ -233,12 +234,16 @@ void teleOp(Ring::Color ringToKeep) {
                     } else {
                         if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmState(Arm::State::DESCORE);
+                            actions.setArmBrakeMode(BRAKE_HOLD);;
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                             actions.setArmState(Arm::State::READY);
+                            actions.setArmBrakeMode(BRAKE_HOLD);;
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmState(Arm::State::SCORE);
+                            actions.setArmBrakeMode(BRAKE_HOLD);;
                         } else {
                             actions.setArmState(Arm::State::DOWN);
+                            actions.setArmBrakeMode(BRAKE_BRAKE);
                         }
                     }
                 }
@@ -286,24 +291,26 @@ void teleOp(Ring::Color ringToKeep) {
                 break;
             case MODE_SOLO_CLIMB:
             case MODE_COMP_CLIMB:
+                actions.setOverride(ctrler.get_digital(controls[activeProfile]->shift));
                 /// ARM ///
-                if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
-                    actions.setArmState(Arm::State::CLIMB);
-                    actions.setRunArm(true);
-                    actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
-                } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
-                    actions.setArmSpeed(.65);
-                    actions.setRunArm(true);
-                    actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
-                } else {
-                    if(actions.getArmAngle() < 100){
-                        actions.setRunArm(true);
-                        actions.setArmState(Arm::State::CLIMB);
-                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+                if(actions.getOverride()){
+                    if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
+                        actions.setArmSpeed(.7);
+                    } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
+                        actions.setArmSpeed(-.7);
                     } else {
-                        actions.setRunArm(false);
-                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
                         actions.setArmSpeed(0);
+                    }
+                } else {
+                    if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
+                        actions.setArmState(Arm::State::CLIMB);
+                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
+                    } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
+                        actions.setArmState(Arm::State::SCORE);
+                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
+                    } else {
+                        actions.setArmSpeed(0);
+                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
                     }
                 }
 
