@@ -4,8 +4,8 @@ pros::Controller ctrler = pros::Controller(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup leftDrive({8, -1, 5, -7}, pros::MotorGears::blue);
 pros::MotorGroup rightDrive({-4, 11, -13, 16}, pros::MotorGears::blue);
 
-pros::MotorGroup leftClimbDrive({-8, 1, -5, 7, 17}, pros::MotorGears::blue);
-pros::MotorGroup rightClimbDrive({4, -11, 13, -16, -15}, pros::MotorGears::blue);
+pros::MotorGroup leftClimbDrive({8, -1, 5, -7, -17}, pros::MotorGears::blue);
+pros::MotorGroup rightClimbDrive({-4, 11, -13, 16, 15}, pros::MotorGears::blue);
 
 pros::adi::Encoder yEnc(1, 2, false);
 pros::adi::Encoder xEnc(3, 4, true);

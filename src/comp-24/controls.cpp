@@ -210,7 +210,7 @@ void updateRobotSystems(DriveMode newMode, Ring::Color botSide) {
             pneumatics.rightMogoRushArm.retract();
             pneumatics.mogoRushTeeth.retract();
             pneumatics.innerClimbArms.extend();
-            pneumatics.intakeLift.extend();
+            // pneumatics.intakeLift.extend(); // gone for climb
             pneumatics.intakeLock.retract();
             actions.setRunColorSort(false);
             actions.setRunArm(true);

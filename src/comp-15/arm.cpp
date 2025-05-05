@@ -11,7 +11,7 @@ void Arm::update(){
     // // Check if limit switch is NEWLY pressed (rising edge detection)
     // if(currentLimitState == 1 && prevLimitState == 0) {
         // Reset position to match DOWN state angle only when first pressed
-        armRot.set_position(10*100); // Multiply by 100 because getAngle divides by 100
+        // armRot.set_position(10*100); // Multiply by 100 because getAngle divides by 100
     // }
     
     if(!override){ 
@@ -22,8 +22,8 @@ void Arm::update(){
             armMotor.move(large.update(error));
         } 
     } 
-    pros::lcd::print(0, "Arm State: %d", (int)curArmState);
-    pros::lcd::print(1, "Arm Angle: %f", getAngle());
+    // pros::lcd::print(0, "Arm State: %d", (int)curArmState);
+    // pros::lcd::print(1, "Arm Angle: %f", getAngle());
     // Update previous limit switch state for next cycle
     // prevLimitState = currentLimitState;
 }
