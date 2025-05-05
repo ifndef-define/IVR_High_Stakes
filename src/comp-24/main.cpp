@@ -5,27 +5,19 @@
 
 Ring::Color ringToKeep = Ring::Color::BLUE;
 
+// #define USE_LLEMU
+
 void initialize() {
+#ifdef USE_LLEMU
 	pros::lcd::initialize();
-	
 	imu.reset(true);
+#else
+	imu.reset(false);
+	ui::init("Comp-24");
+#endif
+	
 	actions.setRingColor(ringToKeep);
 	robotOdom.start(true);
-	
-	// robotOdom.setPos(odom::r_coord(0, 0, 0));
-	// robotOdom.start(true);
-	// chassis->calibrate(true);
-	// chassis->setPose(0, 0, 0);
-	// pros::Task screen_task([&]() {
-    //     while (true) {
-    //         // print robot location to the brain screen
-    //         // pros::lcd::print(0, "X: %f Y: %f", chassis.getPose().x, chassis.getPose().y); // x,y
-    //         // pros::lcd::print(1, "Theta: %f", chassis.getPose().theta); // global theta
-	// 		// pros::lcd::print(2, "Heading: %f", imu.get_rotation()); // rotations
-    //         // delay to save resources
-    //         pros::delay(20);
-    //     }
-    // });
 }
 
 void disabled() {}
@@ -33,8 +25,15 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
+	if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
+		ringToKeep = Ring::Color::RED;
+	} else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
+		ringToKeep = Ring::Color::BLUE;
+	} else {
+		ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
+	}
 	auton(ringToKeep);
 }
 void opcontrol() {
-	teleOp(ringToKeep, false);
+	teleOp(ringToKeep);
 }

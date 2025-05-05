@@ -12,7 +12,6 @@ struct driverProfile {
     pros::controller_digital_e_t backpackCycleStageUp;
     pros::controller_digital_e_t backpackCycleStageDown;
     pros::controller_digital_e_t shift;
-    bool jesusSpecial;
 
     std::pair<pros::controller_digital_e_t, bool> mogoClampToggle;
     std::pair<pros::controller_digital_e_t, bool> rightMogoRushCycle;
@@ -41,7 +40,6 @@ const driverProfile Drive = {
     .backpackCycleStageUp = BUTTON_L1,
     .backpackCycleStageDown = BUTTON_L2,
     .shift = BUTTON_RIGHT,
-    .jesusSpecial = false,
 
     .mogoClampToggle = {BUTTON_Y,true},
     .rightMogoRushCycle = {BUTTON_B,true},
@@ -69,7 +67,6 @@ const driverProfile Climb = {
     .backpackCycleStageUp = BUTTON_L1,
     .backpackCycleStageDown = BUTTON_L2,
     // .shift = null,   // no control
-    .jesusSpecial = false,
 
     // .mogoClampToggle = null, // Lock clamped
     // .rightMogoRushCycle = null, // stowed
@@ -124,7 +121,8 @@ void updateRobotSystems(DriveMode newMode) {
             pneumatics.climbPTO.retract();
             chassis->changeDriveMode(controls[activeProfile]->driveMode);
             chassis->changeDriveMotors(leftDrive, rightDrive);
-            actions.setRunColorSort(true);
+            chassis->setBrakeMode(BRAKE_COAST);
+            actions.setRunColorSort(newMode == (MODE_COMP ? controls[activeProfile]->defaultColorSort : true));
             actions.setOverride(false);
             actions.setArmState(Arm::State::DOWN);
             actions.setRunArm(true);
@@ -168,36 +166,27 @@ void teleOp(Ring::Color ringToKeep) {
     actions.setRingColor(ringToKeep);
     actions.setAutonControlFlag(false);
     actions.setRunAutoMogoClamp(false);
+    actions.setArmState(Arm::State::DOWN);
     actions.setRunArm(true);
-    pros::screen_touch_status_s_t touch;
+    bool lastProfile = false;
 
     while(1) {
         actions.runSubsystemFSM();
-        touch = pros::c::screen_touch_status();
 
         switch (activeProfile) {
             case MODE_SOLO:
-                if (touch.touch_status == pros::E_TOUCH_PRESSED) {
-                    if (ui::getRunColorSort()) {
-                        actions.setRunColorSort(true);
-                    } else {
-                        actions.setRunColorSort(false);
-                    }
-
-                    if (ui::getRunForceCompMode()) {
-                        activeProfile = MODE_COMP;
-                        updateRobotSystems(activeProfile);
-                    } else {
-                        activeProfile = MODE_SOLO;
-                        updateRobotSystems(activeProfile);
-                    }
-
-                    if (ui::getRingColor()) {
-                        ringToKeep = Ring::Color::BLUE;
-                    } else {
-                        ringToKeep = Ring::Color::RED;
-                    }
+                if (ui::getRunColorSort()) {
+                    actions.setRunColorSort(true);
+                } else {
+                    actions.setRunColorSort(false);
                 }
+
+                if (ui::getRingColor()) {
+                    ringToKeep = Ring::Color::BLUE;
+                } else {
+                    ringToKeep = Ring::Color::RED;
+                }
+                actions.setRingColor(ringToKeep);
 
             case MODE_COMP:
                 if (pros::competition::is_connected()) {
@@ -210,6 +199,12 @@ void teleOp(Ring::Color ringToKeep) {
                     }
                     actions.setRingColor(ringToKeep);
                     actions.setRunColorSort(controls[activeProfile]->defaultColorSort);
+                } else {
+                    if (lastProfile != ui::getRunForceCompMode()) {
+                        lastProfile = ui::getRunForceCompMode();
+                        activeProfile = lastProfile ? MODE_COMP : MODE_SOLO;
+                        updateRobotSystems(activeProfile);
+                    }
                 }
                 actions.setOverride(ctrler.get_digital(controls[activeProfile]->shift));
 
@@ -285,6 +280,8 @@ void teleOp(Ring::Color ringToKeep) {
                 break;
             case MODE_SOLO_CLIMB:
             case MODE_COMP_CLIMB:
+                // No Arm Control in Climb//
+
                 /// PNEUMATICS ///
                 if (ctrler.get_digital_new_press(controls[activeProfile]->intakeLift.first)) {
                     pneumatics.intakeLift.toggle();
@@ -299,13 +296,11 @@ void teleOp(Ring::Color ringToKeep) {
                 if (ctrler.get_digital_new_press(controls[activeProfile]->climbPTOToggle)) {
                     pneumatics.climbPTO.toggle();
                     if (pneumatics.climbPTO.is_extended()) {
-                        // chassis->stopLoop();
                         chassis->changeDriveMotors(leftClimbDrive, rightClimbDrive);
                         chassis->changeDriveMode(controls[activeProfile]->driveMode);
-                        chassis->setBrakeMode(BRAKE_BRAKE); // switch to hold?
-                        // chassis->loop(true);
+                        chassis->setBrakeMode(BRAKE_BRAKE);
                     } else if (!(pneumatics.climbPTO.is_extended())) {
-                        chassis->changeDriveMode(controls[pros::competition::is_connected()?MODE_COMP:MODE_SOLO]->driveMode);
+                        chassis->changeDriveMode(controls[MODE_SOLO]->driveMode);
                         chassis->changeDriveMotors(leftDrive, rightDrive);
                         chassis->setBrakeMode(BRAKE_COAST);
                     }

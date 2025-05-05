@@ -563,7 +563,7 @@ void autoSelector() {
     ring_switch->user_data = (void *)(6);
     lv_obj_add_style(ring_switch, &ring_switch_style, LV_PART_MAIN);
     lv_obj_add_event_cb(ring_switch, cb_autoMenu, LV_EVENT_VALUE_CHANGED, NULL);
-    ring_switch->state = LV_STATE_CHECKED; // Default to checked
+    
     lv_obj_align(ring_switch, LV_ALIGN_RIGHT_MID, -125, 42);
 }
   

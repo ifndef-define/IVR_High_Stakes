@@ -6,7 +6,6 @@ class Arm {
         enum class State : int {
             DOWN = 0,   // index 0
             READY = 1,  // index 1
-            CLIMB = 2,
             SCORE = 3,  // index 2
             DESCORE = 4,  // index 3
             NUM_ARM_STATES = 5 // count of states
@@ -28,7 +27,6 @@ class Arm {
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             5,   // Angle for DOWN
             29,  // Angle for READY 
-            80,  // Angle for CLIMB
             215,   // Angle for SCORE
             350  // Angle for DESCORE
         };

@@ -3,12 +3,16 @@
 #include "robots/comp-15/controls.h"
 #include "robots/comp-15/action.h"
 
-Ring::Color ringToKeep = Ring::Color::BLUE;
+Ring::Color ringToKeep = Ring::Color::NONE;
 
 void initialize() {
-	// pros::lcd::initialize();
+#ifdef USE_LLEMU
+	pros::lcd::initialize();
+	imu.reset(true);
+#else
 	imu.reset(false);
-	ui::init("Comp-15");
+	ui::init("Comp-24");
+#endif
 	
 	actions.setRingColor(ringToKeep);
 	robotOdom->start(true);
@@ -19,11 +23,13 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-	// chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
-	if (ui::getRingColor()) {
+	chassis->setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
+	if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
+		ringToKeep = Ring::Color::RED;
+	} else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
 		ringToKeep = Ring::Color::BLUE;
 	} else {
-		ringToKeep = Ring::Color::RED;
+		ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
 	}
 	auton(ringToKeep);
 }

@@ -8,14 +8,13 @@ struct driverProfile {
 
     pros::controller_digital_e_t backpackCycleStageUp;
     pros::controller_digital_e_t backpackCycleStageDown;
-    bool adiSpecial;
 
-    pros::controller_digital_e_t mogoClampToggle;
-    pros::controller_digital_e_t rightMogoRushCycle;
-    pros::controller_digital_e_t leftMogoRushCycle;
-    pros::controller_digital_e_t mogoRushTeethToggle;
-    pros::controller_digital_e_t intakeLockToggle;
-    pros::controller_digital_e_t intakeLiftToggle;
+    std::pair <pros::controller_digital_e_t, bool> mogoClampToggle;
+    std::pair <pros::controller_digital_e_t, bool> rightMogoRushCycle;
+    std::pair <pros::controller_digital_e_t, bool> leftMogoRushCycle;
+    std::pair <pros::controller_digital_e_t, bool> mogoRushTeethToggle;
+    std::pair <pros::controller_digital_e_t, bool> intakeLockToggle;
+    std::pair <pros::controller_digital_e_t, bool> intakeLiftToggle;
 
     pros::controller_digital_e_t climbMode_1;
     pros::controller_digital_e_t climbMode_2;
@@ -27,11 +26,11 @@ struct driverProfile {
     pros::controller_digital_e_t climbPTOToggle;
 
     pros::controller_digital_e_t toggleColorSort;
-
     pros::controller_digital_e_t shift;
+    bool defaultColorSort = false;
 };
 
-const driverProfile AdiPrimary = {
+const driverProfile Drive = {
     .driveMode = Drive::drive_mode_e::SPLIT_ARCADE_PL,
     
     .intakeIn = BUTTON_R1,
@@ -39,76 +38,16 @@ const driverProfile AdiPrimary = {
 
     .backpackCycleStageUp = BUTTON_L1,
     .backpackCycleStageDown = BUTTON_L2,
-    .adiSpecial = false,
 
-    .mogoClampToggle = BUTTON_Y,
-    .rightMogoRushCycle = BUTTON_A,
-    .leftMogoRushCycle = BUTTON_A,
-    .mogoRushTeethToggle = BUTTON_UP,
-    // .intakeLock = null,  // retracted
-
-    .climbMode_1 = BUTTON_B,
-    .climbMode_2 = BUTTON_DOWN,
-
-    // .intake_wingsToggle = null, // dropped and folded
-    // .innerClimbArmsToggle = null, // stowed
-    // .outerClimbArmsToggle = null, // stowed
-    // .climbPTOToggle = null, // disengaged
-
-    // .toggleColorSort = null // off by default
-};
-
-
-const driverProfile CompClimbMode = {
-    .driveMode = Drive::drive_mode_e::CUSTOM_m,
-    
-    // .intakeIn = null, // no control
-    // .intakeOut = null, // no control
-
-    .backpackCycleStageUp = BUTTON_L1,
-    .backpackCycleStageDown = BUTTON_L2,
-    .adiSpecial = false,
-
-    // .mogoClampToggle = null, // Lock clamped
-    // .rightMogoRushCycle = null, // stowed
-    // .leftMogoRushCycle = null, // stowed
-    // .mogoRushTeethToggle = null, // retracted
-    // .intakeLock = null, // automatic
+    .mogoClampToggle = {BUTTON_Y, true},
+    .rightMogoRushCycle = {BUTTON_A, true},
+    .leftMogoRushCycle = {BUTTON_A, true},
+    .mogoRushTeethToggle = {BUTTON_UP, true},
+    .intakeLockToggle = {BUTTON_LEFT,false},  // retracted
+    .intakeLiftToggle = {BUTTON_DOWN,false},  // dropped
 
     .climbMode_1 = BUTTON_B,
     .climbMode_2 = BUTTON_DOWN,
-
-    // .intake_wingsToggle = BUTTON_A, // this macros intakeLock
-    .innerClimbArmsToggle = BUTTON_RIGHT,
-    .outerClimbArmsToggle = BUTTON_LEFT,
-    .leftPaperToggle = BUTTON_R1,
-    .rightPaperToggle = BUTTON_R2,
-    .climbPTOToggle = BUTTON_UP,
-
-    // .toggleColorSort = null // off
-};
-
-const driverProfile SoloDriveMode = {
-    .driveMode = Drive::drive_mode_e::SPLIT_ARCADE_PL,
-
-    .intakeIn = BUTTON_R1,
-    .intakeOut = BUTTON_R2,
-
-    .backpackCycleStageUp = BUTTON_L1,
-    .backpackCycleStageDown = BUTTON_L2,
-    .adiSpecial = false,
-
-    .mogoClampToggle = BUTTON_Y,
-    // .rightMogoRushCycle = BUTTON_RIGHT,
-    .leftMogoRushCycle = BUTTON_LEFT,
-    .mogoRushTeethToggle = BUTTON_DOWN,
-    .intakeLockToggle = BUTTON_A,
-    .intakeLiftToggle = BUTTON_B,
-
-    .climbMode_1 = BUTTON_UP,
-    .climbMode_2 = BUTTON_X,
-
-    .shift = BUTTON_RIGHT
 
     // .innerClimbArmsToggle = null, // stowed
     // .outerClimbArmsToggle = null, // stowed
@@ -116,10 +55,12 @@ const driverProfile SoloDriveMode = {
     // .rightPaperToggle = null, // stowed
     // .climbPTOToggle = null, // disengaged
 
-    // .toggleColorSort = null // on by default
+    // .toggleColorSort = null // off by default
+    .shift = BUTTON_RIGHT,
 };
 
-const driverProfile SoloClimbMode = {
+
+const driverProfile Climb = {
     .driveMode = Drive::drive_mode_e::CUSTOM_m,
     
     // .intakeIn = null, // no control
@@ -127,14 +68,13 @@ const driverProfile SoloClimbMode = {
 
     .backpackCycleStageUp = BUTTON_L1,
     .backpackCycleStageDown = BUTTON_L2,
-    .adiSpecial = false,
 
     // .mogoClampToggle = null, // Lock clamped
     // .rightMogoRushCycle = null, // stowed
     // .leftMogoRushCycle = null, // stowed
-    // .mogoRushTeethToggle = null, // retracted
-    .intakeLockToggle = BUTTON_A, // automatic deploy
-    .intakeLiftToggle = BUTTON_B, // automatic drop
+    // .mogoRushTeethToggle = null, // disabled
+    // .intakeLiftToggle = null // dropped
+    .intakeLockToggle = {BUTTON_A, false}, // automatic
 
     .climbMode_1 = BUTTON_UP,
     .climbMode_2 = BUTTON_X,
@@ -143,28 +83,16 @@ const driverProfile SoloClimbMode = {
     .outerClimbArmsToggle = BUTTON_LEFT,
     .leftPaperToggle = BUTTON_R1,
     .rightPaperToggle = BUTTON_R2,
-    .climbPTOToggle = BUTTON_Y,
+    .climbPTOToggle = BUTTON_DOWN,
 
     // .toggleColorSort = null // off
 };
 
-
-/* Climb Operations:
-Before Climb
-- Get ring in arm
-- Hold clamp mogo if climbing with
-
-Switch climb menu (this locks intake, toggles wing, and deploys inner arms)
-- Line up with ladder
-- Engage pto (this enables arm control and disables turning in drive) 
-- Driver starts climbing
-*/
-
-const driverProfile controls[4] = {
-    SoloDriveMode,
-    SoloClimbMode,
-    AdiPrimary,
-    CompClimbMode
+const driverProfile *controls[4] = {
+    &Drive,
+    &Climb,
+    &Drive,
+    &Climb
 };
 
 enum DriveMode {
@@ -176,9 +104,7 @@ enum DriveMode {
 DriveMode activeProfile = MODE_SOLO;
 
 extern pros::MotorGroup leftDrive, rightDrive, rightClimbDrive, leftClimbDrive;
-// pros::Motor armTemp(3, pros::MotorGear::red);
-// pros::adi::Button armLimitTemp(pros::adi::ext_adi_port_pair_t(8, 8));
-void updateRobotSystems(DriveMode newMode, Ring::Color botSide) {
+void updateRobotSystems(DriveMode newMode) {
     ctrler.rumble("...");
     delay(100);
     ctrler.clear_line(3);
@@ -186,24 +112,32 @@ void updateRobotSystems(DriveMode newMode, Ring::Color botSide) {
 
     switch (newMode) {
         case MODE_SOLO:
-            ctrler.print(0, 0, "Solo - Drive");
+        case MODE_COMP:
+            if (newMode == MODE_COMP) {
+                ctrler.print(0, 0, "Comp - Drive");
+            } else {
+                ctrler.print(0, 0, "Solo - Drive");
+            }
             delay(100);
-            pneumatics.mogoRushTeeth.extend();
             pneumatics.intakeLift.extend();
             pneumatics.innerClimbArms.retract();
             pneumatics.outerClimbArms.retract();
-            pneumatics.paperLeft.retract();
-            pneumatics.paperRight.retract();
             pneumatics.climbPTO.retract();
-            chassis->changeDriveMode(controls[activeProfile].driveMode);
+            chassis->changeDriveMode(controls[activeProfile]->driveMode);
             chassis->changeDriveMotors(leftDrive, rightDrive);
-            actions.setRunColorSort(true);
+            chassis->setBrakeMode(BRAKE_COAST);
+            actions.setRunColorSort(newMode == (MODE_COMP ? controls[activeProfile]->defaultColorSort : true));
             actions.setOverride(false);
-            actions.setRunArm(true);
             actions.setArmState(Arm::State::DOWN);
+            actions.setRunArm(true);
             break;
         case MODE_SOLO_CLIMB:
-            ctrler.print(0, 0, "Solo - Climb");
+        case MODE_COMP_CLIMB:
+            if (newMode == MODE_COMP) {
+                ctrler.print(0, 0, "Comp - Drive");
+            } else {
+                ctrler.print(0, 0, "Solo - Drive");
+            }
             delay(100);
             pneumatics.mogoClamp.extend();
             pneumatics.leftMogoRushArm.retract();
@@ -214,75 +148,74 @@ void updateRobotSystems(DriveMode newMode, Ring::Color botSide) {
             pneumatics.intakeLock.retract();
             actions.setRunColorSort(false);
             actions.setRunArm(true);
-            actions.setOverride(true);
             actions.setArmState(Arm::State::CLIMB);
-            break;
-        case MODE_COMP:
-            ctrler.print(0, 0, "Comp - Drive");
-            delay(100);
-            pneumatics.intakeLock.retract();
-            // pneumatics.intakeLift_Wings.retract();
-            pneumatics.innerClimbArms.retract();
-            pneumatics.outerClimbArms.retract();
-            pneumatics.mogoRushTeeth.extend();
-            pneumatics.climbPTO.retract();
-            chassis->changeDriveMode(controls[activeProfile].driveMode);
-            chassis->changeDriveMotors(leftDrive, rightDrive);
-            actions.setRunColorSort(true);
-            actions.setOverride(false);
-            actions.setRunArm(true);
-            actions.setArmState(Arm::State::DOWN);
-            break;
-        case MODE_COMP_CLIMB:
-            ctrler.print(0, 0, "Comp - Climb");
-            delay(100);
-            pneumatics.mogoClamp.extend();
-            pneumatics.leftMogoRushArm.retract();
-            pneumatics.rightMogoRushArm.retract();
-            pneumatics.mogoRushTeeth.retract();
-            pneumatics.innerClimbArms.extend();
-            pneumatics.outerClimbArms.retract();
-            chassis->changeDriveMode(controls[activeProfile].driveMode);
-            chassis->changeDriveMotors(leftClimbDrive, rightClimbDrive);
-            actions.setRunColorSort(false);
             actions.setOverride(true);
-            actions.setRunArm(true);
-            actions.setArmState(Arm::State::CLIMB);
-            break;  
+            break;
     }
 
     delay(500); // bounce time
 }
 
-void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
+void teleOp(Ring::Color ringToKeep) {
     chassis->loop(true);
 
-    if (!pros::competition::is_connected() && !forceCompMode) {
+    if (!pros::competition::is_connected()) {
         activeProfile = MODE_SOLO;
-        updateRobotSystems(activeProfile, ringToKeep);
+        updateRobotSystems(activeProfile);
     } else {
         activeProfile = MODE_COMP;
-        updateRobotSystems(activeProfile, ringToKeep);
+        updateRobotSystems(activeProfile);
     }
 
     actions.setRingColor(ringToKeep);
     actions.setAutonControlFlag(false);
-    actions.setArmState(Arm::State::DOWN);
     actions.setRunAutoMogoClamp(false);
+    actions.setArmState(Arm::State::DOWN);
     actions.setRunArm(true);
+    bool lastProfile = false;
 
     while(1) {
-
         actions.runSubsystemFSM();
 
         switch (activeProfile) {
             case MODE_SOLO:
+                if (ui::getRunColorSort()) {
+                    actions.setRunColorSort(true);
+                } else {
+                    actions.setRunColorSort(false);
+                }
+
+                if (ui::getRingColor()) {
+                    ringToKeep = Ring::Color::BLUE;
+                } else {
+                    ringToKeep = Ring::Color::RED;
+                }
+                actions.setRingColor(ringToKeep);
+
+            case MODE_COMP:
+                if (pros::competition::is_connected()) {
+                    if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
+                        ringToKeep = Ring::Color::RED;
+                    } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
+                        ringToKeep = Ring::Color::BLUE;
+                    } else {
+                        ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
+                    }
+                    actions.setRingColor(ringToKeep);
+                    actions.setRunColorSort(controls[activeProfile]->defaultColorSort);
+                } else {
+                    if (lastProfile != ui::getRunForceCompMode()) {
+                        lastProfile = ui::getRunForceCompMode();
+                        activeProfile = lastProfile ? MODE_COMP : MODE_SOLO;
+                        updateRobotSystems(activeProfile);
+                    }
+                }
                 /// INTAKE ///
-                actions.setOverride(ctrler.get_digital(controls[activeProfile].shift));
+                actions.setOverride(ctrler.get_digital(controls[activeProfile]->shift));
                 if(actions.getActionState() == ActionState::IDLE || actions.getOverride()){
-                    if(ctrler.get_digital(controls[activeProfile].intakeIn)) {
+                    if(ctrler.get_digital(controls[activeProfile]->intakeIn)) {
                         actions.setIntakeSpeed(1);
-                    } else if(ctrler.get_digital(controls[activeProfile].intakeOut)) {
+                    } else if(ctrler.get_digital(controls[activeProfile]->intakeOut)) {
                         actions.setIntakeSpeed(-1);
                     } else {
                         actions.setIntakeSpeed(0);
@@ -290,19 +223,19 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
 
                     /// ARM ///
                     if(actions.getOverride()){
-                        if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                        if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                             actions.setArmSpeed(1);
-                        } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmSpeed(-1);
                         } else {
                             actions.setArmSpeed(0);
                         }
                     } else {
-                        if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmState(Arm::State::DESCORE);
-                        } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                        } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                             actions.setArmState(Arm::State::READY);
-                        } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                        } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmState(Arm::State::SCORE);
                         } else {
                             actions.setArmState(Arm::State::DOWN);
@@ -310,149 +243,9 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                     }
                 }
 
-                // if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                //     armTemp.move(127);
-                // } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown) && armLimitTemp.get_value() != 1) {
-                //     armTemp.move(-127);
-                // } else {
-                //     armTemp.brake();
-                // }
-
                 /// PNEUMATICS ///
-                if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {
-                    pneumatics.mogoClamp.toggle();
-                    if(pneumatics.mogoClamp.is_extended()) {
-                        ctrler.rumble("..");
-                    } else {
-                        ctrler.rumble("--");
-                    }
-                }
-                
-                // if(ctrler.get_digital_new_press(controls[activeProfile].rightMogoRushCycle)) {
-                //     pneumatics.rightMogoRushArm.toggle();
-                // }
-                if(ctrler.get_digital_new_press(controls[activeProfile].leftMogoRushCycle)) {
-                    pneumatics.leftMogoRushArm.toggle();
-                }
-                if(ctrler.get_digital_new_press(controls[activeProfile].mogoRushTeethToggle)) {
-                    pneumatics.mogoRushTeeth.toggle();
-                }
-                if(ctrler.get_digital_new_press(controls[activeProfile].intakeLiftToggle)) {
-                    pneumatics.intakeLift.toggle();
-                }
-                if(ctrler.get_digital_new_press(controls[activeProfile].intakeLockToggle)) {
-                    pneumatics.intakeLock.toggle();
-                }
-
-                // Mode Change //
-                if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
-                    activeProfile = MODE_SOLO_CLIMB;
-                    updateRobotSystems(activeProfile, ringToKeep);
-                }
-                break;
-            case MODE_SOLO_CLIMB:
-                /// ARM ///
-                if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                    actions.setArmState(Arm::State::CLIMB);
-                    actions.setRunArm(true);
-                    actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
-                } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-                    actions.setArmSpeed(.65);
-                    actions.setRunArm(true);
-                    actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
-                } else {
-                    if(actions.getArmAngle() < 100){
-                        actions.setRunArm(true);
-                        actions.setArmState(Arm::State::CLIMB);
-                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
-                    } else {
-                        actions.setRunArm(false);
-                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
-                        actions.setArmSpeed(0);
-                    }
-                }
-
-                // if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                //     armTemp.move(127);
-                // } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-                //     armTemp.move(-127);
-                // } else {
-                //     armTemp.brake();
-                // }
-
-    //             /// PNEUMATICS ///
-                if (ctrler.get_digital_new_press(controls[activeProfile].intakeLockToggle)) {
-                    pneumatics.intakeLock.toggle();
-                }
-                if (ctrler.get_digital_new_press(controls[activeProfile].intakeLiftToggle)) {
-                    pneumatics.intakeLift.toggle();
-                }
-                if (ctrler.get_digital_new_press(controls[activeProfile].innerClimbArmsToggle)) {
-                    pneumatics.innerClimbArms.toggle();
-                }
-                if (ctrler.get_digital_new_press(controls[activeProfile].outerClimbArmsToggle)) {
-                    pneumatics.outerClimbArms.toggle();
-                }
-                if (ctrler.get_digital_new_press(controls[activeProfile].climbPTOToggle)) {
-                    pneumatics.climbPTO.toggle();
-                    if (pneumatics.climbPTO.is_extended()) {
-                        // chassis->stopLoop();
-                        chassis->changeDriveMotors(leftClimbDrive, rightClimbDrive);
-                        chassis->changeDriveMode(controls[activeProfile].driveMode);
-                        chassis->setBrakeMode(BRAKE_BRAKE); // switch to hold?
-                        // chassis->loop(true);
-                    } else {
-                        chassis->changeDriveMode(controls[MODE_SOLO].driveMode);
-                        chassis->changeDriveMotors(leftDrive, rightDrive);
-                        chassis->setBrakeMode(BRAKE_COAST);
-                    }
-                }        
-                if(ctrler.get_digital_new_press(controls[activeProfile].leftPaperToggle)) {
-                    pneumatics.paperLeft.toggle();
-                }
-                if(ctrler.get_digital_new_press(controls[activeProfile].rightPaperToggle)) {
-                    pneumatics.paperRight.toggle();
-                }  
-
-                // Mode Change //
-                if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
-                    activeProfile = MODE_SOLO;
-                    updateRobotSystems(activeProfile, ringToKeep);
-                }
-                break;
-            case MODE_COMP:
-                /// INTAKE ///
-                if(ctrler.get_digital(controls[activeProfile].intakeIn)) {
-                    actions.setIntakeSpeed(1);
-                } else if(ctrler.get_digital(controls[activeProfile].intakeOut)) {
-                    actions.setIntakeSpeed(-1);
-                } else {
-                    actions.setIntakeSpeed(0);
-                }
-
-                /// ARM ///
-                if(actions.getOverride()){
-                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                        actions.setArmSpeed(1);
-                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-                        actions.setArmSpeed(-1);
-                    } else {
-                        actions.setArmSpeed(0);
-                    }
-                } else {
-                    if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-                        actions.setArmState(Arm::State::DESCORE);
-                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                        actions.setArmState(Arm::State::READY);
-                    } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-                        actions.setArmState(Arm::State::SCORE);
-                    } else {
-                        actions.setArmState(Arm::State::DOWN);
-                    }
-                }
-
-                /// PNEUMATICS ///
-                if(ctrler.get_digital_new_press(controls[activeProfile].mogoClampToggle)) {
+                if(ctrler.get_digital_new_press(controls[activeProfile]->mogoClampToggle.first)
+                    && (activeProfile == MODE_COMP ? controls[activeProfile]->mogoClampToggle.second : true)) {
                     pneumatics.mogoClamp.toggle();
                     if(pneumatics.mogoClamp.is_extended()) {
                         ctrler.rumble("..");
@@ -462,31 +255,43 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                 }
                 
                 if (ringToKeep == Ring::Color::RED) {
-                    if(ctrler.get_digital_new_press(controls[activeProfile].leftMogoRushCycle)) {
+                    if(ctrler.get_digital_new_press(controls[activeProfile]->leftMogoRushCycle.first) 
+                        && (activeProfile == MODE_COMP ? controls[activeProfile]->leftMogoRushCycle.second : true)) {
                         pneumatics.leftMogoRushArm.toggle();
                     }
                 } else if (ringToKeep == Ring::Color::BLUE) {
-                    // if(ctrler.get_digital_new_press(controls[activeProfile].rightMogoRushCycle)) {
-                    //     pneumatics.rightMogoRushArm.toggle();
-                    // }
+                    if(ctrler.get_digital_new_press(controls[activeProfile]->rightMogoRushCycle.first) 
+                        && (activeProfile == MODE_COMP ? controls[activeProfile]->rightMogoRushCycle.second : true)) {
+                        pneumatics.rightMogoRushArm.toggle();
+                    }
                 }
-                if(ctrler.get_digital_new_press(controls[activeProfile].mogoRushTeethToggle)) {
+                if(ctrler.get_digital_new_press(controls[activeProfile]->mogoRushTeethToggle.first) 
+                    && (activeProfile == MODE_COMP ? controls[activeProfile]->mogoRushTeethToggle.second : true)) {
                     pneumatics.mogoRushTeeth.toggle();
+                }
+                if(ctrler.get_digital_new_press(controls[activeProfile]->intakeLockToggle.first) 
+                    && (activeProfile == MODE_COMP ? controls[activeProfile]->intakeLockToggle.second : true)) {
+                    pneumatics.intakeLock.toggle();
+                }
+                if(ctrler.get_digital_new_press(controls[activeProfile]->intakeLiftToggle.first) 
+                    && (activeProfile == MODE_COMP ? controls[activeProfile]->intakeLiftToggle.second : true)) {
+                    pneumatics.intakeLift.toggle();
                 }
 
                 // Mode Change //
-                if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
-                    activeProfile = MODE_COMP_CLIMB;
-                    updateRobotSystems(activeProfile, ringToKeep);
+                if(ctrler.get_digital(controls[activeProfile]->climbMode_1) && ctrler.get_digital(controls[activeProfile]->climbMode_2)) {
+                    activeProfile = MODE_SOLO_CLIMB;
+                    updateRobotSystems(activeProfile);
                 }
                 break;
+            case MODE_SOLO_CLIMB:
             case MODE_COMP_CLIMB:
                 /// ARM ///
-                if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
+                if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                     actions.setArmState(Arm::State::CLIMB);
                     actions.setRunArm(true);
                     actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
-                } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
+                } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                     actions.setArmSpeed(.65);
                     actions.setRunArm(true);
                     actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
@@ -494,7 +299,7 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                     if(actions.getArmAngle() < 100){
                         actions.setRunArm(true);
                         actions.setArmState(Arm::State::CLIMB);
-                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
+                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
                     } else {
                         actions.setRunArm(false);
                         actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
@@ -503,51 +308,47 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                 }
 
                 /// PNEUMATICS ///
-                // if (ctrler.get_digital_new_press(controls[activeProfile].intake_wingsToggle)) {
-                //     if(!pneumatics.intakeLift_Wings.is_extended()) {
-                //         pneumatics.intakeLock.retract();
-                //         delay(150);
-                //         pneumatics.intakeLift_Wings.toggle();
-                //     } else {
-                //         pneumatics.intakeLift_Wings.toggle();
-                //         delay(350);
-                //         pneumatics.intakeLock.extend();
-                //     }
-                // }
-                // if (ctrler.get_digital_new_press(controls[activeProfile].innerClimbArmsToggle)) {
-                //     pneumatics.innerClimbArms.toggle();
-                // }
-                // if (ctrler.get_digital_new_press(controls[activeProfile].outerClimbArmsToggle)) {
-                //     pneumatics.outerClimbArms.toggle();
-                // }
-                // if (ctrler.get_digital_new_press(controls[activeProfile].climbPTOToggle)) {
-                //     pneumatics.climbPTO.toggle();
-                //     if (pneumatics.climbPTO.is_extended() && !onceLock) {
-                //         onceLock = true;
-                //         // chassis->stopLoop();
-                //         chassis->changeDriveMotors(leftClimbDrive, rightClimbDrive);
-                //         chassis->changeDriveMode(controls[activeProfile].driveMode);
-                //         chassis->setBrakeMode(BRAKE_BRAKE); // switch to hold?
-                //         // chassis->loop(true);
-                //     } else if (!(pneumatics.climbPTO.is_extended() && !onceLock)) {
-                //         chassis->changeDriveMode(controls[MODE_SOLO].driveMode);
-                //         chassis->changeDriveMotors(leftDrive, rightDrive);
-                //         chassis->setBrakeMode(BRAKE_COAST);
-                //     }
-                // }
-                // if (pneumatics.intakeLift_Wings.is_extended()) { // prevents paper use if side climbing
-                //     if (ctrler.get_digital_new_press(controls[activeProfile].leftPaperToggle)) {
-                //         pneumatics.paperLeft.toggle();
-                //     }
-                //     if (ctrler.get_digital_new_press(controls[activeProfile].rightPaperToggle)) {
-                //         pneumatics.paperRight.toggle();
-                //     }
-                // }
-            
-    //             // Mode Change //
-                if(ctrler.get_digital(controls[activeProfile].climbMode_1) && ctrler.get_digital(controls[activeProfile].climbMode_2)) {
-                    activeProfile = MODE_COMP;
-                    updateRobotSystems(activeProfile, ringToKeep);
+                if (ctrler.get_digital_new_press(controls[activeProfile]->intakeLiftToggle.first) 
+                    && (activeProfile == MODE_COMP ? controls[activeProfile]->intakeLiftToggle.second : true)) {
+                    pneumatics.intakeLift.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile]->intakeLockToggle.first) 
+                    && (activeProfile == MODE_COMP ? controls[activeProfile]->intakeLockToggle.second : true)) {
+                    pneumatics.intakeLock.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile]->innerClimbArmsToggle)) {
+                    pneumatics.innerClimbArms.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile]->outerClimbArmsToggle)) {
+                    pneumatics.outerClimbArms.toggle();
+                }
+                if (ctrler.get_digital_new_press(controls[activeProfile]->climbPTOToggle)) {
+                    pneumatics.climbPTO.toggle();
+                    if (pneumatics.climbPTO.is_extended()) {
+                        chassis->changeDriveMotors(leftClimbDrive, rightClimbDrive);
+                        chassis->changeDriveMode(controls[activeProfile]->driveMode);
+                        chassis->setBrakeMode(BRAKE_BRAKE);
+                    } else {
+                        chassis->changeDriveMode(controls[MODE_SOLO]->driveMode);
+                        chassis->changeDriveMotors(leftDrive, rightDrive);
+                        chassis->setBrakeMode(BRAKE_COAST);
+                    }
+                }        
+                if(ctrler.get_digital_new_press(controls[activeProfile]->leftPaperToggle)) {
+                    pneumatics.paperLeft.toggle();
+                }
+                if(ctrler.get_digital_new_press(controls[activeProfile]->rightPaperToggle)) {
+                    pneumatics.paperRight.toggle();
+                }  
+
+                // Mode Change //
+                if(ctrler.get_digital(controls[activeProfile]->climbMode_1) && ctrler.get_digital(controls[activeProfile]->climbMode_2)) {
+                    if (pros::competition::is_connected()) {
+                        activeProfile = MODE_COMP;
+                    } else {
+                        activeProfile = MODE_SOLO;
+                    }
+                    updateRobotSystems(activeProfile);
                 }
                 break;
         }
@@ -555,111 +356,3 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
         delay(10);
     }
 }
-
-// void teleOp(Ring::Color ringToKeep) {
-//     int pow, turn, rushState = 0;
-//     actions.setRingColor(ringToKeep);
-//     actions.setAutonControlFlag(false);
-//     actions.setRunColorSort(true);
-//     actions.setArmState(Arm::State::DOWN);
-
-//     while(1) {
-//         // Drive Control
-//         pow = ctrler.get_analog(currentProfile.powerAxis);
-//         turn = ctrler.get_analog(currentProfile.turnAxis)/1.3;
-
-//         leftDrive.move(pow + turn);
-//         rightDrive.move(pow - turn);
-        
-//         // Sorting Control
-//         // actions.runSubsystemFSM();
-
-//         // Intake/Arm Control
-//         actions.setOverride(ctrler.get_digital(currentProfile.shift));
-//         if(actions.getState() != ActionState::SORTING || actions.getOverride()){
-//             //////////////////
-//             /*    INTAKE    */
-//             //////////////////
-//             if(ctrler.get_digital(currentProfile.intakeIn)) {
-//                 actions.setIntakeSpeed(1);
-//             } else if(ctrler.get_digital(currentProfile.intakeOut)) {
-//                 actions.setIntakeSpeed(-1);
-//             } else {
-//                 actions.setIntakeSpeed(0);
-//             }
-//             ///////////////
-//             /*    ARM    */
-//             ///////////////
-//             if(actions.getOverride()){
-//                 if(ctrler.get_digital(currentProfile.backpackCycleStageUp)) {
-//                     actions.setArmSpeed(1);
-//                 } else if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
-//                     actions.setArmSpeed(-1);
-//                 } else {
-//                     actions.setArmSpeed(0);
-//                 }
-//             } else if(currentProfile.incrementBackpack) {
-//                     if(ctrler.get_digital_new_press(currentProfile.backpackCycleStageUp)) {
-//                         if(actions.getArmState()==Arm::State::READY) {
-//                             actions.setArmState(Arm::State::DOWN);
-//                         } else {
-//                             actions.setArmState(Arm::State::READY);
-//                         }
-//                     } else if(ctrler.get_digital_new_press(currentProfile.backpackCycleStageDown)) {
-//                         actions.nextArmState();
-//                     }
-//             } else {
-//                 if(ctrler.get_digital(currentProfile.backpackCycleStageDown)) {
-//                     actions.setArmState(Arm::State::READY);
-//                 } else {
-//                     actions.setArmState(Arm::State::DOWN);
-//                 }
-//             }
-//         }
-//         //////////////////////
-//         /*    Pneumatics    */
-//         //////////////////////
-//         if(ctrler.get_digital_new_press(currentProfile.mogoClampToggle)) {
-//             pneumatics.mogoClamp.toggle();
-//             if(pneumatics.mogoClamp.is_extended()) {
-//                 ctrler.rumble("..");
-//             } else {
-//                 ctrler.rumble("--");
-//             }
-//         }
-
-//         if(ctrler.get_digital_new_press(currentProfile.mogoRushClamp)) {
-//             pneumatics.mogoRushClamp.toggle();
-//         }
-
-//         if(ctrler.get_digital_new_press(currentProfile.mogoRushCycle)) {
-//             if(rushState == 0) {
-//                 pneumatics.mogoRushLeftArm.extend();
-//                 pneumatics.mogoRushRightArm.retract();
-//             } else if (rushState == 1) {
-//                 pneumatics.mogoRushLeftArm.retract();
-//                 pneumatics.mogoRushRightArm.extend();
-//             } else {
-//                 pneumatics.mogoRushLeftArm.retract();
-//                 pneumatics.mogoRushRightArm.retract();
-//             }
-
-//             if(ctrler.get_digital(currentProfile.toggleColorSort)){
-//                 actions.setRunColorSort(!actions.getRunColorSort());
-//                 if(actions.getRunColorSort()){
-//                     ctrler.rumble("..");
-//                 } else {
-//                     ctrler.rumble("--");
-//                 }
-//             }
-
-//             rushState = rushState == 2 ? 0 : rushState + 1;
-//         }
-
-        //Print out data for 
-        // pros::lcd::print(1, "%f", actions.getArmAngle());
-        // pros::lcd::print(2, "%d", actions.getPullbackFlag());
-        // pros::lcd::print(3, "%d", int(actions.getState()));
-        // pros::delay(10);
-//     }
-// }
