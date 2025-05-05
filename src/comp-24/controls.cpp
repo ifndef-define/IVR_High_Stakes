@@ -359,9 +359,9 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                 /// ARM ///
                 if(actions.getOverride()){
                     if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                        actions.setArmSpeed(.65);
+                        actions.setArmSpeed(.7);
                     } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
-                        actions.setArmSpeed(-.65);
+                        actions.setArmSpeed(-.7);
                     } else {
                         actions.setArmSpeed(0);
                     }
@@ -371,8 +371,9 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                         actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
                     } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
                         actions.setArmState(Arm::State::SCORE);
-                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
                     } else {
+                        actions.setArmSpeed(0);
                         actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
                     }
                 }
