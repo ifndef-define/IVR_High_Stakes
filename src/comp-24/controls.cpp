@@ -79,12 +79,12 @@ const driverProfile Climb = {
     .climbMode_1 = BUTTON_UP,
     .climbMode_2 = BUTTON_X,
 
-    .innerClimbArmsToggle = BUTTON_RIGHT,
+    .innerClimbArmsToggle = BUTTON_B,
     .outerClimbArmsToggle = BUTTON_LEFT,
     .leftPaperToggle = BUTTON_R1,
     .rightPaperToggle = BUTTON_R2,
     .climbPTOToggle = BUTTON_DOWN,
-
+    .shift = BUTTON_RIGHT,
     // .toggleColorSort = null // off
 };
 
@@ -130,7 +130,7 @@ void updateRobotSystems(DriveMode newMode) {
             actions.setOverride(false);
             actions.setArmState(Arm::State::DOWN);
             actions.setRunArm(true);
-            actions.setArmClimb(false);
+            actions.setClimbing(false);
             break;
         case MODE_SOLO_CLIMB:
         case MODE_COMP_CLIMB:
@@ -150,7 +150,7 @@ void updateRobotSystems(DriveMode newMode) {
             actions.setRunColorSort(false);
             actions.setRunArm(true);
             actions.setArmState(Arm::State::CLIMB);
-            actions.setArmClimb(true);
+            actions.setClimbing(true);
             break;
     }
 
@@ -221,7 +221,6 @@ void teleOp(Ring::Color ringToKeep) {
                     } else {
                         actions.setIntakeSpeed(0);
                     }
-
                     /// ARM ///
                     if(actions.getOverride()){
                         if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
@@ -234,16 +233,12 @@ void teleOp(Ring::Color ringToKeep) {
                     } else {
                         if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmState(Arm::State::DESCORE);
-                            actions.setArmBrakeMode(BRAKE_HOLD);;
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                             actions.setArmState(Arm::State::READY);
-                            actions.setArmBrakeMode(BRAKE_HOLD);;
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmState(Arm::State::SCORE);
-                            actions.setArmBrakeMode(BRAKE_HOLD);;
                         } else {
                             actions.setArmState(Arm::State::DOWN);
-                            actions.setArmBrakeMode(BRAKE_BRAKE);
                         }
                     }
                 }
@@ -304,13 +299,10 @@ void teleOp(Ring::Color ringToKeep) {
                 } else {
                     if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                         actions.setArmState(Arm::State::CLIMB);
-                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
                     } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                         actions.setArmState(Arm::State::SCORE);
-                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
                     } else {
                         actions.setArmSpeed(0);
-                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
                     }
                 }
 

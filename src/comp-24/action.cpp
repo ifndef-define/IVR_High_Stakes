@@ -18,7 +18,7 @@ void Action::runSubsystemFSM() {
     intakeManager.update();
     
     // Branch based on intakeManager's decision (e.g. eject set true if wrong color)
-    if(!getOverride()){
+    if(!isClimbing){
         if ((intakeManager.getEject() && getRunColorSort()) || getEjectFlag()) {
             currentState = ActionState::SORTING;
         } else if((arm.getAngle() > 50 && arm.getAngle() < 60 && ((int)lastArmState > (int)Arm::State::READY)) || getPullbackFlag()){
@@ -327,12 +327,13 @@ bool Action::getEjectFlag(){
 }
 
 
-void Action::setRunClimb(bool runClimb){
-    this->runClimb = runClimb;
+void Action::setClimbing(bool isClimb){
+    isClimbing = isClimb;
+    arm.setClimb(isClimb);
 }
 
-bool Action::getRunClimb(){
-    return runClimb;
+bool Action::getClimbing(){
+    return isClimbing;
 }
 
 void Action::setRunAutoMogoClamp(bool runAutoMogoClamp){
@@ -345,10 +346,6 @@ void Action::setRunArm(bool runArm){
 
 void Action::setArmBrakeMode(pros::motor_brake_mode_e_t mode){
     arm.setBrakeMode(mode);
-}
-
-void Action::setArmClimb(bool climb){
-    arm.setClimb(climb);
 }
 
 Action actions(0, Ring::Color::NONE, 13); // Initialize Action object with default values
