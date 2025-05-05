@@ -17,6 +17,14 @@ class Arm {
         pros::adi::DigitalIn armLimit;
         int currentLimitState;
 
+        struct PIDconfig {
+            float kP;
+            float kI;
+            float kD;
+        };
+        PIDconfig smallConfig;
+        PIDconfig largeConfig;
+
         float error = 0;
         PID small;
         PID large;
@@ -28,7 +36,7 @@ class Arm {
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             5,   // Angle for DOWN
             29,  // Angle for READY 
-            113,  // Angle for CLIMB
+            80,  // Angle for CLIMB
             215,   // Angle for SCORE
             350  // Angle for DESCORE
         };
@@ -82,4 +90,6 @@ class Arm {
          */
         State getState();
         void setBrakeMode(pros::motor_brake_mode_e_t mode);
+        void setClimb(bool climb, int scale = .65);
+        PID getPID(bool type);
 };

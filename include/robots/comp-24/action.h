@@ -196,6 +196,7 @@ class Action {
         void setRunAutoMogoClamp(bool flag);
         void setRunArm(bool flag);
         void setArmBrakeMode(pros::motor_brake_mode_e mode);
+        void Action::setArmClimb(bool climb);
 };
 
 extern Action actions;

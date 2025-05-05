@@ -26,3 +26,9 @@ void PID::reset() {
     integral = 0;
     prevError = 0;
 }
+
+void PID::setConstants(float kP, float kI, float kD) {
+    this->kP = kP;
+    this->kI = kI;
+    this->kD = kD;
+}
