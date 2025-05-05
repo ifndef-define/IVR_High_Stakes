@@ -12,8 +12,8 @@ pros::adi::Encoder xEnc(1, 2, false);
 DualIMU imu(12, 16, 2.5);
 odom robotOdom(&xEnc, &yEnc, &imu, odom::r_coord(0, 0, 0), 1.25, 1, 0.625, 1);
 
-PID lat_pid(12,0,10,60,0);
-PID turn_pid(3,0,10,60,0);
+PID lat_pid(12,0,10,5,0);
+PID turn_pid(6.15,0.600,53.333,5,0);
 
 Drive *chassis = drive_builder(ctrler)
 	.with_drive_config(Drive::drive_config_e::TANK_c)

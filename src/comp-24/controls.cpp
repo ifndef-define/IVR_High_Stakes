@@ -79,7 +79,7 @@ const driverProfile CompClimbMode = {
     .climbMode_2 = BUTTON_DOWN,
 
     // .intake_wingsToggle = BUTTON_A, // this macros intakeLock
-    // .innerClimbArmsToggle = BUTTON_RIGHT,
+    .innerClimbArmsToggle = BUTTON_RIGHT,
     .outerClimbArmsToggle = BUTTON_LEFT,
     .leftPaperToggle = BUTTON_R1,
     .rightPaperToggle = BUTTON_R2,
@@ -272,7 +272,7 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
     actions.setRunArm(true);
 
     while(1) {
-        // pros::lcd::print(7,"Error: %f",reduce_negative_180_to_180(90 - odom::getPos().theta));
+
         actions.runSubsystemFSM();
 
         switch (activeProfile) {
@@ -328,9 +328,9 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                     }
                 }
                 
-                if(ctrler.get_digital_new_press(controls[activeProfile].rightMogoRushCycle)) {
-                    pneumatics.rightMogoRushArm.toggle();
-                }
+                // if(ctrler.get_digital_new_press(controls[activeProfile].rightMogoRushCycle)) {
+                //     pneumatics.rightMogoRushArm.toggle();
+                // }
                 if(ctrler.get_digital_new_press(controls[activeProfile].leftMogoRushCycle)) {
                     pneumatics.leftMogoRushArm.toggle();
                 }
@@ -353,7 +353,7 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
             case MODE_SOLO_CLIMB:
                 /// ARM ///
                 if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                    actions.setArmSpeed(-.6);
+                    actions.setArmState(Arm::State::CLIMB);
                     actions.setRunArm(true);
                     actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
                 } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
@@ -361,10 +361,10 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                     actions.setRunArm(true);
                     actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
                 } else {
-                    if(actions.getArmAngle() < 80){
+                    if(actions.getArmAngle() < 100){
                         actions.setRunArm(true);
                         actions.setArmState(Arm::State::CLIMB);
-                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
+                        actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
                     } else {
                         actions.setRunArm(false);
                         actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
@@ -466,9 +466,9 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                         pneumatics.leftMogoRushArm.toggle();
                     }
                 } else if (ringToKeep == Ring::Color::BLUE) {
-                    if(ctrler.get_digital_new_press(controls[activeProfile].rightMogoRushCycle)) {
-                        pneumatics.rightMogoRushArm.toggle();
-                    }
+                    // if(ctrler.get_digital_new_press(controls[activeProfile].rightMogoRushCycle)) {
+                    //     pneumatics.rightMogoRushArm.toggle();
+                    // }
                 }
                 if(ctrler.get_digital_new_press(controls[activeProfile].mogoRushTeethToggle)) {
                     pneumatics.mogoRushTeeth.toggle();
@@ -483,7 +483,7 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
             case MODE_COMP_CLIMB:
                 /// ARM ///
                 if(ctrler.get_digital(controls[activeProfile].backpackCycleStageUp)) {
-                    actions.setArmSpeed(-.6);
+                    actions.setArmState(Arm::State::CLIMB);
                     actions.setRunArm(true);
                     actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
                 } else if(ctrler.get_digital(controls[activeProfile].backpackCycleStageDown)) {
@@ -491,7 +491,7 @@ void teleOp(Ring::Color ringToKeep, bool forceCompMode) {
                     actions.setRunArm(true);
                     actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
                 } else {
-                    if(actions.getArmAngle() < 80){
+                    if(actions.getArmAngle() < 100){
                         actions.setRunArm(true);
                         actions.setArmState(Arm::State::CLIMB);
                         actions.setArmBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
