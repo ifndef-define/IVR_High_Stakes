@@ -2,24 +2,105 @@
 
 void auton(Ring::Color ringToKeep) {
     //Add auton code here
-    if (ui::getCurrentAuto() == 0) {
+    // if (ui::getCurrentAuto() == 0) {
         redAuton1();
-    } else if (ui::getCurrentAuto() == 1) {
-        redAuton2();
-    } else if (ui::getCurrentAuto() == 2) {
-        blueAuton1();
-    } else if (ui::getCurrentAuto() == 3) {
-        blueAuton2();
-    } else {
-        // No auton
-        ctrler.rumble("--");
-    }
+    // } else if (ui::getCurrentAuto() == 1) {
+    //     redAuton2();
+    // } else if (ui::getCurrentAuto() == 2) {
+    //     blueAuton1();
+    // } else if (ui::getCurrentAuto() == 3) {
+    //     blueAuton2();
+    // } else {
+    //     // No auton
+    //     ctrler.rumble("--");
+    // }
 }
 
+/*
+Middle Mogo Auton
+==========================================
+- MogoClamp down
+- translate by to the middle mogo (async) (Move to pose?)
+- mogoRush down
+- wait til translate by is done
+- translate back to ladder ring (async)
+- release goal by ladder
+- arm to ready
+- mogoClamp up
+- intake down
+- intake run to wallstake ring
+- wait for translate to finish
+- swing to clamp alance goal (async)
+- autoclamp alliance goal
+- intake stop
+- mogoRush up
+- wait for swing to finish
+- turn to face alliance stake
+- arm to score
+- intake red ring to goal
+- translate to stake
+- score aliance
+- intake off
+- back up to goal (async)
+- arm down
+- wait for backup to finish
+- turn to face inner ring stack
+- translate to inner ring stack (async)
+- intake lift up and running
+- wait for translate to finish
+- drop intake down
+- translate a bit back
+- translate to netural stack
+- intake off
+- turn to face netural stack
+- translate to netural stack (async)
+- intake on
+- intake bottom ring
+- back up to inner ring stack
+- swing to outer ring stack
+- translate a little past the outer ring stack
+- turn to positive corner
+- translate to positive corner 
+- cycler through the rings x4
+- back out a little bit
+- 180
+- back into the corner
+- drop mogo down
+- translate halfway to the ladder
+- 180
+- back into mogorushed goal
+- end auto
+*/
 void redAuton1() {
+    // ctrler.rumble(".");
     // Add red auton 1 code here
+
+    // Reset Pos
+    robotOdom->setPos({95.625,20.25,90});
+    // Release zip
     pneumatics.mogoClamp.extend(); // DO NOT REMOVE
-    ctrler.rumble(".");
+    // Move to middle mogo
+    chassis->setBrakeMode(BRAKE_COAST);
+    chassis->moveToPose(81.5, 52, 999, false, 1100, true);
+    pneumatics.mogoRushTeeth.extend();
+    pneumatics.leftMogoRushArm.extend();
+    i_waitUntil(!chassis->isInMotion());
+    delay(250);
+    // Move back to ladder ring
+    chassis->translateBy(-25, 1500, false);
+    pneumatics.mogoRushTeeth.retract();
+    actions.setArmState(Arm::State::READY);
+    actions.setIntakeSpeed(1);
+    // chassis->turnToAngle(27, 1200, false);
+    chassis->swingToAngle(0, Drive::DriveSide::LEFT, 1200, false);
+    actions.setIntakeSpeed(0);
+    pneumatics.leftMogoRushArm.retract();
+    pneumatics.mogoClamp.retract();
+    chassis->translateBy(-28.5, 1100, false);
+    pneumatics.mogoClamp.extend();
+    // chassis->turnToAngle(-90, 1000, false);
+    chassis->swingToAngle(-90, Drive::DriveSide::RIGHT, 1000, false);
+    
 }
 
 void redAuton2() {

@@ -22,7 +22,7 @@ const double odom::WHEEL_CIRCUMFERENCE = odom::WHEEL_DIAMETER * M_PI;
 double odom::X_DISPLACEMENT_CONSTANT = WHEEL_CIRCUMFERENCE / TICKS_PER_ROTATION;
 double odom::Y_DISPLACEMENT_CONSTANT = WHEEL_CIRCUMFERENCE / TICKS_PER_ROTATION;
 // const double odom::TICKS_PER_INCH = odom::TICKS_PER_ROTATION / odom::WHEEL_CIRCUMFERENCE;
-bool odom::debugMode = false;
+bool odom::debugMode = true;
 bool odom::isThread = false;
 pros::Task* odom::odom_task = nullptr;
 
@@ -143,8 +143,8 @@ odom::r_coord odom::getPos() {
 }
 
 void odom::setPos(r_coord pos) {
-    currentPos = pos;
-    lastPos = pos;
+    currentPos = {pos.x, pos.y, convert::degToRad(pos.theta)};
+    lastPos = {pos.x, pos.y, convert::degToRad(pos.theta)};
     currentEnc = {0, 0, 0};
     lastEnc = {0, 0, 0};
     deltaEnc = {0, 0, 0};

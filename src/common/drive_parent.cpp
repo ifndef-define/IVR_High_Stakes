@@ -100,10 +100,10 @@ void Drive::endMotion() {
     multiDrive_mutex.give();
 }
 
-void Drive::cancelMotion() {
-    motionInProgress = false;
-    pros::delay(10);
-}
+// void Drive::cancelMotion() {
+//     motionInProgress = false;
+//     pros::delay(10);
+// }
 
 void Drive::cancelAllMotions() {
     motionInProgress = false;
@@ -134,7 +134,7 @@ void Drive::turnToAngle(double angle, int timeout, bool async, double turn_max_v
     double output = 9;
     std::pair<double, double> rpm = getRPM();
 
-    while(motionInProgress && !isDone(start_time, timeout) && ((rpm.first+rpm.second)/2) < 10) {
+    while(motionInProgress && !isDone(start_time, timeout)) {
         if(abs(output) < 5 && abs(turn_error) < turn_settle_error) 
             break;
 
@@ -279,8 +279,8 @@ void Drive::translateBy(double distance, int timeout, bool async, double drive_s
         prev_drive_cmd = drive_cmd;
         heading_output = clamp(heading_output, -tb_maintain_angle_voltage, tb_maintain_angle_voltage);
                     if (debug_translateBy) { lcd::print(4, "DO: %f | HO: %f", drive_output, heading_output); }
-        double left_side_output = drive_output - heading_output;
-        double right_side_output = drive_output + heading_output;
+        double left_side_output = drive_cmd - heading_output;
+        double right_side_output = drive_cmd + heading_output;
         left_side_output = clamp(left_side_output, -drive_max_voltage, drive_max_voltage);
         right_side_output = clamp(right_side_output, -drive_max_voltage, drive_max_voltage);
                     if (debug_translateBy) { lcd::print(5, "L: %f | R: %f", left_side_output, right_side_output); }
@@ -304,7 +304,7 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
     requestMotionStart();
     if (!motionInProgress) return;
     if(async) {
-        pros::Task task([&](){ moveToPose(x, y, theta, reverse, timeout, false, drive_settle_error, turn_settle_error, lead, drive_min_voltage, drive_max_voltage, heading_max_voltage, position_threshold); });
+        pros::Task task([&](){ moveToPose(x, y, theta, reverse, timeout, false, drive_min_voltage, drive_max_voltage, heading_max_voltage, drive_settle_error, turn_settle_error, lead, position_threshold); });
         endMotion();
         pros::delay(10); // delay to give the task time to start
         return;
@@ -326,7 +326,7 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
     double distance = 0;
     
     // Motion tuning parameters
-    double first_turn_end = 0.55;
+    double first_turn_end = 0.37;
     double second_turn_start = 0.75;
     double dt, previous_time, v_des, drive_ff_output, drive_cmd, prev_drive_cmd, progress = 0;
     double carrotX = 0, carrotY = 0;
@@ -362,10 +362,10 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
             carrotX = curX + cos(to_rad(straight_angle)) * lead;
             carrotY = curY + sin(to_rad(straight_angle)) * lead;
             heading1_Error = reduce_negative_180_to_180(to_deg(atan2(carrotY - curY, carrotX - curX)) - odom_->getPos().theta);
-                    if (debug_moveToPose) { lcd::print(7, "Mode: Carrot"); }
+                    if (debug_moveToPose) { lcd::print(1, "Mode: Carrot"); }
         } else { // After reaching the threshold: focus on the target position headin
             heading1_Error = reduce_negative_180_to_180(straight_angle - odom_->getPos().theta);
-                    if (debug_moveToPose) { lcd::print(7, "Mode: Target"); }
+                    if (debug_moveToPose) { lcd::print(1, "Mode: Target"); }
         }
         
         // Update heading2_Error if ending angle is provided
@@ -430,6 +430,7 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
         left_output = clamp(left_output, -drive_max_voltage, drive_max_voltage);
         right_output = clamp(right_output, -drive_max_voltage, drive_max_voltage);
                     if (debug_moveToPose) { lcd::print(6, "DOut: %.1f, HOut: %.1f", drive_output, heading_output); }
+                    if (debug_moveToPose) { lcd::print(7, "L: %.1f | R: %.1f", left_output, right_output); }
 
 
         // Move robot

@@ -205,7 +205,9 @@ class Drive {
         // [[deprecated("ONLY FOR VEX HIGH STAKES")]]
         static void changeDriveMotors(motor_g &motor_g_1, motor_g &motor_g_2);
 
-        static bool inMotion() { return motionInProgress; }
+        // static bool inMotion() { return motionInProgress; }
+        static void endMotion();
+        static bool isInMotion();
 
 
     private:
@@ -302,13 +304,10 @@ class Drive {
 
         static void requestMotionStart();
         
-        static void endMotion();
-        
-        static void cancelMotion();
+        // static void cancelMotion();
         
         static void cancelAllMotions();
 
-        static bool isInMotion();
 
     // Allow drive_builder to access private members
     friend class drive_builder;

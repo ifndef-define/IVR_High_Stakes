@@ -4,6 +4,7 @@
 #include "robots/comp-15/action.h"
 
 Ring::Color ringToKeep = Ring::Color::NONE;
+#define USE_LLEMU
 
 void initialize() {
 #ifdef USE_LLEMU
@@ -11,7 +12,7 @@ void initialize() {
 	imu.reset(true);
 #else
 	imu.reset(false);
-	ui::init("Comp-24");
+	ui::init("Comp-15");
 #endif
 	
 	actions.setRingColor(ringToKeep);
@@ -24,13 +25,13 @@ void competition_initialize() {}
 
 void autonomous() {
 	chassis->setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
-	if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
-		ringToKeep = Ring::Color::RED;
-	} else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
-		ringToKeep = Ring::Color::BLUE;
-	} else {
-		ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
-	}
+	// if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
+	// 	ringToKeep = Ring::Color::RED;
+	// } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
+	// 	ringToKeep = Ring::Color::BLUE;
+	// } else {
+	// 	ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
+	// }
 	auton(ringToKeep);
 }
 
@@ -46,6 +47,6 @@ void opcontrol() {
 	// chassis->moveToPose(25, 25, 0, 1000000, 0, 80, 100, 0.3, 0.3, false);
 	// chassis->moveByVector(25, -25, 100);
 	// delay(3000);
-
+	autonomous();
 	teleOp(ringToKeep);
 }
