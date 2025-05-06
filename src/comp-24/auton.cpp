@@ -70,9 +70,13 @@ void redAuton1() {
     pneumatics.mogoClamp.retract(); // DO NOT REMOVE
     delay(500);
     // chassis->swingToAngle(280, Drive::DriveSide::LEFT, 2500, false, 127, .5);
-    chassis->turnToAngle(280, 2500, false, 127, .5);
-    chassis->translateBy(-24, 2500, false);
+    chassis->turnToAngle(280, 2500, false, 127, 1);
+    chassis->translateBy(-24, 2500, true);
+    delay(650);
     pneumatics.mogoClamp.extend(); // DO NOT REMOVE
+    delay(650);
+    chassis->turnToAngle(165, 2500, false, 127, 1);
+    pneumatics.intakeLift.extend();
 }
 
 
