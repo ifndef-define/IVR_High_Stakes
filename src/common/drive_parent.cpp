@@ -111,7 +111,7 @@ void Drive::cancelAllMotions() {
     pros::delay(10);
 }
 
-bool Drive::inMotion() { return motionInProgress; }
+bool Drive::isInMotion() { return motionInProgress; }
 
 void Drive::moveAtRPM(int rpm) {
     left_side_->move_velocity(rpm);
