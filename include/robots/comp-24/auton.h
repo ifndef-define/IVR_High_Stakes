@@ -3,5 +3,7 @@
 
 void auton(Ring::Color ringToKeep);
 
-void redAuton();
-void blueAuton();
+void redAuton1();
+void blueAuton1();
+void redAuton2();
+void blueAuton2();

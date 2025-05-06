@@ -111,7 +111,7 @@ void Drive::cancelAllMotions() {
     pros::delay(10);
 }
 
-bool Drive::isInMotion() { return motionInProgress; }
+bool Drive::inMotion() { return motionInProgress; }
 
 void Drive::moveAtRPM(int rpm) {
     left_side_->move_velocity(rpm);
@@ -178,7 +178,7 @@ void Drive::swingToAngle(double angle, Drive::DriveSide lockedSide, int timeout,
     std::pair<double, double> rpm = getRPM();
     
     while(motionInProgress && !isDone(start_time, timeout)) {
-        if(abs(output) < 5 && abs(heading_error) < turn_settle_error && ((rpm.first+rpm.second)/2) < 10) 
+        if(abs(output) < 10 && abs(heading_error) < turn_settle_error && ((rpm.first+rpm.second)/2) < 10) 
             break;
 
         heading_error = reduce_negative_180_to_180(angle - odom::getPos().theta);
@@ -227,11 +227,11 @@ const double tb_ignore_slew = 1.5;
 const double tb_maintain_angle_voltage = 60;
 const double tb_turn_settle_error = 0.25;
 const bool debug_translateBy = false;
-void Drive::translateBy(double distance, int timeout, bool async, double drive_settle_error, double drive_max_voltage) {
+void Drive::translateBy(double distance, int timeout, bool async, double drive_min_voltage, double drive_max_voltage, double drive_settle_error, double turn_settle_error) {
     requestMotionStart();
     if (!motionInProgress) return;
     if(async) {
-        pros::Task task([&](){ translateBy(distance, timeout, false, drive_settle_error, drive_max_voltage); });
+        pros::Task task([&](){ translateBy(distance, timeout, false, drive_min_voltage, drive_max_voltage, drive_settle_error, turn_settle_error); });
         endMotion();
         pros::delay(10); // delay to give the task time to start
         return;
@@ -244,15 +244,14 @@ void Drive::translateBy(double distance, int timeout, bool async, double drive_s
     double start_position = odom_->getPos().x * cos(to_rad(initial_heading)) + 
                             odom_->getPos().y * sin(to_rad(initial_heading));
                 if (debug_translateBy) { lcd::print(1, "start_pos: %f", start_position); }
-    float drive_output = 6;
-    float heading_output = 6;
+    float drive_output = 0;
+    float heading_output = 0;
     float cur_position = 0;
     std::pair<double, double> rpm = getRPM();
     double dt, previous_time, v_des, drive_ff_output, drive_cmd, prev_drive_cmd = 0;
     
     while (motionInProgress && !isDone(start_time, timeout)) {
-        if(abs(drive_output) < 5 && abs(heading_error) < tb_turn_settle_error && 
-            abs(drive_error) < drive_settle_error && ((rpm.first+rpm.second)/2) < 10) {
+        if(abs(drive_output) < 13 /*&& abs(heading_error) < turn_settle_error*/ && abs(drive_error) < drive_settle_error) {
             break;
         }
                     if (debug_translateBy) { lcd::print(0, "X: %.2f | Y: %.2f | T: %.2f", odom_->getPos().x, odom_->getPos().y, odom_->getPos().theta); }
@@ -276,9 +275,15 @@ void Drive::translateBy(double distance, int timeout, bool async, double drive_s
         } else {
             drive_cmd = drive_output;
         }
+        
+        // Apply minimum voltage ONLY when far from target (> 2.0 units)
+        if (abs(drive_error) > 6 && abs(drive_cmd) > 0) {
+            drive_cmd = copysign(std::max(abs(drive_cmd), drive_min_voltage), drive_cmd);
+        }
+        
         prev_drive_cmd = drive_cmd;
         heading_output = clamp(heading_output, -tb_maintain_angle_voltage, tb_maintain_angle_voltage);
-                    if (debug_translateBy) { lcd::print(4, "DO: %f | HO: %f", drive_output, heading_output); }
+                    if (debug_translateBy) { lcd::print(4, "DO: %f | HO: %f", drive_cmd, heading_output); }
         double left_side_output = drive_cmd - heading_output;
         double right_side_output = drive_cmd + heading_output;
         left_side_output = clamp(left_side_output, -drive_max_voltage, drive_max_voltage);
@@ -321,8 +326,8 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
     double x_error = x - odom_->getPos().x;
     double y_error = y - odom_->getPos().y;
     double x_pid, y_pid = 0;
-    double drive_output = 6;
-    double heading_output = 6;
+    double drive_output = 0;
+    double heading_output = 0;
     double distance = 0;
     
     // Motion tuning parameters
@@ -332,7 +337,7 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
     double carrotX = 0, carrotY = 0;
     bool in_final_angle_phase = false;
     while (motionInProgress && !isDone(start_time, timeout)) {
-        if (abs(drive_output) < 5 && abs(heading1_Error) < turn_settle_error && abs(target_distance) < drive_settle_error) {
+        if (abs(drive_output) < 10 && abs(heading_output) < 10 && abs(heading1_Error) < turn_settle_error && abs(target_distance) < drive_settle_error) {
             break;
         }
                     if (debug_moveToPose) { lcd::print(0, "X: %.2f, Y: %.2f, T: %.2f", odom_->getPos().x, odom_->getPos().y, odom_->getPos().theta); }

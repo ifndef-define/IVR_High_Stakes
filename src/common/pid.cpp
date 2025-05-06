@@ -2,9 +2,7 @@
 #include "common/util.hpp"
 
 PID::PID(float kP, float kI, float kD, float windupRange, bool signFlipReset)
-    : kP(kP),
-      kI(kI),
-      kD(kD),
+    : kP(kP), kI(kI), kD(kD),
       windupRange(windupRange),
       signFlipReset(signFlipReset) {}
 

@@ -138,7 +138,7 @@ class Drive {
          * @param timeout Timeout in milliseconds
          * @param async If true, will run in a separate thread
          */
-        static void translateBy(double distance, int timeout=5000, bool async=true, double drive_settle_error = .25, double drive_max_voltage = 127);
+        static void translateBy(double distance, int timeout=5000, bool async=true, double drive_min_voltage = 0, double drive_max_voltage = 127, double drive_settle_error = .25, double turn_settle_error = .25);
 
         /**
          * @brief Turns the robot to a target pose using PID.
@@ -208,7 +208,6 @@ class Drive {
         // static bool inMotion() { return motionInProgress; }
         static void endMotion();
         static bool isInMotion();
-
 
     private:
         Drive() = default;
