@@ -119,11 +119,11 @@ void Drive::moveAtRPM(int rpm) {
 }
 
 const bool debug_turnToAngle = false;
-void Drive::turnToAngle(double angle, int timeout, double turn_max_voltage, double turn_settle_error, bool async) {
+void Drive::turnToAngle(double angle, int timeout, bool async, double turn_max_voltage, double turn_settle_error) {
     requestMotionStart();
     if (!motionInProgress) return;
     if(async) {
-        pros::Task task([&](){ turnToAngle(angle, timeout, turn_max_voltage, turn_settle_error, false); });
+        pros::Task task([&](){ turnToAngle(angle, timeout, false, turn_max_voltage, turn_settle_error); });
         endMotion();
         pros::delay(10); // delay to give the task time to start
         return;
@@ -155,11 +155,11 @@ void Drive::turnToAngle(double angle, int timeout, double turn_max_voltage, doub
 }
 
 const bool debug_swingToAngle = false;
-void Drive::swingToAngle(double angle, Drive::DriveSide lockedSide, int timeout, double turn_max_voltage, double turn_settle_error, bool async) {
+void Drive::swingToAngle(double angle, Drive::DriveSide lockedSide, int timeout, bool async, double turn_max_voltage, double turn_settle_error) {
     requestMotionStart();
     if (!motionInProgress) return;
     if(async) {
-        pros::Task task([&](){ swingToAngle(angle, lockedSide, timeout, turn_max_voltage, turn_settle_error, false); });
+        pros::Task task([&](){ swingToAngle(angle, lockedSide, timeout, false, turn_max_voltage, turn_settle_error); });
         endMotion();
         pros::delay(10); // delay to give the task time to start
         return;
@@ -210,12 +210,12 @@ void Drive::swingToAngle(double angle, Drive::DriveSide lockedSide, int timeout,
     endMotion();
 }
 
-void Drive::turnToPoint(double x, double y, int timeout, double turn_max_voltage, double turn_settle_error, bool async) {
-    turnToAngle(to_deg(atan2(x-odom_->getPos().x, y-odom_->getPos().y)), timeout, turn_max_voltage, turn_settle_error, async);
+void Drive::turnToPoint(double x, double y, int timeout, bool async, double turn_max_voltage, double turn_settle_error) {
+    turnToAngle(to_deg(atan2(x-odom_->getPos().x, y-odom_->getPos().y)), timeout, async, turn_max_voltage, turn_settle_error);
 }
 
-void Drive::swingToPoint(double x, double y, Drive::DriveSide lockedSide, int timeout, double turn_max_voltage, double turn_settle_error, bool async) {
-    swingToAngle(to_deg(atan2(x-odom_->getPos().x, y-odom_->getPos().y)), lockedSide, timeout, turn_max_voltage, turn_settle_error, async);
+void Drive::swingToPoint(double x, double y, Drive::DriveSide lockedSide, int timeout, bool async, double turn_max_voltage, double turn_settle_error) {
+    swingToAngle(to_deg(atan2(x-odom_->getPos().x, y-odom_->getPos().y)), lockedSide, timeout, async, turn_max_voltage, turn_settle_error);
 }
 
 const double tb_kV = 0.15;
@@ -227,11 +227,11 @@ const double tb_ignore_slew = 1.5;
 const double tb_maintain_angle_voltage = 60;
 const double tb_turn_settle_error = 0.25;
 const bool debug_translateBy = false;
-void Drive::translateBy(double distance, int timeout, double drive_settle_error, double drive_max_voltage, bool async) {
+void Drive::translateBy(double distance, int timeout, bool async, double drive_settle_error, double drive_max_voltage) {
     requestMotionStart();
     if (!motionInProgress) return;
     if(async) {
-        pros::Task task([&](){ translateBy(distance, timeout, drive_settle_error, drive_max_voltage, false); });
+        pros::Task task([&](){ translateBy(distance, timeout, false, drive_settle_error, drive_max_voltage); });
         endMotion();
         pros::delay(10); // delay to give the task time to start
         return;
@@ -300,11 +300,11 @@ const double mp_mVps_increase = 35;
 const double mp_ignore_slew = 1.5;
 const double end_angle_voltage = 60;
 const bool debug_moveToPose = false;
-void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeout, double drive_min_voltage, double drive_max_voltage, double heading_max_voltage, double drive_settle_error, double turn_settle_error, double lead, double position_threshold, bool async) {
+void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeout, bool async, double drive_min_voltage, double drive_max_voltage, double heading_max_voltage, double drive_settle_error, double turn_settle_error, double lead, double position_threshold) {
     requestMotionStart();
     if (!motionInProgress) return;
     if(async) {
-        pros::Task task([&](){ moveToPose(x, y, theta, timeout, reverse, drive_settle_error, turn_settle_error, lead, drive_min_voltage, drive_max_voltage, heading_max_voltage, position_threshold, false); });
+        pros::Task task([&](){ moveToPose(x, y, theta, reverse, timeout, false, drive_settle_error, turn_settle_error, lead, drive_min_voltage, drive_max_voltage, heading_max_voltage, position_threshold); });
         endMotion();
         pros::delay(10); // delay to give the task time to start
         return;
