@@ -28,7 +28,7 @@ class Action {
         bool ejectFlag = false;
         bool runColorSort = true;
         bool autoResumeFlag = false;
-        bool runClimb = false;
+        bool isClimbing = false;
         bool runAutoMogoClamp = false;
         bool ringDetected = false;
         bool runArm = false;
@@ -191,12 +191,11 @@ class Action {
          */
         bool getRunColorSort();
 
-        void setRunClimb(bool flag);
-        bool getRunClimb();
+        void setClimbing(bool flag);
+        bool getClimbing();
         void setRunAutoMogoClamp(bool flag);
         void setRunArm(bool flag);
         void setArmBrakeMode(pros::motor_brake_mode_e mode);
-        void Action::setArmClimb(bool climb);
 };
 
 extern Action actions;

@@ -206,10 +206,10 @@ void teleOp(Ring::Color ringToKeep) {
                         updateRobotSystems(activeProfile);
                     }
                 }
+                
+                /// INTAKE ///
                 actions.setOverride(ctrler.get_digital(controls[activeProfile]->shift));
-
                 if(actions.getActionState() == ActionState::IDLE || actions.getOverride()){
-                    /// INTAKE ///
                     if(ctrler.get_digital(controls[activeProfile]->intakeIn)) {
                         actions.setIntakeSpeed(1);
                     } else if(ctrler.get_digital(controls[activeProfile]->intakeOut)) {

@@ -42,12 +42,12 @@ const driverProfile Drive = {
     .mogoClampToggle = {BUTTON_Y, true},
     .rightMogoRushCycle = {BUTTON_A, true},
     .leftMogoRushCycle = {BUTTON_A, true},
-    .mogoRushTeethToggle = {BUTTON_UP, true},
+    .mogoRushTeethToggle = {BUTTON_B, true},
     .intakeLockToggle = {BUTTON_LEFT,false},  // retracted
     .intakeLiftToggle = {BUTTON_DOWN,false},  // dropped
 
-    .climbMode_1 = BUTTON_B,
-    .climbMode_2 = BUTTON_DOWN,
+    .climbMode_1 = BUTTON_UP,
+    .climbMode_2 = BUTTON_X,
 
     // .innerClimbArmsToggle = null, // stowed
     // .outerClimbArmsToggle = null, // stowed
@@ -73,7 +73,7 @@ const driverProfile Climb = {
     // .rightMogoRushCycle = null, // stowed
     // .leftMogoRushCycle = null, // stowed
     // .mogoRushTeethToggle = null, // disabled
-    // .intakeLiftToggle = null // dropped
+    // .intakeLiftToggle = null // dropped automatically
     .intakeLockToggle = {BUTTON_A, false}, // automatic
 
     .climbMode_1 = BUTTON_UP,
@@ -126,7 +126,7 @@ void updateRobotSystems(DriveMode newMode) {
             chassis->changeDriveMode(controls[activeProfile]->driveMode);
             chassis->changeDriveMotors(leftDrive, rightDrive);
             chassis->setBrakeMode(BRAKE_COAST);
-            actions.setRunColorSort(newMode == (MODE_COMP ? controls[activeProfile]->defaultColorSort : true));
+            actions.setRunColorSort(newMode == ((MODE_COMP || MODE_SOLO) ? controls[activeProfile]->defaultColorSort : true));
             actions.setOverride(false);
             actions.setArmState(Arm::State::DOWN);
             actions.setRunArm(true);
@@ -145,7 +145,7 @@ void updateRobotSystems(DriveMode newMode) {
             pneumatics.rightMogoRushArm.retract();
             pneumatics.mogoRushTeeth.retract();
             pneumatics.innerClimbArms.extend();
-            // pneumatics.intakeLift.extend(); // gone for climb
+            pneumatics.intakeLift.extend(); // gone for climb
             pneumatics.intakeLock.retract();
             actions.setRunColorSort(false);
             actions.setRunArm(true);
