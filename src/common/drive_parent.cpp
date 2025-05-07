@@ -322,7 +322,7 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
     double initial_distance = hypot(x - odom_->getPos().x, y - odom_->getPos().y);
     double target_distance = initial_distance;
     double heading1_Error = reduce_negative_180_to_180(straight_angle - odom_->getPos().theta);
-    double heading2_Error = reduce_negative_180_to_180(theta+180 - odom_->getPos().theta); // Final heading error
+    double heading2_Error = reduce_negative_180_to_180(theta - odom_->getPos().theta); // Final heading error
     double x_error = x - odom_->getPos().x;
     double y_error = y - odom_->getPos().y;
     double x_pid, y_pid = 0;
@@ -375,13 +375,13 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
         
         // Update heading2_Error if ending angle is provided
         if (theta != 999) {
-            heading2_Error = reduce_negative_180_to_180(theta+180 - odom_->getPos().theta);
+            heading2_Error = reduce_negative_180_to_180(theta - odom_->getPos().theta);
         } else {
             heading2_Error = heading1_Error;
         }
 
                     if (debug_moveToPose) { lcd::print(3, "XErr: %.2f, YErr: %.2f, HErr: %.1f", x_error, y_error, in_final_angle_phase ? heading2_Error : heading1_Error); }
-                    if (debug_moveToPose) { lcd::print(4, "SAng: %.1f, FAng: %.1f", straight_angle, reverse ? theta + 180 : theta); }
+                    if (debug_moveToPose) { lcd::print(4, "SAng: %.1f, FAng: %.1f", straight_angle, theta); }
         
         // calculate drive and heading outputs
         x_pid = drive_pid->update(x_error);
