@@ -22,7 +22,7 @@ const double odom::WHEEL_CIRCUMFERENCE = odom::WHEEL_DIAMETER * M_PI;
 double odom::X_DISPLACEMENT_CONSTANT = WHEEL_CIRCUMFERENCE / TICKS_PER_ROTATION;
 double odom::Y_DISPLACEMENT_CONSTANT = WHEEL_CIRCUMFERENCE / TICKS_PER_ROTATION;
 // const double odom::TICKS_PER_INCH = odom::TICKS_PER_ROTATION / odom::WHEEL_CIRCUMFERENCE;
-bool odom::debugMode = true;
+bool odom::debugMode = false;
 bool odom::isThread = false;
 pros::Task* odom::odom_task = nullptr;
 

@@ -3,7 +3,7 @@
 PneumaticsGroup::PneumaticsGroup(): 
     mogoClamp(pros::adi::ext_adi_port_pair_t(9, 6), false),
     leftMogoRushArm(pros::adi::ext_adi_port_pair_t(9, 7), false),
-    mogoRushTeeth(pros::adi::ext_adi_port_pair_t(9, 3), false),
+    mogoRushTeeth(pros::adi::ext_adi_port_pair_t(9, 3), false, true),
     intakeLift(7, false),
     rightMogoRushArm(pros::adi::ext_adi_port_pair_t(9, 8), false),
     innerClimbArms(8, false),

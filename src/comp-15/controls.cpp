@@ -126,6 +126,7 @@ void updateRobotSystems(DriveMode newMode) {
             actions.setOverride(false);
             actions.setArmState(Arm::State::DOWN);
             actions.setRunArm(true);
+            actions.setClimbing(false);
             break;
         case MODE_SOLO_CLIMB:
         case MODE_COMP_CLIMB:
@@ -145,6 +146,7 @@ void updateRobotSystems(DriveMode newMode) {
             actions.setOverride(true);
             actions.setArmState(Arm::State::DOWN);
             actions.setRunArm(false);
+            actions.setClimbing(true);
             break;
     }
 
