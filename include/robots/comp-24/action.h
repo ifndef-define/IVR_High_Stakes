@@ -196,6 +196,8 @@ class Action {
         void setRunAutoMogoClamp(bool flag);
         void setRunArm(bool flag);
         void setArmBrakeMode(pros::motor_brake_mode_e mode);
+
+        Ring::Color getCurRing();
 };
 
 extern Action actions;

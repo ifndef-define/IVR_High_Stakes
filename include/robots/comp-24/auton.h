@@ -1,5 +1,6 @@
 #pragma once
 #include "robots/comp-24/robot.hpp"
+#include "robots/comp-24/action.h"
 
 void auton(Ring::Color ringToKeep);
 

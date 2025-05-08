@@ -79,7 +79,7 @@ const driverProfile Climb = {
     .climbMode_1 = BUTTON_UP,
     .climbMode_2 = BUTTON_X,
 
-    .innerClimbArmsToggle = BUTTON_B,
+    .innerClimbArmsToggle = BUTTON_Y,
     .outerClimbArmsToggle = BUTTON_LEFT,
     .leftPaperToggle = BUTTON_R1,
     .rightPaperToggle = BUTTON_R2,
@@ -135,9 +135,9 @@ void updateRobotSystems(DriveMode newMode) {
         case MODE_SOLO_CLIMB:
         case MODE_COMP_CLIMB:
             if (newMode == MODE_COMP) {
-                ctrler.print(0, 0, "Comp - Drive");
+                ctrler.print(0, 0, "Comp - Climb");
             } else {
-                ctrler.print(0, 0, "Solo - Drive");
+                ctrler.print(0, 0, "Solo - Climb");
             }
             delay(100);
             pneumatics.mogoClamp.extend();
@@ -180,18 +180,18 @@ void teleOp(Ring::Color ringToKeep) {
 
         switch (activeProfile) {
             case MODE_SOLO:
-                if (ui::getRunColorSort()) {
-                    actions.setRunColorSort(true);
-                } else {
-                    actions.setRunColorSort(false);
-                }
+                // if (ui::getRunColorSort()) {
+                //     actions.setRunColorSort(true);
+                // } else {
+                //     actions.setRunColorSort(false);
+                // }
 
-                if (ui::getRingColor()) {
-                    ringToKeep = Ring::Color::BLUE;
-                } else {
-                    ringToKeep = Ring::Color::RED;
-                }
-                actions.setRingColor(ringToKeep);
+                // if (ui::getRingColor()) {
+                //     ringToKeep = Ring::Color::BLUE;
+                // } else {
+                //     ringToKeep = Ring::Color::RED;
+                // }
+                // actions.setRingColor(ringToKeep);
 
             case MODE_COMP:
                 if (pros::competition::is_connected()) {

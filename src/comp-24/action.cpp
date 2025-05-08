@@ -348,4 +348,8 @@ void Action::setArmBrakeMode(pros::motor_brake_mode_e_t mode){
     arm.setBrakeMode(mode);
 }
 
+Ring::Color Action::getCurRing() {
+    return intakeManager.getCurRing();
+}
+
 Action actions(0, Ring::Color::NONE, 13); // Initialize Action object with default values

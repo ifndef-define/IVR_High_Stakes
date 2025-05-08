@@ -14,3 +14,4 @@ extern Drive *chassis;
 
 extern odom robotOdom;
 extern DualIMU imu;
+extern pros::IMU imu2;
