@@ -13,15 +13,16 @@ Action::Action(bool isAuton, Ring::Color ringToKeep, int mogoSensorPort): arm(2.
     mogoSensor_ = new pros::Distance(mogoSensorPort);
 }
 
+
 void Action::runSubsystemFSM() {
     // Update intake manager FSM and check ring color
     intakeManager.update();
     
     // Branch based on intakeManager's decision (e.g. eject set true if wrong color)
-    if(!getOverride()){
+    if(!isClimbing){
         if ((intakeManager.getEject() && getRunColorSort()) || getEjectFlag()) {
             currentState = ActionState::SORTING;
-        } else if((arm.getAngle() > 50 && arm.getAngle() < 60 && ((int)lastArmState > (int)Arm::State::READY)) || getPullbackFlag()){
+        } else if((arm.getAngle() > 35 && arm.getAngle() < 45 && ((int)lastArmState > (int)Arm::State::READY)) || getPullbackFlag()){
             currentState = ActionState::PULLBACK;
         } else {
             currentState = ActionState::IDLE;
@@ -327,12 +328,13 @@ bool Action::getEjectFlag(){
 }
 
 
-void Action::setRunClimb(bool runClimb){
-    this->runClimb = runClimb;
+void Action::setClimbing(bool isClimb){
+    isClimbing = isClimb;
+    arm.setClimb(isClimb);
 }
 
-bool Action::getRunClimb(){
-    return runClimb;
+bool Action::getClimbing(){
+    return isClimbing;
 }
 
 void Action::setRunAutoMogoClamp(bool runAutoMogoClamp){
@@ -347,4 +349,4 @@ void Action::setArmBrakeMode(pros::motor_brake_mode_e_t mode){
     arm.setBrakeMode(mode);
 }
 
-Action actions(0, Ring::Color::NONE, 13); // Initialize Action object with default values
+Action actions(0, Ring::Color::NONE, 18); // Initialize Action object with default values

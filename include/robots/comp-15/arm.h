@@ -6,28 +6,36 @@ class Arm {
         enum class State : int {
             DOWN = 0,   // index 0
             READY = 1,  // index 1
-            SCORE = 3,  // index 2
-            DESCORE = 4,  // index 3
-            NUM_ARM_STATES = 5 // count of states
+            SCORE = 2,  // index 2
+            DESCORE = 3,  // index 3
+            NUM_ARM_STATES = 4 // count of states
         };
-    private:
+        private:
         pros::Motor armMotor;
         pros::Rotation armRot;
         // pros::adi::DigitalIn armLimit;
         int currentLimitState;
+
+        struct PIDconfig {
+            float kP;
+            float kI;
+            float kD;
+        };
+        PIDconfig smallConfig;
+        PIDconfig largeConfig;
 
         float error = 0;
         PID small;
         PID large;
 
         // Add variable to track previous limit switch state
-        // int prevLimitState = 0;
+        int prevLimitState = 0;
 
         State curArmState = State::DOWN;
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             5,   // Angle for DOWN
             29,  // Angle for READY 
-            215,   // Angle for SCORE
+            200,   // Angle for SCORE
             350  // Angle for DESCORE
         };
 
@@ -80,4 +88,6 @@ class Arm {
          */
         State getState();
         void setBrakeMode(pros::motor_brake_mode_e_t mode);
+        void setClimb(bool climb, int scale = .65);
+        PID getPID(bool type);
 };
