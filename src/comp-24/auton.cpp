@@ -66,9 +66,9 @@ void redAuton1() {
     pneumatics.intakeLock.extend();
     
     // Auton Code: //
-    chassis->translateBy(-17, 800, false, 127, 127, .25, 1); 
+    chassis->translateBy(-18, 800, false, 127, 127, .25, 1); 
     pneumatics.leftMogoRushArm.retract();
-    chassis->translateBy(17, 7000, false, 127, 127, .675, 1);
+    chassis->translateBy(18, 7000, false, 127, 127, .675, 1);
     pneumatics.mogoRushTeeth.retract();
     pneumatics.mogoClamp.retract();
     
