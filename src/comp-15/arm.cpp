@@ -24,8 +24,8 @@ void Arm::update(){
             armMotor.move(large.update(error));
         } 
     } 
-    pros::lcd::print(0, "Arm State: %d", (int)curArmState);
-    pros::lcd::print(1, "Arm Angle: %f", getAngle());
+    // pros::lcd::print(0, "Arm State: %d", (int)curArmState);
+    // pros::lcd::print(1, "Arm Angle: %f", getAngle());
     // Update previous limit switch state for next cycle
     prevLimitState = currentLimitState;
 }
