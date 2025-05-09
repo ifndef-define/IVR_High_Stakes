@@ -16,7 +16,7 @@ void initialize() {
 #endif
 	
 	actions.setRingColor(ringToKeep);
-	robotOdom->start(true);
+	odom::start(true);
 }
 
 void disabled() {}
@@ -32,7 +32,8 @@ void autonomous() {
 	// } else {
 	// 	ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
 	// }
-	auton(ringToKeep);
+	// auton(ringToKeep);
+	ctrler.rumble("----");
 }
 
 void opcontrol() {
@@ -47,6 +48,6 @@ void opcontrol() {
 	// chassis->moveToPose(25, 25, 0, 1000000, 0, 80, 100, 0.3, 0.3, false);
 	// chassis->moveByVector(25, -25, 100);
 	// delay(3000);
-	autonomous();
+	// autonomous();
 	teleOp(ringToKeep);
 }
