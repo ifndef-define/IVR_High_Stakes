@@ -149,6 +149,8 @@ void odom::setPos(r_coord pos) {
     lastEnc = {0, 0, 0};
     deltaEnc = {0, 0, 0};
     deltaDisp = {0, 0, 0};
+    _x_enc->reset();
+    _y_enc->reset();
 }
 
 void odom::debug() {

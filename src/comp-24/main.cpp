@@ -10,8 +10,8 @@ Ring::Color ringToKeep = Ring::Color::RED;
 void initialize() {
 // #ifdef USE_LLEMU
 	pros::lcd::initialize();
-	// imu.reset(true);
-	imu2.reset(true);
+	imu.reset(true);
+	// imu2.reset(true);
 // #else
 // 	imu.reset(false);
 // 	ui::init("Comp-24");
