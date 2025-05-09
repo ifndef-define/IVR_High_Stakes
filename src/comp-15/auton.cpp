@@ -3,7 +3,14 @@
 void auton(Ring::Color ringToKeep) {
     //Add auton code here
     // if (ui::getCurrentAuto() == 0) {
-        redAuton2();
+        redAuton1();
+        // pneumatics.mogoRushTeeth.retract();
+        // ctrler.rumble("..");
+        // delay(2000);
+        // pneumatics.mogoRushTeeth.extend();
+        // ctrler.rumble("..");
+        // delay(2000);
+
     // } else if (ui::getCurrentAuto() == 1) {
     //     redAuton2();
     // } else if (ui::getCurrentAuto() == 2) {
@@ -71,6 +78,20 @@ Middle Mogo Auton
 - back into mogorushed goal
 - end auto
 */
+
+void postRedMogoRush() {
+    // Add post red mogo rush code here
+    pneumatics.intakeLift.extend();
+    chassis->moveToPose(110,49,999,false,3000,true);
+    i_waitUntil(robotOdom->getPos().x > 95);
+    actions.setIntakeSpeed(1);
+    i_waitUntil(!chassis->isInMotion());
+    pneumatics.intakeLift.retract();
+    delay(400);
+    chassis->translateBy(-5, 1000, false, 0, 127, 0.5, 1);
+    delay(9000);
+}
+
 void redAuton1() {
     // Add red auton 1 code here
     // ctrler.rumble(".");
@@ -93,28 +114,32 @@ void redAuton1() {
     // Release zip
     pneumatics.mogoClamp.extend(); // DO NOT REMOVE
     // Move to middle mogo
-    chassis->moveToPose(81.5, 52, 999, false, 1100, true); // mogo rush
+    chassis->moveToPose(86, 56, 999, false, 1200, true); // mogo rush
     pneumatics.mogoRushTeeth.extend(); // engage teeth
     pneumatics.leftMogoRushArm.extend();
     i_waitUntil(!chassis->isInMotion());
     delay(250);
     // Move back to ladder ring
-    chassis->translateBy(-26, 5000, false, 0, 127, 0.5, 1);
+    chassis->translateBy(-24, 3000, true, 0, 127, 0.5, 1);
+    i_waitUntil(robotOdom->getPos().y < 44);
     pneumatics.mogoRushTeeth.retract(); // release mogo
     // preload ring goes into Ladybrown
     actions.setArmState(Arm::State::READY);
     actions.setIntakeSpeed(1);
+    i_waitUntil(!chassis->isInMotion());
     // Get alliance goal
-    chassis->swingToAngle(0, Drive::DriveSide::LEFT, 1200, false);
+    chassis->swingToAngle(3, Drive::DriveSide::LEFT, 1200, true);
     pneumatics.mogoClamp.retract();
+    i_waitUntil(robotOdom->getPos().theta < 60);
     pneumatics.leftMogoRushArm.retract();
+    i_waitUntil(!chassis->isInMotion());
     actions.setIntakeSpeed(0);
     // drive into the mogo on our side
     actions.setArmState(Arm::State::SCORE);
-    chassis->translateBy(-29.5, 1100, false);
+    chassis->translateBy(-26.75, 1200, false);
     pneumatics.mogoClamp.extend(); // autoclamp alliance goal
     actions.setIntakeSpeed(1);
-    chassis->swingToAngle(-89, Drive::DriveSide::RIGHT, 1700, false, 80);
+    chassis->swingToAngle(-89.5, Drive::DriveSide::RIGHT, 1700, false, 80);
     chassis->translateBy(7.5, 800, false);
     chassis->translateBy(-7.5, 800, false);
     actions.setArmState(Arm::State::DESCORE); // score preload on alliance stake
@@ -123,9 +148,7 @@ void redAuton1() {
     actions.setIntakeSpeed(0);   
     actions.setArmState(Arm::State::DOWN);
 
-
-
-    
+    // postRedMogoRush();
 }
 
 void redAuton2() {
@@ -148,37 +171,41 @@ void redAuton2() {
     // Release zip
     pneumatics.mogoClamp.extend(); // DO NOT REMOVE
     // Move to middle mogo
-    chassis->moveToPose(107, 55, 999, false, 1500, true); // mogo rush
+    chassis->moveToPose(110, 58, 999, false, 1200, true); // mogo rush
     pneumatics.mogoRushTeeth.extend(); // engage teeth
     pneumatics.rightMogoRushArm.extend();
     i_waitUntil(!chassis->isInMotion());
     delay(250);
     // Move back to ladder ring
-    chassis->moveToPose(95.625, 20.25, 90, true, 2000, false, 0, 127, 80, 1, 1.5);
-    // chassis->translateBy(-28, 3000, false, 0, 127, 0.5, 1);
+    // chassis->moveToPose(95, 30.5, 110, true, 2000, false, 0, 127, 80, 1, 1.5);
+    chassis->translateBy(-33, 2000, true, 0, 127, 0.5, 1);
+    i_waitUntil(robotOdom->getPos().y < 49);
     pneumatics.mogoRushTeeth.retract(); // release mogo
+    i_waitUntil(!chassis->isInMotion());
     // preload ring goes into Ladybrown
     actions.setArmState(Arm::State::READY);
     actions.setIntakeSpeed(1);
     // Get alliance goal
-    chassis->swingToAngle(0, Drive::DriveSide::LEFT, 2000, false);
+    chassis->swingToAngle(-7, Drive::DriveSide::LEFT, 2000, true);
+    i_waitUntil(robotOdom->getPos().theta < 60);
     pneumatics.mogoClamp.retract();
     pneumatics.rightMogoRushArm.retract();
+    i_waitUntil(!chassis->isInMotion());
     actions.setIntakeSpeed(0);
-    delay(9000);
     // drive into the mogo on our side
-    // actions.setArmState(Arm::State::SCORE);
-    // chassis->translateBy(-29.5, 1100, false);
-    // pneumatics.mogoClamp.extend(); // autoclamp alliance goal
-    // actions.setIntakeSpeed(1);
-    // chassis->swingToAngle(-89, Drive::DriveSide::RIGHT, 1700, false, 80);
-    // chassis->translateBy(7.5, 800, false);
-    // chassis->translateBy(-7.5, 800, false);
-    // actions.setArmState(Arm::State::DESCORE); // score preload on alliance stake
-    // delay(300);
-    // chassis->translateBy(-7.5, 800, false);
-    // actions.setIntakeSpeed(0);   
-    // actions.setArmState(Arm::State::DOWN); // arm to ready
+    chassis->translateBy(-27.5, 1100, false);
+    actions.setArmState(Arm::State::SCORE);
+    pneumatics.mogoClamp.extend(); // autoclamp alliance goal
+    actions.setIntakeSpeed(1);
+    chassis->swingToAngle(-89, Drive::DriveSide::RIGHT, 1700, false, 80);
+    chassis->translateBy(9, 800, false);
+    chassis->translateBy(-7.5, 800, false);
+    actions.setArmState(Arm::State::DESCORE); // score preload on alliance stake
+    chassis->translateBy(-7.5, 800, false);
+    actions.setIntakeSpeed(0);   
+    actions.setArmState(Arm::State::DOWN);
+
+    postRedMogoRush();
 }
 
 void blueAuton1() {
