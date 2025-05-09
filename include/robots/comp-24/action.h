@@ -46,7 +46,7 @@ class Action {
 
     public:
         Action(bool isAuton, Ring::Color ringToKeep, int mogoSensorPort);
-        void runSubsystemFSM();
+        void runSubsystemFSM(double armAngle=999);
         void stateControl();
         void climbControl();
         void autoMogo();

@@ -131,6 +131,7 @@ void updateRobotSystems(DriveMode newMode) {
             actions.setArmState(Arm::State::DOWN);
             actions.setRunArm(true);
             actions.setClimbing(false);
+            actions.setRunAutoMogoClamp(true);
             break;
         case MODE_SOLO_CLIMB:
         case MODE_COMP_CLIMB:
@@ -151,6 +152,7 @@ void updateRobotSystems(DriveMode newMode) {
             actions.setRunArm(true);
             actions.setArmState(Arm::State::CLIMB);
             actions.setClimbing(true);
+            actions.setRunAutoMogoClamp(true);
             break;
     }
 
@@ -175,6 +177,7 @@ void teleOp(Ring::Color ringToKeep) {
     actions.setRunArm(true);
     bool lastProfile = false;
 
+    int targetAngle = 999;
     while(1) {
         actions.runSubsystemFSM();
 
@@ -222,6 +225,7 @@ void teleOp(Ring::Color ringToKeep) {
                         actions.setIntakeSpeed(0);
                     }
                     /// ARM ///
+                    targetAngle = 999;
                     if(actions.getOverride()){
                         if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                             actions.setArmSpeed(1);
@@ -299,10 +303,12 @@ void teleOp(Ring::Color ringToKeep) {
                 } else {
                     if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                         actions.setArmState(Arm::State::CLIMB);
+                        targetAngle = 999;
                     } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                         actions.setArmState(Arm::State::SCORE);
+                        targetAngle = 999;
                     } else {
-                        actions.setArmSpeed(0);
+                        targetAngle = actions.getArmAngle(); //updates arm angle
                     }
                 }
 
