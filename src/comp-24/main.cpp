@@ -3,14 +3,15 @@
 #include "robots/comp-24/controls.h"
 #include "robots/comp-24/robot.hpp"
 
-Ring::Color ringToKeep = Ring::Color::BLUE;
+Ring::Color ringToKeep = Ring::Color::RED;
 
 // #define USE_LLEMU
 
 void initialize() {
 // #ifdef USE_LLEMU
 	pros::lcd::initialize();
-	imu.reset(true);
+	// imu.reset(true);
+	imu2.reset(true);
 // #else
 // 	imu.reset(false);
 // 	ui::init("Comp-24");
@@ -36,6 +37,6 @@ void autonomous() {
 	redAuton1();
 }
 void opcontrol() {
-	odom::setPos(odom::r_coord(51.25, 35.25, 27.95));
+    odom::setPos(odom::r_coord(34.875, 35.125, 297.95));
 	teleOp(ringToKeep);
 }

@@ -158,7 +158,7 @@ void odom::debug() {
     lcd::print(3, "IMU Theta: %f", _imu == nullptr ? _dual_imu->get_rotation() : _imu->get_rotation());
     lcd::print(4, "X: %f", currentPos.x);
     lcd::print(5, "Y: %f", currentPos.y);
-    lcd::print(6, "Theta: %f", currentPos.theta);
+    lcd::print(6, "Theta: %f", convert::radToDeg(currentPos.theta));
 }
 
 void odom::start(bool thread) {

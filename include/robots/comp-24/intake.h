@@ -96,6 +96,8 @@ public:
    */
   void setFilterColor(Ring::Color filterColor);
 
+  Ring::Color getCurRing();
+
   /**
    * @brief Gets whether or not should eject
    *

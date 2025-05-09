@@ -337,7 +337,7 @@ void Drive::moveToPose(double x, double y, double theta, bool reverse, int timeo
     double carrotX = 0, carrotY = 0;
     bool in_final_angle_phase = false;
     while (motionInProgress && !isDone(start_time, timeout)) {
-        if (abs(drive_output) < 10 && abs(heading_output) < 10 && abs(heading1_Error) < turn_settle_error && abs(target_distance) < drive_settle_error) {
+        if (abs(drive_output) < 13 && abs(heading_output) < 13 && abs(heading1_Error) < turn_settle_error && abs(target_distance) < drive_settle_error) {
             break;
         }
                     if (debug_moveToPose) { lcd::print(0, "X: %.2f, Y: %.2f, T: %.2f", odom_->getPos().x, odom_->getPos().y, odom_->getPos().theta); }

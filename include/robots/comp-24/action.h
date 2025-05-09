@@ -46,7 +46,7 @@ class Action {
 
     public:
         Action(bool isAuton, Ring::Color ringToKeep, int mogoSensorPort);
-        void runSubsystemFSM();
+        void runSubsystemFSM(double armAngle=999);
         void stateControl();
         void climbControl();
         void autoMogo();
@@ -196,6 +196,8 @@ class Action {
         void setRunAutoMogoClamp(bool flag);
         void setRunArm(bool flag);
         void setArmBrakeMode(pros::motor_brake_mode_e mode);
+
+        Ring::Color getCurRing();
 };
 
 extern Action actions;

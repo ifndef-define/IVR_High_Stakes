@@ -50,7 +50,7 @@ class Arm {
          * @brief Updates arm position using PID
          * 
          */
-        void update();
+        void update(double Angle=999);
 
         /**
          * @brief Move to the next state

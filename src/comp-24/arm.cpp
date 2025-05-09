@@ -7,7 +7,7 @@ Arm::Arm(float kP, float kI, float kD, float kP2, float kI2, float kD2) : armMot
 }
 
 
-void Arm::update(){
+void Arm::update(double angle){
     // Get current limit switch state
     currentLimitState = armLimit.get_value();
     
@@ -18,7 +18,11 @@ void Arm::update(){
     }
     
     if(!override){ 
-        error =  armStateAngles[(int)curArmState] - getAngle();
+        if(angle==999){
+            error =  armStateAngles[(int)curArmState] - getAngle();
+        } else {
+            error = angle-getAngle();
+        }
         if(abs(error) < 20){
             armMotor.move(small.update(error));
         } else {
