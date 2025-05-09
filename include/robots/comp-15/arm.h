@@ -6,9 +6,10 @@ class Arm {
         enum class State : int {
             DOWN = 0,   // index 0
             READY = 1,  // index 1
-            SCORE = 2,  // index 2
-            DESCORE = 3,  // index 3
-            NUM_ARM_STATES = 4 // count of states
+            JESUS = 2,
+            SCORE = 3,  // index 2
+            DESCORE = 4,  // index 3
+            NUM_ARM_STATES = 5 // count of states
         };
         private:
         pros::Motor armMotor;
@@ -35,6 +36,7 @@ class Arm {
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             5,   // Angle for DOWN
             28,  // Angle for READY 
+            50,
             200,   // Angle for SCORE
             350  // Angle for DESCORE
         };

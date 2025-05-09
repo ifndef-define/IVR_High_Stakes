@@ -237,7 +237,11 @@ void teleOp(Ring::Color ringToKeep) {
                                 actions.setArmState(Arm::State::READY);
                             }
                         } else if(ctrler.get_digital_new_press(controls[activeProfile]->backpackCycleStageDown)) {
-                            actions.nextArmState();
+                            if(actions.getArmState()==Arm::State::JESUS){
+                                actions.setArmState(Arm::State::SCORE);
+                            } else {
+                                actions.setArmState(Arm::State::JESUS);
+                            }
                         }
                     }
                 }

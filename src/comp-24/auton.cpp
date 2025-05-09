@@ -51,19 +51,21 @@ end
 void redAuton1() {
     // Add red auton 1 code here
     ctrler.rumble(".");
+
     pros::Task task([&](){ 
         while(1){
             actions.runSubsystemFSM(); 
             delay(10);
         }
     });
+
     odom::setPos(odom::r_coord(34.875, 35.125, 297.95));
     // actions.setRunAutoMogoClamp(true);
     actions.setRunColorSort(true);
 
     pneumatics.mogoClamp.extend(); // DO NOT REMOVE
     pneumatics.leftMogoRushArm.extend();
-    pneumatics.intakeLock.extend();
+    // pneumatics.intakeLock.extend();
     
     // Auton Code: //
     chassis->translateBy(-18, 800, false, 127, 127, .25, 1); 
@@ -114,6 +116,7 @@ void redAuton1() {
     odom::r_coord pos = odom::getPos();
     for(int i = 0; i < 3; i++) {
         delay(250);
+        chassis->turnToAngle(225, 600, false, 127, 1);
         chassis->translateBy(7, 1200, false, 45, 60, .5, 1);//fiurst ring
         chassis->moveToPose(pos.x, pos.y, 225, false, 1500, false, 0, 75, 75, .5, 1);
     }
@@ -136,6 +139,78 @@ void blueAuton1() {
     // Add blue auton 1 code here
     pneumatics.mogoClamp.extend(); // DO NOT REMOVE
     ctrler.rumble("...");
+    pros::Task task([&](){ 
+        while(1){
+            actions.runSubsystemFSM(); 
+            delay(10);
+        }
+    });
+
+    odom::setPos(odom::r_coord(34.875, 35.125, 297.95));
+    // actions.setRunAutoMogoClamp(true);
+    actions.setRunColorSort(true);
+    pneumatics.leftMogoRushArm.extend();
+    // pneumatics.intakeLock.extend();
+    
+    // Auton Code: //
+    chassis->translateBy(-18, 800, false, 127, 127, .25, 1); 
+    pneumatics.leftMogoRushArm.retract();
+    chassis->translateBy(18, 7000, false, 127, 127, .675, 1);
+    pneumatics.mogoRushTeeth.retract();
+    pneumatics.mogoClamp.retract();
+    
+    // chassis->swingToAngle(280, Drive::DriveSide::LEFT, 2500, false, 127, .5);
+    chassis->turnToAngle(280, 1200, false, 127, 1);
+    chassis->moveToPose(33, 55, 999, true, 3000, true, 0, 60, 50, .675, 1);
+    // chassis->translateBy(-18, 2500, false, 0, 60, .5, .5);
+    
+    // CLAMPING MOGO AUTO ///
+
+    delay(1000);
+    pneumatics.mogoClamp.extend(); // DO NOT REMOVE
+    i_waitUntil(!chassis->isInMotion());
+
+    // Clean knocked rings
+    // chassis->translateBy(6, 1500, false, 0, 60);
+    actions.setIntakeSpeed(1);
+    chassis->swingToAngle(105, Drive::DriveSide::RIGHT, 1500, false);
+    // chassis->moveToPose(17, 55, 999, false, 1500, false, 0, 45,45,.5,1);
+    chassis->translateBy(7, 1500, false, 20, 40, .5, 1);//fiurst ring
+    chassis->translateBy(-9, 1500, false, 20, 40, .5, 1);//fiurst ring
+    chassis->translateBy(14, 1500, false, 20, 40, .5, 1);
+    chassis->translateBy(-9, 1500, false, 20, 40, .5, 1);//fiurst ring
+    delay(1200);
+    pneumatics.intakeLift.retract();
+    
+    // MIDLINE RINGS
+    // chassis->translateBy(5, 7000, false, 0, 45, .675, 1);
+    chassis->moveToPose(14, 63, 120, false, 1500, false, 0, 45,45,.5,1);
+    pneumatics.intakeLift.extend();
+    delay(500);
+    chassis->translateBy(-10, 1500, false, 0, 45, .5, 1);//fiurst ring
+    chassis->translateBy(10, 1500, false, 0, 45, .5, 1);//fiurst ring
+    delay(500);
+    chassis->swingToAngle(270, Drive::DriveSide::RIGHT, 1500, false);
+    chassis->moveToPose(21, 0, 270, false, 6500, false, 0, 55, 45, .675, 1);
+    // odom::setPos(odom::r_coord(20, 8, 270));
+    chassis->translateBy(-10, 1500, false, 0, 45, .5, 1);//fiurst ring
+    chassis->turnToAngle(225, 1200, false, 127, 1);
+
+    // To Corner
+    chassis->translateBy(6, 1000, false, 0, 45, .5, 1);//fiurst ring
+    odom::r_coord pos = odom::getPos();
+    for(int i = 0; i < 3; i++) {
+        delay(250);
+        chassis->turnToAngle(225, 600, false, 127, 1);
+        chassis->translateBy(7, 1200, false, 45, 60, .5, 1);//fiurst ring
+        chassis->moveToPose(pos.x, pos.y, 225, false, 1500, false, 0, 75, 75, .5, 1);
+    }
+    delay(500);
+
+    //To Ladder
+    chassis->translateBy(-45, 1500, false, 45, 80, .5, 1);//fiurst ring
+    chassis->turnToAngle(0, 1200, false, 127, 1);
+    chassis->translateBy(30, 1500, false, 45, 80, .5, 1);//fiurst ring  
 }
 
 void blueAuton2() {

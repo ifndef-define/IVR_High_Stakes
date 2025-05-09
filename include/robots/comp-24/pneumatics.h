@@ -12,7 +12,7 @@ class PneumaticsGroup {
         pros::adi::Pneumatics leftMogoRushArm;
         pros::adi::Pneumatics rightMogoRushArm;
         pros::adi::Pneumatics mogoRushTeeth;
-        pros::adi::Pneumatics intakeLock;
+        // pros::adi::Pneumatics intakeLock;
         pros::adi::Pneumatics intakeLift;
 
         pros::adi::Pneumatics innerClimbArms;
