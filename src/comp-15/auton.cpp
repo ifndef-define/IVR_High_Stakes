@@ -132,7 +132,7 @@ void redAuton1() {
     pneumatics.leftMogoRushArm.retract();
     // Move back to ladder ring
     // chassis->translateBy(-26, 2000, true, 10, 127, 0.5, 0.5);
-    chassis->moveToPose(95.625, 24, 90, true, 2500, true);
+    chassis->moveToPose(95.625, 24, 90, true, 2250, true);
     actions.setIntakeSpeed(-1);
     delay(250);
     actions.setIntakeSpeed(0);
@@ -148,29 +148,54 @@ void redAuton1() {
     delay(750);
     actions.setIntakeSpeed(1);
     // drive into the mogo on our side
-    chassis->translateBy(-28, 1500, false, 0, 60);
+    chassis->translateBy(-28, 1500, true, 0, 60);
+    delay(600);
     pneumatics.mogoClamp.extend();
     actions.setIntakeSpeed(-1);
     actions.setArmState(Arm::State::STANDBY);
 
-    delay(500);
-    chassis->swingToAngle(-89, Drive::DriveSide::RIGHT, 1700, false, 90);
-
-    actions.setIntakeSpeed(1);
-    chassis->translateBy(7, 1200, false);
-    chassis->translateBy(-13, 2000, true);
-    actions.setArmState(Arm::State::DESCORE); // score preload on alliance stake
-    // delay(300);
-    // chassis->translateBy(-7.5, 800, false);
     i_waitUntil(!chassis->isInMotion());
-
+    actions.setIntakeSpeed(1);
+    chassis->swingToAngle(-84, Drive::DriveSide::RIGHT, 1700, false, 90);
+    chassis->translateBy(2, 200, false);
+    // delay(450);
+    actions.setArmState(Arm::State::DESCORE); // score preload on alliance stake
+    delay(1000);
+    chassis->translateBy(-10, 2000, false, 30, 35);
+    // i_waitUntil(!chassis->isInMotion());
     actions.setArmState(Arm::State::DOWN);  
-    chassis->turnToAngle(26, 1200, false, 90, 1);
-    chassis->translateBy(37, 1500, false);
-    chassis->translateBy(24, 1500, false, 30, 35);
+    chassis->turnToAngle(20, 1200, false, 90, 1);
+    chassis->translateBy(38, 1500, true);
+    actions.setIntakeSpeed(-1);
     delay(500);
-    chassis->translateBy(-38, 3000, false);
-    chassis->turnToAngle(310, 1200, false, 90, 1);
+    actions.setIntakeSpeed(1);
+    i_waitUntil(!chassis->isInMotion());
+    delay(500);
+    chassis->translateBy(25, 2000, false, 30, 35);
+    delay(500);
+    chassis->translateBy(-32, 2000, false);
+    chassis->turnToAngle(315, 800, false, 90, 1);
+    chassis->translateBy(45, 2500, false, 30, 35);
+    chassis->translateBy(-15, 1000, false);
+    chassis->turnToAngle(315, 300, false, 90, 1);
+    chassis->translateBy(25, 1000, false);
+    chassis->translateBy(-15, 1000, false);
+    chassis->turnToAngle(315, 300, false, 90, 1);
+    chassis->translateBy(25, 1000, false);
+    chassis->translateBy(-15, 1000, false);
+    chassis->turnToAngle(315, 300, false, 90, 1);
+    chassis->translateBy(25, 1000, false);
+    chassis->translateBy(-20, 1000, false);
+    chassis->turnToAngle(135, 1200, false, 90, 1);
+    pneumatics.mogoClamp.retract();
+    chassis->translateBy(-25, 1000, false);
+    chassis->translateBy(25, 1000, false);
+
+
+
+
+
+
 
 
 
