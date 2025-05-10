@@ -159,8 +159,31 @@ void updateRobotSystems(DriveMode newMode) {
     delay(500); // bounce time
 }
 
+bool update = false;
+void callBackScreen() {update = true;}
+
+void mogoClampScreen() {
+    while(!pros::competition::is_autonomous()) {
+        if (update) {
+            update = false;
+            ctrler.clear_line(3);
+            if (pneumatics.mogoClamp.is_extended()) {
+                ctrler.print(3, 0, "Clamp: Extended");
+                delay(100);
+            } else {
+                ctrler.print(3, 0, "Clamp: Retracted");
+                delay(100);
+            }
+        }
+
+        delay(100);
+    }
+}
+
 void teleOp(Ring::Color ringToKeep) {
     chassis->loop(true);
+    pros::Task ctrlerScreen(mogoClampScreen);
+    ctrlerScreen.set_priority(5);
 
     if (!pros::competition::is_connected()) {
         activeProfile = MODE_SOLO;
@@ -251,11 +274,7 @@ void teleOp(Ring::Color ringToKeep) {
                 if(ctrler.get_digital_new_press(controls[activeProfile]->mogoClampToggle.first)
                     && (activeProfile == MODE_COMP ? controls[activeProfile]->mogoClampToggle.second : true)) {
                     pneumatics.mogoClamp.toggle();
-                    if(pneumatics.mogoClamp.is_extended()) {
-                        ctrler.rumble("..");
-                    } else {
-                        ctrler.rumble("--");
-                    }
+                    callBackScreen();
                 }
                 
                 if (ringToKeep == Ring::Color::RED) {
