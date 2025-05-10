@@ -7,9 +7,10 @@ class Arm {
             DOWN = 0,   // index 0
             READY = 1,  // index 1
             JESUS = 2,
-            SCORE = 3,  // index 2
-            DESCORE = 4,  // index 3
-            NUM_ARM_STATES = 5 // count of states
+            STANDBY = 3,
+            SCORE = 4,  // index 2
+            DESCORE = 5,  // index 3
+            NUM_ARM_STATES = 6 // count of states
         };
         private:
         pros::Motor armMotor;
@@ -35,8 +36,9 @@ class Arm {
         State curArmState = State::DOWN;
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             5,   // Angle for DOWN
-            36,  // Angle for READY 
+            19,  // Angle for READY 
             60,
+            100,
             190,   // Angle for SCORE
             350  // Angle for DESCORE
         };

@@ -3,7 +3,7 @@
 void auton(Ring::Color ringToKeep) {
     //Add auton code here
     // if (ui::getCurrentAuto() == 0) {
-        blueAuton1();
+        // blueAuton1();
         // pneumatics.mogoRushTeeth.extend();
         // ctrler.rumble("..");
         // delay(2000);
@@ -14,7 +14,7 @@ void auton(Ring::Color ringToKeep) {
         // ctrler.rumble("..");
         // delay(2000);
     // } else if (ui::getCurrentAuto() == 1) {
-    //     redAuton2();
+        redAuton1();
     // } else if (ui::getCurrentAuto() == 2) {
     //     blueAuton1();
     // } else if (ui::getCurrentAuto() == 3) {
@@ -108,6 +108,16 @@ void redAuton1() {
     actions.setRunArm(true);
     actions.setRunColorSort(true);
     actions.setAutonControlFlag(true);
+
+    // actions.setArmState(Arm::State::READY);
+    // delay(500);
+    // actions.setIntakeSpeed(1);
+    // delay(500);
+    // actions.setIntakeSpeed(-1);
+    // delay(150);
+    // actions.setArmState(Arm::State::SCORE);
+    // actions.setIntakeSpeed(0);
+    // delay(1000000000);
     
     // Reset Pos
     odom::setPos({95.625,20.25,90});
@@ -132,28 +142,44 @@ void redAuton1() {
     actions.setArmState(Arm::State::READY);
     i_waitUntil(!chassis->isInMotion());
     // Get alliance goal
-    chassis->turnToAngle(0, 1200, false, 127, 1);
+    chassis->turnToAngle(0, 1200, true, 127, 1);
     actions.setArmState(Arm::State::READY);
     pneumatics.mogoClamp.retract();
+    delay(750);
     actions.setIntakeSpeed(1);
     // drive into the mogo on our side
-    chassis->translateBy(-26.5, 1100, false);
+    chassis->translateBy(-28, 1500, false, 0, 60);
     pneumatics.mogoClamp.extend();
-    actions.setIntakeSpeed(0);
-    actions.setArmState(Arm::State::SCORE);
-    delay(300);
-    chassis->swingToAngle(-92, Drive::DriveSide::RIGHT, 1700, false, 90);
-    actions.setIntakeSpeed(1);
-    chassis->translateBy(8, 1200, false);
-    chassis->translateBy(-8, 1200, false);
-    actions.setArmState(Arm::State::DESCORE); // score preload on alliance stake
-    delay(300);
-    chassis->translateBy(-3.5, 800, false);
-    actions.setArmState(Arm::State::DOWN);  
-    chassis->turnToAngle(30, 1200, false, 127, 1);
-    chassis->translateBy(39, 1500, false);
-    chassis->translateBy(20, 3000, false, 45, 65);
+    actions.setIntakeSpeed(-1);
+    actions.setArmState(Arm::State::STANDBY);
 
+    delay(500);
+    chassis->swingToAngle(-89, Drive::DriveSide::RIGHT, 1700, false, 90);
+
+    actions.setIntakeSpeed(1);
+    chassis->translateBy(7, 1200, false);
+    chassis->translateBy(-13, 2000, true);
+    actions.setArmState(Arm::State::DESCORE); // score preload on alliance stake
+    // delay(300);
+    // chassis->translateBy(-7.5, 800, false);
+    i_waitUntil(!chassis->isInMotion());
+
+    actions.setArmState(Arm::State::DOWN);  
+    chassis->turnToAngle(26, 1200, false, 90, 1);
+    chassis->translateBy(37, 1500, false);
+    chassis->translateBy(24, 1500, false, 30, 35);
+    delay(500);
+    chassis->translateBy(-38, 3000, false);
+    chassis->turnToAngle(310, 1200, false, 90, 1);
+
+
+
+    // pneumatics.intakeLift.extend();
+    // chassis->turnToAngle(80, 1200, false, 127, 1);
+    // chassis->translateBy(7, 1500, false);
+    // pneumatics.intakeLift.retract();
+    // chassis->translateBy(-4, 1200, false);
+    // chassis->translateBy(4, 1200, false);
 
 
     // pneumatics.intakeLift.retract();

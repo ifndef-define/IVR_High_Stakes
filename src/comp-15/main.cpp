@@ -3,7 +3,7 @@
 #include "robots/comp-15/controls.h"
 #include "robots/comp-15/action.h"
 
-Ring::Color ringToKeep = Ring::Color::NONE;
+Ring::Color ringToKeep = Ring::Color::RED;
 #define USE_LLEMU
 
 void initialize() {
