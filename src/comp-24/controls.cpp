@@ -183,28 +183,28 @@ void teleOp(Ring::Color ringToKeep) {
 
         switch (activeProfile) {
             case MODE_SOLO:
-                if (ui::getRunColorSort()) {
-                    actions.setRunColorSort(true);
-                } else {
-                    actions.setRunColorSort(false);
-                }
+                // if (ui::getRunColorSort()) {
+                //     actions.setRunColorSort(true);
+                // } else {
+                //     actions.setRunColorSort(false);
+                // }
 
-                if (ui::getRingColor()) {
-                    ringToKeep = Ring::Color::BLUE;
-                } else {
-                    ringToKeep = Ring::Color::RED;
-                }
-                actions.setRingColor(ringToKeep);
+                // if (ui::getRingColor()) {
+                //     ringToKeep = Ring::Color::BLUE;
+                // } else {
+                //     ringToKeep = Ring::Color::RED;
+                // }
+                // actions.setRingColor(ringToKeep);
 
             case MODE_COMP:
                 if (pros::competition::is_connected()) {
-                    if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
-                        ringToKeep = Ring::Color::RED;
-                    } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
-                        ringToKeep = Ring::Color::BLUE;
-                    } else {
-                        ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
-                    }
+                    // if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
+                    //     ringToKeep = Ring::Color::RED;
+                    // } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
+                    //     ringToKeep = Ring::Color::BLUE;
+                    // } else {
+                    //     ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
+                    // }
                     actions.setRingColor(ringToKeep);
                     actions.setRunColorSort(controls[activeProfile]->defaultColorSort);
                 } else {
@@ -225,24 +225,30 @@ void teleOp(Ring::Color ringToKeep) {
                         actions.setIntakeSpeed(0);
                     }
                     /// ARM ///
-                    targetAngle = 999;
                     if(actions.getOverride()){
                         if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                             actions.setArmSpeed(1);
+                            targetAngle = 999;
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmSpeed(-1);
+                            targetAngle = 999;
                         } else {
                             actions.setArmSpeed(0);
+                            targetAngle = actions.getArmAngle(); //updates arm angle
                         }
                     } else {
                         if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmState(Arm::State::DESCORE);
+                            targetAngle = 999;
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                             actions.setArmState(Arm::State::READY);
+                            targetAngle = 999;
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmState(Arm::State::SCORE);
+                            targetAngle = 999;
                         } else {
                             actions.setArmState(Arm::State::DOWN);
+                            targetAngle = 999;
                         }
                     }
                 }
@@ -295,10 +301,13 @@ void teleOp(Ring::Color ringToKeep) {
                 if(actions.getOverride()){
                     if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                         actions.setArmSpeed(.7);
+                        targetAngle = 999;
                     } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                         actions.setArmSpeed(-.7);
+                        targetAngle = 999;
                     } else {
                         actions.setArmSpeed(0);
+                        targetAngle = actions.getArmAngle(); //updates arm angle
                     }
                 } else {
                     if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {

@@ -34,9 +34,13 @@ void autonomous() {
 	// 	ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
 	// }
 	// auton(ringToKeep);
-	redAuton1();
+	if(ringToKeep==Ring::Color::RED){
+		redAuton1();
+	} else {
+		blueAuton1();
+	}
 }
 void opcontrol() {
-    odom::setPos(odom::r_coord(34.875, 35.125, 297.95));
+    // odom::setPos(odom::r_coord(34.875, 35.125, 297.95));
 	teleOp(ringToKeep);
 }
