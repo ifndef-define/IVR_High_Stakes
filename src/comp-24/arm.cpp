@@ -56,7 +56,7 @@ void Arm::setBrakeMode(pros::motor_brake_mode_e_t mode){
 
 void Arm::setClimb(bool climb, int scale) {
     if (climb) {
-        small.setConstants(smallConfig.kP*scale*.9, smallConfig.kI*scale*.9, smallConfig.kD*scale*.9);
+        small.setConstants(smallConfig.kP*scale, smallConfig.kI*scale, smallConfig.kD*scale);
         large.setConstants(largeConfig.kP*scale, largeConfig.kI*scale, largeConfig.kD*scale);
     } else {
         small.setConstants(smallConfig.kP, smallConfig.kI, smallConfig.kD);
