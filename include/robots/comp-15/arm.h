@@ -37,8 +37,8 @@ class Arm {
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             5,   // Angle for DOWN
             19,  // Angle for READY 
-            60,
-            100,
+            60, // Angle for JESUS
+            160, // Angle for STANDBY
             190,   // Angle for SCORE
             350  // Angle for DESCORE
         };
