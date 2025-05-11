@@ -57,8 +57,8 @@ const driverProfile Drive = {
 
     // .toggleColorSort = null // off by default
     .shift = BUTTON_RIGHT,
+    .defaultColorSort = true
 };
-
 
 const driverProfile Climb = {
     .driveMode = Drive::drive_mode_e::CUSTOM_m,
@@ -109,30 +109,30 @@ void updateRobotSystems(DriveMode newMode) {
     delay(100);
     ctrler.clear_line(3);
     delay(100);
-
+    
     switch (newMode) {
         case MODE_SOLO:
         case MODE_COMP:
-            if (newMode == MODE_COMP) {
-                ctrler.print(0, 0, "Comp - Drive");
-            } else {
-                ctrler.print(0, 0, "Solo - Drive");
-            }
-            delay(100);
-            pneumatics.intakeLift.extend();
-            pneumatics.innerClimbArms.retract();
-            pneumatics.outerClimbArms.retract();
-            pneumatics.climbPTO.retract();
-            chassis->changeDriveMode(controls[activeProfile]->driveMode);
-            chassis->changeDriveMotors(leftDrive, rightDrive);
-            chassis->setBrakeMode(BRAKE_COAST);
-            actions.setRunColorSort(newMode == ((MODE_COMP || MODE_SOLO) ? controls[activeProfile]->defaultColorSort : true));
-            actions.setOverride(false);
-            actions.setArmState(Arm::State::DOWN);
-            actions.setRunArm(true);
-            actions.setClimbing(false);
-            actions.setRunAutoMogoClamp(true);
-            break;
+        if (newMode == MODE_COMP) {
+            ctrler.print(0, 0, "Comp - Drive");
+        } else {
+            ctrler.print(0, 0, "Solo - Drive");
+        }
+        delay(100);
+        pneumatics.intakeLift.extend();
+        pneumatics.innerClimbArms.retract();
+        pneumatics.outerClimbArms.retract();
+        pneumatics.climbPTO.retract();
+        chassis->changeDriveMode(controls[activeProfile]->driveMode);
+        chassis->changeDriveMotors(leftDrive, rightDrive);
+        chassis->setBrakeMode(BRAKE_COAST);
+        actions.setRunColorSort(newMode == ((MODE_COMP || MODE_SOLO) ? controls[activeProfile]->defaultColorSort : true));
+        actions.setOverride(false);
+        actions.setArmState(Arm::State::DOWN);
+        actions.setRunArm(true);
+        actions.setClimbing(false);
+        actions.setRunAutoMogoClamp(false);
+        break;
         case MODE_SOLO_CLIMB:
         case MODE_COMP_CLIMB:
             if (newMode == MODE_COMP) {
@@ -159,32 +159,32 @@ void updateRobotSystems(DriveMode newMode) {
     delay(500); // bounce time
 }
 
-bool update = false;
-void callBackScreen() {update = true;}
+// bool update = false;
+// void callBackScreen() {update = true;}
 
-void mogoClampScreen() {
-    while(!pros::competition::is_autonomous()) {
-        if (update) {
-            update = false;
-            ctrler.clear_line(3);
-            if (pneumatics.mogoClamp.is_extended()) {
-                ctrler.print(3, 0, "Clamp: Extended");
-                delay(100);
-            } else {
-                ctrler.print(3, 0, "Clamp: Retracted");
-                delay(100);
-            }
-        }
+// void mogoClampScreen() {
+//     while(!pros::competition::is_autonomous()) {
+//         if (update) {
+//             update = false;
+//             ctrler.clear_line(3);
+//             if (pneumatics.mogoClamp.is_extended()) {
+//                 ctrler.print(3, 0, "Clamp: Extended");
+//                 delay(100);
+//             } else {
+//                 ctrler.print(3, 0, "Clamp: Retracted");
+//                 delay(100);
+//             }
+//         }
 
-        delay(100);
-    }
-}
+//         delay(100);
+//     }
+// }
 
 void teleOp(Ring::Color ringToKeep) {
-    chassis->loop(true);
-    pros::Task ctrlerScreen(mogoClampScreen);
-    ctrlerScreen.set_priority(5);
-
+    chassis->setBrakeMode(BRAKE_COAST);
+    // pros::Task ctrlerScreen(mogoClampScreen);
+    // ctrlerScreen.set_priority(5);
+    
     if (!pros::competition::is_connected()) {
         activeProfile = MODE_SOLO;
         updateRobotSystems(activeProfile);
@@ -192,51 +192,52 @@ void teleOp(Ring::Color ringToKeep) {
         activeProfile = MODE_COMP;
         updateRobotSystems(activeProfile);
     }
-
+    
     actions.setRingColor(ringToKeep);
     actions.setAutonControlFlag(false);
     actions.setRunAutoMogoClamp(false);
     actions.setArmState(Arm::State::DOWN);
     actions.setRunArm(true);
     bool lastProfile = false;
-
+    
     int targetAngle = 999;
     while(1) {
+        chassis->loop(false);
         actions.runSubsystemFSM();
 
         switch (activeProfile) {
-            case MODE_SOLO:
-                // if (ui::getRunColorSort()) {
-                //     actions.setRunColorSort(true);
-                // } else {
-                //     actions.setRunColorSort(false);
-                // }
+            // case MODE_SOLO:
+            //     if (ui::getRunColorSort()) {
+            //         actions.setRunColorSort(true);
+            //     } else {
+            //         actions.setRunColorSort(false);
+            //     }
 
-                // if (ui::getRingColor()) {
-                //     ringToKeep = Ring::Color::BLUE;
-                // } else {
-                //     ringToKeep = Ring::Color::RED;
-                // }
-                // actions.setRingColor(ringToKeep);
+            //     if (ui::getRingColor()) {
+            //         ringToKeep = Ring::Color::BLUE;
+            //     } else {
+            //         ringToKeep = Ring::Color::RED;
+            //     }
+                actions.setRingColor(ringToKeep);
 
             case MODE_COMP:
-                if (pros::competition::is_connected()) {
-                    // if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
-                    //     ringToKeep = Ring::Color::RED;
-                    // } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
-                    //     ringToKeep = Ring::Color::BLUE;
-                    // } else {
-                    //     ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
-                    // }
-                    actions.setRingColor(ringToKeep);
-                    actions.setRunColorSort(controls[activeProfile]->defaultColorSort);
-                } else {
-                    if (lastProfile != ui::getRunForceCompMode()) {
-                        lastProfile = ui::getRunForceCompMode();
-                        activeProfile = lastProfile ? MODE_COMP : MODE_SOLO;
-                        updateRobotSystems(activeProfile);
-                    }
-                }
+                // if (pros::competition::is_connected()) {
+                //     if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
+                //         ringToKeep = Ring::Color::RED;
+                //     } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
+                //         ringToKeep = Ring::Color::BLUE;
+                //     } else {
+                //         ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
+                //     }
+                //     actions.setRingColor(ringToKeep);
+                //     actions.setRunColorSort(controls[activeProfile]->defaultColorSort);
+                // } else {
+                //     if (lastProfile != ui::getRunForceCompMode()) {
+                //         lastProfile = ui::getRunForceCompMode();
+                //         activeProfile = lastProfile ? MODE_COMP : MODE_SOLO;
+                //         updateRobotSystems(activeProfile);
+                //     }
+                // }
                 /// INTAKE ///
                 actions.setOverride(ctrler.get_digital(controls[activeProfile]->shift));
                 if(actions.getActionState() == ActionState::IDLE || actions.getOverride()){
@@ -280,13 +281,14 @@ void teleOp(Ring::Color ringToKeep) {
                 if(ctrler.get_digital_new_press(controls[activeProfile]->mogoClampToggle.first)
                     && (activeProfile == MODE_COMP ? controls[activeProfile]->mogoClampToggle.second : true)) {
                     pneumatics.mogoClamp.toggle();
-                    callBackScreen();
+                    // callBackScreen();
                 }
                 
                 if (ringToKeep == Ring::Color::RED) {
                     if(ctrler.get_digital_new_press(controls[activeProfile]->leftMogoRushCycle.first) 
                         && (activeProfile == MODE_COMP ? controls[activeProfile]->leftMogoRushCycle.second : true)) {
                         pneumatics.leftMogoRushArm.toggle();
+                        
                     }
                 } else if (ringToKeep == Ring::Color::BLUE) {
                     if(ctrler.get_digital_new_press(controls[activeProfile]->rightMogoRushCycle.first) 

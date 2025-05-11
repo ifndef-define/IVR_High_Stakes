@@ -38,8 +38,8 @@ class Arm {
             5,   // Angle for DOWN
             19,  // Angle for READY 
             60, // Angle for JESUS
-            160, // Angle for STANDBY
-            190,   // Angle for SCORE
+            150, // Angle for STANDBY
+            170,   // Angle for SCORE
             350  // Angle for DESCORE
         };
 

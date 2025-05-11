@@ -177,37 +177,27 @@ void teleOp(Ring::Color ringToKeep) {
 
         switch (activeProfile) {
             case MODE_SOLO:
-                if (ui::getRunColorSort()) {
-                    actions.setRunColorSort(true);
-                } else {
-                    actions.setRunColorSort(false);
-                }
-
-                if (ui::getRingColor()) {
-                    ringToKeep = Ring::Color::BLUE;
-                } else {
-                    ringToKeep = Ring::Color::RED;
-                }
-                actions.setRingColor(ringToKeep);
+                // if (ui::getRunColorSort()) {
+                //     actions.setRunColorSort(true);
 
             case MODE_COMP:
-                if (pros::competition::is_connected()) {
-                    if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
-                        ringToKeep = Ring::Color::RED;
-                    } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
-                        ringToKeep = Ring::Color::BLUE;
-                    } else {
-                        ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
-                    }
+                // if (pros::competition::is_connected()) {
+                //     if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
+                //         ringToKeep = Ring::Color::RED;
+                //     } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
+                //         ringToKeep = Ring::Color::BLUE;
+                //     } else {
+                //         ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
+                //     }
                     actions.setRingColor(ringToKeep);
                     actions.setRunColorSort(controls[activeProfile]->defaultColorSort);
-                } else {
-                    if (lastProfile != ui::getRunForceCompMode()) {
-                        lastProfile = ui::getRunForceCompMode();
-                        activeProfile = lastProfile ? MODE_COMP : MODE_SOLO;
-                        updateRobotSystems(activeProfile);
-                    }
-                }
+                // } else {
+                //     if (lastProfile != ui::getRunForceCompMode()) {
+                //         lastProfile = ui::getRunForceCompMode();
+                //         activeProfile = lastProfile ? MODE_COMP : MODE_SOLO;
+                //         updateRobotSystems(activeProfile);
+                //     }
+                // }
                 
                 /// INTAKE ///
                 actions.setOverride(ctrler.get_digital(controls[activeProfile]->shift));
