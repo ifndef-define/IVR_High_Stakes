@@ -5,20 +5,12 @@
 
 Ring::Color ringToKeep = Ring::Color::RED;
 
-// #define USE_LLEMU
-
 void initialize() {
-// #ifdef USE_LLEMU
 	pros::lcd::initialize();
 	imu.reset(true);
-	// imu2.reset(true);
-// #else
-// 	imu.reset(false);
-// 	ui::init("Comp-24");
-// #endif
 	
 	actions.setRingColor(ringToKeep);
-	robotOdom.start(true);
+	odom::start(true);
 }
 
 void disabled() {}
@@ -26,17 +18,9 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-	// if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
-	// 	ringToKeep = Ring::Color::RED;
-	// } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
-	// 	ringToKeep = Ring::Color::BLUE;
-	// } else {
-	// 	ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
-	// }
-	// auton(ringToKeep);
-	if(ringToKeep==Ring::Color::RED){
+	if (ringToKeep == Ring::Color::RED) {
 		redAuton1();
-	} else {
+	} else if (ringToKeep == Ring::Color::BLUE) {
 		blueAuton1();
 	}
 }

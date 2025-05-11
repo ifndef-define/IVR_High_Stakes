@@ -21,7 +21,7 @@ void Action::runSubsystemFSM(double armAngle) {
     if(!isClimbing){
         if ((intakeManager.getEject() && getRunColorSort()) || getEjectFlag()) {
             currentState = ActionState::SORTING;
-        } else if((arm.getAngle() > 35 && arm.getAngle() < 45 && ((int)lastArmState > (int)Arm::State::READY)) || getPullbackFlag()){
+        } else if((arm.getAngle() > 45 && arm.getAngle() < 50 && ((int)lastArmState > (int)Arm::State::READY)) || getPullbackFlag()){
             currentState = ActionState::PULLBACK;
         } else {
             currentState = ActionState::IDLE;

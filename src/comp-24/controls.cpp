@@ -57,6 +57,7 @@ const driverProfile Drive = {
 
     // .toggleColorSort = null // off by default
     .shift = BUTTON_RIGHT,
+    .defaultColorSort = true
 };
 
 
@@ -113,11 +114,11 @@ void updateRobotSystems(DriveMode newMode) {
     switch (newMode) {
         case MODE_SOLO:
         case MODE_COMP:
-            if (newMode == MODE_COMP) {
-                ctrler.print(0, 0, "Comp - Drive");
-            } else {
-                ctrler.print(0, 0, "Solo - Drive");
-            }
+            // if (newMode == MODE_COMP) {
+            //     ctrler.print(0, 0, "Comp - Drive");
+            // } else {
+            //     ctrler.print(0, 0, "Solo - Drive");
+            // }
             delay(100);
             pneumatics.intakeLift.extend();
             pneumatics.innerClimbArms.retract();
@@ -152,58 +153,59 @@ void updateRobotSystems(DriveMode newMode) {
             actions.setRunArm(true);
             actions.setArmState(Arm::State::CLIMB);
             actions.setClimbing(true);
-            actions.setRunAutoMogoClamp(true);
+            actions.setRunAutoMogoClamp(false);
             break;
     }
 
     delay(500); // bounce time
 }
 
-bool update = false;
-void callBackScreen() {update = true;}
+// bool update = false;
+// void callBackScreen() {update = true;}
 
-void mogoClampScreen() {
-    while(!pros::competition::is_autonomous()) {
-        if (update) {
-            update = false;
-            ctrler.clear_line(3);
-            if (pneumatics.mogoClamp.is_extended()) {
-                ctrler.print(3, 0, "Clamp: Extended");
-                delay(100);
-            } else {
-                ctrler.print(3, 0, "Clamp: Retracted");
-                delay(100);
-            }
-        }
+// void mogoClampScreen() {
+//     while(!pros::competition::is_autonomous()) {
+//         if (update) {
+//             update = false;
+//             ctrler.clear_line(3);
+//             if (pneumatics.mogoClamp.is_extended()) {
+//                 ctrler.print(3, 0, "Clamp: Extended");
+//                 delay(100);
+//             } else {
+//                 ctrler.print(3, 0, "Clamp: Retracted");
+//                 delay(100);
+//             }
+//         }
 
-        delay(100);
-    }
-}
+//         delay(100);
+//     }
+// }
 
 void teleOp(Ring::Color ringToKeep) {
-    chassis->loop(true);
-    pros::Task ctrlerScreen(mogoClampScreen);
-    ctrlerScreen.set_priority(5);
-
-    if (!pros::competition::is_connected()) {
-        activeProfile = MODE_SOLO;
-        updateRobotSystems(activeProfile);
-    } else {
+    // pros::Task ctrlerScreen(mogoClampScreen);
+    // ctrlerScreen.set_priority(5);
+    
+    // if (!pros::competition::is_connected()) {
+    //     activeProfile = MODE_SOLO;
+    //     updateRobotSystems(activeProfile);
+    // } else {
         activeProfile = MODE_COMP;
         updateRobotSystems(activeProfile);
-    }
+    // }
 
     actions.setRingColor(ringToKeep);
     actions.setAutonControlFlag(false);
     actions.setRunAutoMogoClamp(false);
+    actions.setRunColorSort(true);
     actions.setArmState(Arm::State::DOWN);
     actions.setRunArm(true);
     bool lastProfile = false;
 
     int targetAngle = 999;
     while(1) {
+        chassis->loop(false);
         actions.runSubsystemFSM();
-
+        
         switch (activeProfile) {
             case MODE_SOLO:
                 // if (ui::getRunColorSort()) {
@@ -220,23 +222,23 @@ void teleOp(Ring::Color ringToKeep) {
                 // actions.setRingColor(ringToKeep);
 
             case MODE_COMP:
-                if (pros::competition::is_connected()) {
-                    // if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
-                    //     ringToKeep = Ring::Color::RED;
-                    // } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
-                    //     ringToKeep = Ring::Color::BLUE;
-                    // } else {
-                    //     ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
-                    // }
-                    actions.setRingColor(ringToKeep);
-                    actions.setRunColorSort(controls[activeProfile]->defaultColorSort);
-                } else {
-                    if (lastProfile != ui::getRunForceCompMode()) {
-                        lastProfile = ui::getRunForceCompMode();
-                        activeProfile = lastProfile ? MODE_COMP : MODE_SOLO;
-                        updateRobotSystems(activeProfile);
-                    }
-                }
+                // if (pros::competition::is_connected()) {
+                //     if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
+                //         ringToKeep = Ring::Color::RED;
+                //     } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
+                //         ringToKeep = Ring::Color::BLUE;
+                //     } else {
+                //         ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
+                //     }
+                //     actions.setRingColor(ringToKeep);
+                //     actions.setRunColorSort(controls[activeProfile]->defaultColorSort);
+                // } else {
+                //     if (lastProfile != ui::getRunForceCompMode()) {
+                //         lastProfile = ui::getRunForceCompMode();
+                //         activeProfile = lastProfile ? MODE_COMP : MODE_SOLO;
+                //         updateRobotSystems(activeProfile);
+                //     }
+                // }
                 /// INTAKE ///
                 actions.setOverride(ctrler.get_digital(controls[activeProfile]->shift));
                 if(actions.getActionState() == ActionState::IDLE || actions.getOverride()){
@@ -251,27 +253,23 @@ void teleOp(Ring::Color ringToKeep) {
                     if(actions.getOverride()){
                         if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                             actions.setArmSpeed(1);
-                            targetAngle = 999;
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmSpeed(-1);
-                            targetAngle = 999;
+
                         } else {
+                            // targetAngle = actions.getArmAngle(); //updates arm angle
                             actions.setArmSpeed(0);
-                            targetAngle = actions.getArmAngle(); //updates arm angle
                         }
                     } else {
                         if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmState(Arm::State::DESCORE);
-                            targetAngle = 999;
+                            
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                             actions.setArmState(Arm::State::READY);
-                            targetAngle = 999;
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
-                            actions.setArmState(Arm::State::SCORE);
-                            targetAngle = 999;
+                            actions.setArmState(Arm::State::CLIMB);
                         } else {
                             actions.setArmState(Arm::State::DOWN);
-                            targetAngle = 999;
                         }
                     }
                 }
@@ -280,7 +278,7 @@ void teleOp(Ring::Color ringToKeep) {
                 if(ctrler.get_digital_new_press(controls[activeProfile]->mogoClampToggle.first)
                     && (activeProfile == MODE_COMP ? controls[activeProfile]->mogoClampToggle.second : true)) {
                     pneumatics.mogoClamp.toggle();
-                    callBackScreen();
+                    // callBackScreen();
                 }
                 
                 if (ringToKeep == Ring::Color::RED) {
@@ -317,33 +315,28 @@ void teleOp(Ring::Color ringToKeep) {
             case MODE_COMP_CLIMB:
                 actions.setOverride(ctrler.get_digital(controls[activeProfile]->shift));
                 /// ARM ///
-                if(actions.getOverride()){
+                
+                // if(actions.getOverride()){
                     if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                         actions.setArmSpeed(.7);
-                        targetAngle = 999;
                     } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                         actions.setArmSpeed(-.7);
-                        targetAngle = 999;
                     } else {
+                        // targetAngle = actions.getArmAngle(); //updates arm angle
                         actions.setArmSpeed(0);
-                        targetAngle = actions.getArmAngle(); //updates arm angle
                     }
-                } else {
-                    if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
-                        actions.setArmState(Arm::State::CLIMB);
-                        targetAngle = 999;
-                    } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
-                        actions.setArmState(Arm::State::SCORE);
-                        targetAngle = 999;
-                    } else {
-                        if(actions.getArmAngle() < 80) {
-                            actions.setArmState(Arm::State::CLIMB);
-                            targetAngle = 999;
-                        } else {
-                            targetAngle = actions.getArmAngle(); //updates arm angle
-                        }
-                    }
-                }
+                // } else {
+                //     if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
+                //         actions.setArmState(Arm::State::DESCORE);
+                        
+                //     } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
+                //         actions.setArmState(Arm::State::READY);
+                //     } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
+                //         actions.setArmState(Arm::State::CLIMB);
+                //     } else {
+                //         actions.setArmState(Arm::State::CLIMB);
+                //     }
+                // }
 
                 /// PNEUMATICS ///
                 // if (ctrler.get_digital_new_press(controls[activeProfile]->intakeLiftToggle.first) 
@@ -391,6 +384,6 @@ void teleOp(Ring::Color ringToKeep) {
                 break;
         }
 
-        delay(10);
+        delay(15);
     }
 }
