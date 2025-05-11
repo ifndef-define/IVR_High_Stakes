@@ -35,7 +35,7 @@ class Arm {
         State curArmState = State::DOWN;
         const double armStateAngles[(int)(Arm::State::NUM_ARM_STATES)] = { 
             5,   // Angle for DOWN
-            30,  // Angle for READY 
+            28,  // Angle for READY 
             80,  // Angle for CLIMB
             215,   // Angle for SCORE
             350  // Angle for DESCORE
@@ -90,6 +90,6 @@ class Arm {
          */
         State getState();
         void setBrakeMode(pros::motor_brake_mode_e_t mode);
-        void setClimb(bool climb, int scale = .65);
+        void setClimb(bool climb, int scale = .7);
         PID getPID(bool type);
 };

@@ -152,7 +152,7 @@ void updateRobotSystems(DriveMode newMode) {
             actions.setRunArm(true);
             actions.setArmState(Arm::State::CLIMB);
             actions.setClimbing(true);
-            actions.setRunAutoMogoClamp(true);
+            actions.setRunAutoMogoClamp(false);
             break;
     }
 
@@ -181,21 +181,21 @@ void updateRobotSystems(DriveMode newMode) {
 // }
 
 void teleOp(Ring::Color ringToKeep) {
-    chassis->setBrakeMode(BRAKE_COAST);
     // pros::Task ctrlerScreen(mogoClampScreen);
     // ctrlerScreen.set_priority(5);
     
-    if (!pros::competition::is_connected()) {
-        activeProfile = MODE_SOLO;
-        updateRobotSystems(activeProfile);
-    } else {
+    // if (!pros::competition::is_connected()) {
+    //     activeProfile = MODE_SOLO;
+    //     updateRobotSystems(activeProfile);
+    // } else {
         activeProfile = MODE_COMP;
         updateRobotSystems(activeProfile);
-    }
-    
+    // }
+
     actions.setRingColor(ringToKeep);
     actions.setAutonControlFlag(false);
     actions.setRunAutoMogoClamp(false);
+    actions.setRunColorSort(true);
     actions.setArmState(Arm::State::DOWN);
     actions.setRunArm(true);
     bool lastProfile = false;
@@ -204,7 +204,7 @@ void teleOp(Ring::Color ringToKeep) {
     while(1) {
         chassis->loop(false);
         actions.runSubsystemFSM();
-
+        
         switch (activeProfile) {
             // case MODE_SOLO:
             //     if (ui::getRunColorSort()) {
@@ -252,27 +252,23 @@ void teleOp(Ring::Color ringToKeep) {
                     if(actions.getOverride()){
                         if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                             actions.setArmSpeed(1);
-                            targetAngle = 999;
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmSpeed(-1);
-                            targetAngle = 999;
+
                         } else {
+                            // targetAngle = actions.getArmAngle(); //updates arm angle
                             actions.setArmSpeed(0);
-                            targetAngle = actions.getArmAngle(); //updates arm angle
                         }
                     } else {
                         if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                             actions.setArmState(Arm::State::DESCORE);
-                            targetAngle = 999;
+                            
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                             actions.setArmState(Arm::State::READY);
-                            targetAngle = 999;
                         } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
-                            actions.setArmState(Arm::State::SCORE);
-                            targetAngle = 999;
+                            actions.setArmState(Arm::State::CLIMB);
                         } else {
                             actions.setArmState(Arm::State::DOWN);
-                            targetAngle = 999;
                         }
                     }
                 }
@@ -319,33 +315,28 @@ void teleOp(Ring::Color ringToKeep) {
             case MODE_COMP_CLIMB:
                 actions.setOverride(ctrler.get_digital(controls[activeProfile]->shift));
                 /// ARM ///
-                if(actions.getOverride()){
+                
+                // if(actions.getOverride()){
                     if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
                         actions.setArmSpeed(.7);
-                        targetAngle = 999;
                     } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
                         actions.setArmSpeed(-.7);
-                        targetAngle = 999;
                     } else {
+                        // targetAngle = actions.getArmAngle(); //updates arm angle
                         actions.setArmSpeed(0);
-                        targetAngle = actions.getArmAngle(); //updates arm angle
                     }
-                } else {
-                    if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
-                        actions.setArmState(Arm::State::CLIMB);
-                        targetAngle = 999;
-                    } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
-                        actions.setArmState(Arm::State::SCORE);
-                        targetAngle = 999;
-                    } else {
-                        if(actions.getArmAngle() < 80) {
-                            actions.setArmState(Arm::State::CLIMB);
-                            targetAngle = 999;
-                        } else {
-                            targetAngle = actions.getArmAngle(); //updates arm angle
-                        }
-                    }
-                }
+                // } else {
+                //     if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp) && ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
+                //         actions.setArmState(Arm::State::DESCORE);
+                        
+                //     } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageUp)) {
+                //         actions.setArmState(Arm::State::READY);
+                //     } else if(ctrler.get_digital(controls[activeProfile]->backpackCycleStageDown)) {
+                //         actions.setArmState(Arm::State::CLIMB);
+                //     } else {
+                //         actions.setArmState(Arm::State::CLIMB);
+                //     }
+                // }
 
                 /// PNEUMATICS ///
                 // if (ctrler.get_digital_new_press(controls[activeProfile]->intakeLiftToggle.first) 
@@ -393,6 +384,6 @@ void teleOp(Ring::Color ringToKeep) {
                 break;
         }
 
-        delay(10);
+        delay(15);
     }
 }

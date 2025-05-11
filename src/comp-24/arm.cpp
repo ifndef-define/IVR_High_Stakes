@@ -18,11 +18,11 @@ void Arm::update(double angle){
     }
     
     if(!override){ 
-        if(angle==999){
+        // if(angle==999){
             error =  armStateAngles[(int)curArmState] - getAngle();
-        } else {
-            error = angle-getAngle();
-        }
+        // } else {
+        //     error = angle-getAngle();
+        // }
         if(abs(error) < 20){
             armMotor.move(small.update(error));
         } else {
