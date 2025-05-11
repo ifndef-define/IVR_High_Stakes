@@ -109,6 +109,7 @@ void Drive::cancelAllMotions() {
     motionInProgress = false;
     motionQueued = false;
     pros::delay(10);
+    brake();
 }
 
 bool Drive::isInMotion() { return motionInProgress; }

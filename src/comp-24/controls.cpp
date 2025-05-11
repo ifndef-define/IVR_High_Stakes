@@ -201,6 +201,7 @@ void teleOp(Ring::Color ringToKeep) {
     bool lastProfile = false;
     
     int targetAngle = 999;
+    actions.setRingColor(ringToKeep);
     while(1) {
         chassis->loop(false);
         actions.runSubsystemFSM();
@@ -218,7 +219,6 @@ void teleOp(Ring::Color ringToKeep) {
             //     } else {
             //         ringToKeep = Ring::Color::RED;
             //     }
-                actions.setRingColor(ringToKeep);
 
             case MODE_COMP:
                 // if (pros::competition::is_connected()) {

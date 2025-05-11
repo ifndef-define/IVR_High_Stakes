@@ -208,6 +208,7 @@ class Drive {
         // static bool inMotion() { return motionInProgress; }
         static void endMotion();
         static bool isInMotion();
+        static void cancelAllMotions();
 
     private:
         Drive() = default;
@@ -304,8 +305,6 @@ class Drive {
         static void requestMotionStart();
         
         // static void cancelMotion();
-        
-        static void cancelAllMotions();
 
 
     // Allow drive_builder to access private members

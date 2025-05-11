@@ -1,47 +1,24 @@
 #include "robots/comp-24/auton.h"
 
 void auton(Ring::Color ringToKeep) {
-    pros::Task task([&](){ 
+    pros::Task fsm([&]{
         while(pros::competition::is_autonomous()){
             actions.runSubsystemFSM(); 
             delay(10);
         }
+        chassis->cancelAllMotions();
     });
 
-    redAuton1();
+    if (ringToKeep == Ring::Color::RED) {
+        pros::Task redAutoTask([&]{
+            redAuton1();
+        });
+    } else if (ringToKeep == Ring::Color::BLUE) {
+        pros::Task blueAutoTask([&]{
+            blueAuton1();
+        });
+    }
 }
-
-/*
-Middle Mogo Auton
-==========================================
-MogoClamp down
-MovetoPose(left mogo, less accuracy)
-    mogoRush down
-MovetoPose(back behind knocked rings)
-mogoRush unlock
-mogorush up
-mogoClamp up
-Angle 180
-MovetoPose(to clamp)
-mogoClamp down
-intake down
-MovetoPose (collect knocked rings)) 
-    intake run
-MovetoPose(back rings)
-MovetoPose(corner rings)
-
-sequence(4)
-    MovetoPose(back corner)
-    MovetoPose(in corner)
-MovetoPose(wall stake almost)
-mogoClamp up
-arm to ready
-MovetoPose(line rings)
-MovetoPose(wall stake lineup)
-SLAM
-MovetoPose(game ready)
-end
-*/
 
 void redAuton1() {
     // Add red auton 1 code here
