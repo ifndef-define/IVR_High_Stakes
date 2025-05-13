@@ -1,16 +1,23 @@
 #include "robots/comp-15/auton.h"
 
 void auton(Ring::Color ringToKeep) {
-    pros::Task fsm([&](){
-        while (pros::competition::is_autonomous()) {
-            actions.runSubsystemFSM();
-            pros::delay(10);
+    pros::Task fsm([&]{
+        while(pros::competition::is_autonomous()){
+            actions.runSubsystemFSM(); 
+            delay(10);
         }
-        // fsm.suspend();
+        chassis->cancelAllMotions();
     });
 
-    blueAuton2();
-
+    if (ringToKeep == Ring::Color::RED) {
+        pros::Task redAutoTask([&]{
+            redAuton1();
+        });
+    } else if (ringToKeep == Ring::Color::BLUE) {
+        pros::Task blueAutoTask([&]{
+            blueAuton1();
+        });
+    }
 }
 
 void postRedMogoRush() {

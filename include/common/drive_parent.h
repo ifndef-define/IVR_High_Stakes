@@ -204,6 +204,7 @@ class Drive {
          */
         // [[deprecated("ONLY FOR VEX HIGH STAKES")]]
         static void changeDriveMotors(motor_g &motor_g_1, motor_g &motor_g_2);
+        static void setHalfDrivePower(bool half);
 
         // static bool inMotion() { return motionInProgress; }
         static void endMotion();
@@ -236,6 +237,7 @@ class Drive {
         inline static int max_rpm_ = 0;
         static drive_mode_e drive_mode_;
         static drive_config_e drive_config_;
+        static bool halfDrive;
 
         static pros::Mutex multiDrive_mutex;
         static bool motionInProgress;

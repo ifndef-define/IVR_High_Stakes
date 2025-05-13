@@ -157,47 +157,27 @@ void teleOp(Ring::Color ringToKeep) {
 
     chassis->loop(true);
 
-    if (!pros::competition::is_connected()) {
-        activeProfile = MODE_SOLO;
-        updateRobotSystems(activeProfile);
-    } else {
+    // if (!pros::competition::is_connected()) {
+    //     activeProfile = MODE_SOLO;
+    //     updateRobotSystems(activeProfile);
+    // } else {
         activeProfile = MODE_COMP;
         updateRobotSystems(activeProfile);
-    }
+    // }
 
     actions.setRingColor(ringToKeep);
     actions.setAutonControlFlag(false);
     actions.setRunAutoMogoClamp(false);
     actions.setArmState(Arm::State::DOWN);
-    actions.setRunArm(true);
-    bool lastProfile = false;
-
+    actions.setRunArm(true);    
+    actions.setRunColorSort(controls[activeProfile]->defaultColorSort);
+    
     while(1) {
         actions.runSubsystemFSM();
 
         switch (activeProfile) {
             case MODE_SOLO:
-                // if (ui::getRunColorSort()) {
-                //     actions.setRunColorSort(true);
-
             case MODE_COMP:
-                // if (pros::competition::is_connected()) {
-                //     if (ui::getCurrentAuto() == 0 || ui::getCurrentAuto() == 1) {
-                //         ringToKeep = Ring::Color::RED;
-                //     } else if (ui::getCurrentAuto() == 2 || ui::getCurrentAuto() == 3) {
-                //         ringToKeep = Ring::Color::BLUE;
-                //     } else {
-                //         ringToKeep = ui::getRingColor() ? Ring::Color::BLUE : Ring::Color::RED;
-                //     }
-                    actions.setRingColor(ringToKeep);
-                    actions.setRunColorSort(controls[activeProfile]->defaultColorSort);
-                // } else {
-                //     if (lastProfile != ui::getRunForceCompMode()) {
-                //         lastProfile = ui::getRunForceCompMode();
-                //         activeProfile = lastProfile ? MODE_COMP : MODE_SOLO;
-                //         updateRobotSystems(activeProfile);
-                //     }
-                // }
                 
                 /// INTAKE ///
                 actions.setOverride(ctrler.get_digital(controls[activeProfile]->shift));

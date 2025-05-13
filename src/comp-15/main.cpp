@@ -9,7 +9,6 @@ void initialize() {
 	pros::lcd::initialize();
 	imu.reset(true);
 	
-	actions.setRingColor(ringToKeep);
 	odom::start(true);
 }
 
@@ -19,10 +18,8 @@ void competition_initialize() {}
 
 void autonomous() {
 	auton(ringToKeep);
-	// redAuton1();
 }
 
 void opcontrol() {
-	// autonomous();
 	teleOp(ringToKeep);
 }

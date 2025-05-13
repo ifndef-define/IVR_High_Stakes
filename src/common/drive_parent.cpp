@@ -9,6 +9,7 @@ PID *Drive::drive_pid;
 PID *Drive::turn_pid;
 bool Drive::motionInProgress;
 bool Drive::motionQueued;
+bool Drive::halfDrive;
 Drive::drive_mode_e Drive::drive_mode_;
 Drive::drive_config_e Drive::drive_config_;
 Drive::ctrler_axis_s Drive::raw_axis;
@@ -43,6 +44,10 @@ void Drive::driveLoop() {
         delay(10);
     } while (isThread);
     Drive::multiDrive_mutex.give();
+}
+
+void Drive::setHalfDrivePower(bool half) {
+    halfDrive = half;
 }
 
 void Drive::loop(bool thread) {
@@ -121,8 +126,9 @@ void Drive::moveAtRPM(int rpm) {
 
 const bool debug_turnToAngle = false;
 void Drive::turnToAngle(double angle, int timeout, bool async, double turn_max_voltage, double turn_settle_error) {
-    requestMotionStart();
-    if (!motionInProgress) return;
+    // requestMotionStart();
+    // if (!motionInProgress) return;
+    motionInProgress = true;
     if(async) {
         pros::Task task([&](){ turnToAngle(angle, timeout, false, turn_max_voltage, turn_settle_error); });
         endMotion();
@@ -157,8 +163,9 @@ void Drive::turnToAngle(double angle, int timeout, bool async, double turn_max_v
 
 const bool debug_swingToAngle = false;
 void Drive::swingToAngle(double angle, Drive::DriveSide lockedSide, int timeout, bool async, double turn_max_voltage, double turn_settle_error) {
-    requestMotionStart();
-    if (!motionInProgress) return;
+    // requestMotionStart();
+    // if (!motionInProgress) return;
+    motionInProgress = true;
     if(async) {
         pros::Task task([&](){ swingToAngle(angle, lockedSide, timeout, false, turn_max_voltage, turn_settle_error); });
         endMotion();
@@ -229,8 +236,9 @@ const double tb_maintain_angle_voltage = 60;
 const double tb_turn_settle_error = 0.25;
 const bool debug_translateBy = false;
 void Drive::translateBy(double distance, int timeout, bool async, double drive_min_voltage, double drive_max_voltage, double drive_settle_error, double turn_settle_error) {
-    requestMotionStart();
-    if (!motionInProgress) return;
+    // requestMotionStart();
+    // if (!motionInProgress) return;
+    motionInProgress = true;
     if(async) {
         pros::Task task([&](){ translateBy(distance, timeout, false, drive_min_voltage, drive_max_voltage, drive_settle_error, turn_settle_error); });
         endMotion();
@@ -579,7 +587,7 @@ void Drive::updateAxis() {
                     turn = sinScale(calc_axis.r_x);
                 } else {
                     fwd = calc_axis.l_y;
-                    turn = calc_axis.r_x;
+                    turn = (halfDrive ? (calc_axis.r_x / 2) : calc_axis.r_x);
                 }
 
                 right = (straight_r_scale_ * fwd) - turn;
@@ -675,6 +683,7 @@ drive_builder::drive_builder(controller &ctrler_1) {
     drive_ = new Drive();
 
     drive_->drive_ctrler_ = &ctrler_1;    
+    drive_->halfDrive = false;
 }
 drive_builder &drive_builder::with_drive_config(Drive::drive_config_e drive_config) {
     drive_->drive_config_ = drive_config;
